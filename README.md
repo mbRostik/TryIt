@@ -81,3 +81,25 @@
   They select the "New Message" button and search for the recipient by name.
   The user types their message in the chat window and sends it.
   The message is delivered to the recipient's "TryIt" inbox, where they can read and reply.
+
+
+Features:
+
+  For all:
+    Like and dislike posts.
+    Leave comments under posts.
+    Send reports on posts or users.
+    Follow or unfollow users.
+    Change and delete profiles (including avatar, name, email, password, description).
+    Edit published posts (change or delete embedded media files, edit text).
+    Delete published posts.
+    Chat with other users.
+    Change profile privacy settings.
+    Save others' publications.
+    View notifications.
+    Purchase premium for uploading photos and videos in higher quality.
+
+  For Moderators:
+    Ban users.
+    Delete others' posts.
+    View complaints.
