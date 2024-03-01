@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Posts.Infrastructure.Data.EntityTypeConfiguration
 {
-    public class PostReactionEntityConfiguration : IEntityTypeConfiguration<PostReaction>
+    public class CommentReactionEntityConfiguration : IEntityTypeConfiguration<CommentReaction>
     {
-        public void Configure(EntityTypeBuilder<PostReaction> builder)
+        public void Configure(EntityTypeBuilder<CommentReaction> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(c => c.Id)
@@ -21,13 +21,13 @@ namespace Posts.Infrastructure.Data.EntityTypeConfiguration
               .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.Identity);
 
             builder.HasOne(x => x.User)
-                .WithMany(x => x.PostReactions)
+                .WithMany(x => x.CommentReactions)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(x => x.Post)
-                .WithMany(x => x.PostReactions)
-                .HasForeignKey(x => x.PostId)
+            builder.HasOne(x => x.Comment)
+                .WithMany(x => x.CommentReactions)
+                .HasForeignKey(x => x.CommentId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

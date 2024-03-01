@@ -2,6 +2,6 @@
 {
     public enum NotificationTypes
     {
-        Subscription, Like, Comment
+        Subscription, Like, Comment, CommentLike, CommentResponse
     }
 }

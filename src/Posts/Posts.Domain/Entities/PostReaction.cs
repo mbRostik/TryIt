@@ -1,5 +1,4 @@
-﻿
-namespace Posts.Domain
+﻿namespace Posts.Domain.Entities
 {
     public class PostReaction
     {
@@ -9,8 +8,11 @@ namespace Posts.Domain
 
         public int PostId { get; set; }
 
-        public bool Reaction {  get; set; }
+        public bool Reaction { get; set; }
 
         public DateTime Date { get; set; }
+
+        public virtual User User { get; set; }
+        public virtual Post Post { get; set; }
     }
 }
