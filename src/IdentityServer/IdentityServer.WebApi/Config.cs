@@ -75,23 +75,12 @@ namespace IdentityServer.WebApi
                     FrontChannelLogoutUri="",
                     PostLogoutRedirectUris={ "" },
                     AllowOfflineAccess = true,
-                    AllowedScopes = {"openid", "profile"},
-                    RequireConsent = true,
-                    RequirePkce=true,
-                    AllowPlainTextPkce=true
-                },
-
-
-                new Client
-                {
-                    ClientId = "moderator",
-                    ClientSecrets = {new Secret("OnlyAdminKnowsThisSecret".Sha256())},
-                    AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = { "" },
-                    FrontChannelLogoutUri="",
-                    PostLogoutRedirectUris={ "" },
-                    AllowOfflineAccess = true,
-                    AllowedScopes = {"openid", "profile"},
+                    AllowedScopes = 
+                    {"openid", "profile", "Users.WebApi.read", "Users.WebApi.write",
+                        "Chats.WebApi.read", "Chats.WebApi.write", 
+                        "Subscriptions.WebApi.read","Subscriptions.WebApi.write",
+                        "Notifications.WebApi.read", "Notifications.WebApi.write",
+                        "Reports.WebApi.read", "Reports.WebApi.write" },
                     RequireConsent = true,
                     RequirePkce=true,
                     AllowPlainTextPkce=true

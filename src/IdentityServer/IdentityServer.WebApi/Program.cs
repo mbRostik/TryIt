@@ -19,7 +19,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkSto
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddIdentityServer(options =>
@@ -42,25 +42,23 @@ builder.Services.AddIdentityServer(options =>
     })
     .AddAspNetIdentity<IdentityUser>()
     .AddDeveloperSigningCredential();
-    //.AddInMemoryApiResources(Config.ApiResources)
-    //.AddInMemoryApiScopes(Config.ApiScopes)
-    //.AddInMemoryClients(Config.Clients)
-    //.AddInMemoryIdentityResources(Config.IdentityResources);
 
 
 
 var app = builder.Build();
-app.UseIdentityServer();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
 
+//}
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
+app.UseRouting();
+app.UseIdentityServer();
 app.UseAuthorization();
+
 
 app.MapControllers();
 

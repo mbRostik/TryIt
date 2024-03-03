@@ -74,13 +74,13 @@ namespace IdentityServer.WebApi
                 context.IdentityProviders.RemoveRange(context.IdentityProviders);
                 context.SaveChanges();
             }
-            context.IdentityProviders.Add(new OidcProvider
-            {
-                Scheme = "demoidsrv",
-                DisplayName = "IdentityServer",
-                Authority = "https://demo.duendesoftware.com",
-                ClientId = "login",
-            }.ToEntity());
+            //context.IdentityProviders.Add(new OidcProvider
+            //{
+            //    Scheme = "demoidsrv",
+            //    DisplayName = "IdentityServer",
+            //    Authority = "https://demo.duendesoftware.com",
+            //    ClientId = "login",
+            //}.ToEntity());
             context.SaveChanges();
         }
 
