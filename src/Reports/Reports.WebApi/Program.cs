@@ -1,4 +1,9 @@
+﻿using MassTransit;
+using MessageBus.Messages.PostService;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
+using Reports.Application.UseCases.Consumers;
+using Reports.Application.UseCases.Queries;
 using Reports.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +19,32 @@ builder.Services.AddDbContext<ReportDbContext>(options =>
 }); 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(options =>
+{
+    options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
+
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<PostCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.Publish<PostCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
+
+        cfg.ReceiveEndpoint("reports_consumer_queue", e =>
+        {
+            e.ConfigureConsumer<PostCreatedConsumer>(context);
+        });
+    });
+});
 
 var app = builder.Build();
 

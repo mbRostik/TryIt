@@ -77,10 +77,7 @@ namespace Users.Infrastructure.Data.Migrations
             modelBuilder.Entity("Users.Domain.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.HasKey("Id");
 

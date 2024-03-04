@@ -26,10 +26,7 @@ namespace Reports.Infrastructure.Data.Migrations
             modelBuilder.Entity("Reports.Domain.Post", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.HasKey("Id");
 

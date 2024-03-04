@@ -15,12 +15,8 @@ namespace Reports.Infrastructure.Data.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<Post> builder)
         {
             builder.HasKey(x => x.Id);
-            
-            builder.HasMany(x => x.ReportedPosts)
-                .WithOne(x => x.Post)
-                .HasForeignKey(x => x.ReportedPostId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            builder.Property(x => x.Id)
+                .ValueGeneratedNever();
         }
     }
 }
