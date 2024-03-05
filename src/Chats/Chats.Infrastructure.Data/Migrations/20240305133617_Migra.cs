@@ -132,11 +132,6 @@ namespace Chats.Infrastructure.Data.Migrations
                 column: "LastMessageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MessageWithFiles_MessageId",
-                table: "MessageWithFiles",
-                column: "MessageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Messages_ChatId",
                 table: "Messages",
                 column: "ChatId");
@@ -145,6 +140,11 @@ namespace Chats.Infrastructure.Data.Migrations
                 name: "IX_Messages_SenderId",
                 table: "Messages",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MessageWithFiles_MessageId",
+                table: "MessageWithFiles",
+                column: "MessageId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ChatParticipants_Chats_ChatId",

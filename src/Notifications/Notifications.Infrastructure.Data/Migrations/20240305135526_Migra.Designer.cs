@@ -13,7 +13,7 @@ using Notifications.Infrastructure.Data;
 namespace Notifications.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(NotificationDbContext))]
-    [Migration("20240227230312_Migra")]
+    [Migration("20240305135526_Migra")]
     partial class Migra
     {
         /// <inheritdoc />

@@ -13,7 +13,7 @@ using Users.Infrastructure.Data;
 namespace Users.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20240303234936_Migra")]
+    [Migration("20240305120425_Migra")]
     partial class Migra
     {
         /// <inheritdoc />

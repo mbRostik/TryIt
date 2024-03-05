@@ -26,43 +26,13 @@ namespace Posts.Application.UseCases.Handlers.Creation
 
         public async Task<Post> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-
-            //try
-            //{
-            //    using (var transaction = dbContext.Database.BeginTransaction())
-            //    {
-            //        try
-            //        {
-            //            var model = await dbContext.Posts.AddAsync(request.model);
-
-            //            await dbContext.SaveChangesAsync();
-
-            //            Console.WriteLine("The post was created and the notification was sent");
-            //            await mediator.Publish(new PostCreatedNotification(model.Entity), cancellationToken);
-
-            //            return model.Entity;
-            //        }
-            //        catch (Exception)
-            //        {
-            //            transaction.Rollback();
-            //            return null;
-            //        }
-            //    }
-
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.ToString());
-            //    return null;
-            //}
             try
             {
                 var model = await dbContext.Posts.AddAsync(request.model);
 
                 await dbContext.SaveChangesAsync();
 
-                Console.WriteLine("The post was created and the notification was sent");
+                
                 await mediator.Publish(new PostCreatedNotification(model.Entity), cancellationToken);
 
                 return model.Entity;

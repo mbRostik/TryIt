@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chats.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    [Migration("20240227222823_Migra")]
+    [Migration("20240305133617_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Chats.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Chats.Domain.CFile", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.CFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("CFiles");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Chat", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Chat", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +75,7 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("Chats.Domain.ChatParticipant", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.ChatParticipant", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -90,7 +90,7 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("ChatParticipants");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Message", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,7 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Chats.Domain.MessageWithFile", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.MessageWithFile", b =>
                 {
                     b.Property<int>("FileId")
                         .HasColumnType("int");
@@ -148,7 +148,7 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("MessageWithFiles");
                 });
 
-            modelBuilder.Entity("Chats.Domain.User", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -158,9 +158,9 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Chat", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Chat", b =>
                 {
-                    b.HasOne("Chats.Domain.Message", "LastMessage")
+                    b.HasOne("Chats.Domain.Entities.Message", "LastMessage")
                         .WithMany("Chats")
                         .HasForeignKey("LastMessageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -169,15 +169,15 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Navigation("LastMessage");
                 });
 
-            modelBuilder.Entity("Chats.Domain.ChatParticipant", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.ChatParticipant", b =>
                 {
-                    b.HasOne("Chats.Domain.Chat", "Chat")
+                    b.HasOne("Chats.Domain.Entities.Chat", "Chat")
                         .WithMany("ChatParticipants")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Chats.Domain.User", "User")
+                    b.HasOne("Chats.Domain.Entities.User", "User")
                         .WithMany("ChatParticipants")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -188,15 +188,15 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Message", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Chats.Domain.Chat", "Chat")
+                    b.HasOne("Chats.Domain.Entities.Chat", "Chat")
                         .WithMany("Messages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Chats.Domain.User", "User")
+                    b.HasOne("Chats.Domain.Entities.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -207,15 +207,15 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Chats.Domain.MessageWithFile", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.MessageWithFile", b =>
                 {
-                    b.HasOne("Chats.Domain.CFile", "File")
+                    b.HasOne("Chats.Domain.Entities.CFile", "File")
                         .WithMany("MessageWithFiles")
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Chats.Domain.Message", "Message")
+                    b.HasOne("Chats.Domain.Entities.Message", "Message")
                         .WithMany("MessageWithFiles")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -226,26 +226,26 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Navigation("Message");
                 });
 
-            modelBuilder.Entity("Chats.Domain.CFile", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.CFile", b =>
                 {
                     b.Navigation("MessageWithFiles");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Chat", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Chat", b =>
                 {
                     b.Navigation("ChatParticipants");
 
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Message", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.Message", b =>
                 {
                     b.Navigation("Chats");
 
                     b.Navigation("MessageWithFiles");
                 });
 
-            modelBuilder.Entity("Chats.Domain.User", b =>
+            modelBuilder.Entity("Chats.Domain.Entities.User", b =>
                 {
                     b.Navigation("ChatParticipants");
 

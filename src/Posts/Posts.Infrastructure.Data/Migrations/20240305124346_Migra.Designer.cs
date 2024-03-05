@@ -13,7 +13,7 @@ using Posts.Infrastructure.Data;
 namespace Posts.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(PostDbContext))]
-    [Migration("20240301220245_Migra")]
+    [Migration("20240305124346_Migra")]
     partial class Migra
     {
         /// <inheritdoc />

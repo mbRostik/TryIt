@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Subscriptions.Domain;
+using Subscriptions.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +15,8 @@ namespace Subscriptions.Infrastructure.Data.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-
+            builder.Property(x => x.Id)
+              .ValueGeneratedNever();
             builder.HasMany(x => x.Subscriptions)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId)

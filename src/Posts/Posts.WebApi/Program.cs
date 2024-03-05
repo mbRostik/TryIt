@@ -1,7 +1,11 @@
 using MassTransit;
+using MessageBus.Messages.IdentityServerService;
+using MessageBus.Messages.PostService;
 using Microsoft.EntityFrameworkCore;
+using Posts.Application.UseCases.Consumers;
 using Posts.Application.UseCases.Queries;
 using Posts.Infrastructure.Data;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,19 +23,30 @@ builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
 
-});
+}); 
+
 builder.Services.AddMassTransit(x =>
 {
-    x.UsingRabbitMq((cxt, cfg) =>
+    x.AddConsumer<UserCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
         });
-        cfg.ConfigureEndpoints(cxt);
+
+        cfg.Publish<IdentityUserCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.ReceiveEndpoint("posts_UserConsumer_queue", e =>
+        {
+            e.ConfigureConsumer<UserCreatedConsumer>(context);
+        });
     });
 });
+
+ 
+
 
 var app = builder.Build();
 

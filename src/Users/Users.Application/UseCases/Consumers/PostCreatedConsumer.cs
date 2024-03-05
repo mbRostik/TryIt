@@ -22,7 +22,7 @@ namespace Users.Application.UseCases.Consumers
         public async Task Consume(ConsumeContext<PostCreatedEvent> context)
         {
             Post temp = new Post { Id = context.Message.PostId };
-
+            
             await mediator.Send(new CreatePostCommand(temp));
             await Task.CompletedTask;
         }

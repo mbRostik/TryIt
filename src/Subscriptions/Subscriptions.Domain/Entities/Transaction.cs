@@ -1,4 +1,4 @@
-﻿namespace Subscriptions.Domain
+﻿namespace Subscriptions.Domain.Entities
 {
     public class Transaction
     {

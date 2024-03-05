@@ -14,7 +14,8 @@ namespace Notifications.Infrastructure.Data.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-
+            builder.Property(x => x.Id)
+              .ValueGeneratedNever();
             builder.HasMany(x => x.Notifications)
                 .WithOne(m => m.User)
                 .HasForeignKey(x => x.UserId)

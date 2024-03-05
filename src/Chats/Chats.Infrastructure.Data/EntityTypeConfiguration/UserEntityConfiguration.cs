@@ -14,7 +14,8 @@ namespace Chats.Infrastructure.Data.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
-
+            builder.Property(x => x.Id)
+              .ValueGeneratedNever();
             builder.HasMany(x=>x.Messages)
                 .WithOne(m=>m.User)
                 .HasForeignKey(x=>x.SenderId)

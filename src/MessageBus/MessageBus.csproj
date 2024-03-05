@@ -13,4 +13,9 @@
     <Folder Include="Messages\SubscriptionService\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Automatonymous" Version="5.1.3" />
+    <PackageReference Include="MassTransit" Version="8.1.3" />
+  </ItemGroup>
+
 </Project>

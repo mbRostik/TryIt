@@ -6,4 +6,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Handlers\NotifyHandlers\" />
+    <Folder Include="UseCases\Notifications\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="8.1.3" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MessageBus\MessageBus.csproj" />
+    <ProjectReference Include="..\Chats.Domain\Chats.Domain.csproj" />
+    <ProjectReference Include="..\Chats.Infrastructure.Data\Chats.Infrastructure.Data.csproj" />
+  </ItemGroup>
+
 </Project>

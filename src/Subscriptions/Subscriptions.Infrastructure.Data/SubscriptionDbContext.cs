@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Subscriptions.Domain;
+using Subscriptions.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

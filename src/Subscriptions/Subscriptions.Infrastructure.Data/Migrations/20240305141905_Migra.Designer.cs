@@ -13,7 +13,7 @@ using Subscriptions.Infrastructure.Data;
 namespace Subscriptions.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SubscriptionDbContext))]
-    [Migration("20240228004205_Migra")]
+    [Migration("20240305141905_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace Subscriptions.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Subscriptions.Domain.Subscription", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.Subscription", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace Subscriptions.Infrastructure.Data.Migrations
                     b.ToTable("Subscriptions");
                 });
 
-            modelBuilder.Entity("Subscriptions.Domain.Transaction", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +85,7 @@ namespace Subscriptions.Infrastructure.Data.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Subscriptions.Domain.User", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -95,9 +95,9 @@ namespace Subscriptions.Infrastructure.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Subscriptions.Domain.Subscription", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.Subscription", b =>
                 {
-                    b.HasOne("Subscriptions.Domain.User", "User")
+                    b.HasOne("Subscriptions.Domain.Entities.User", "User")
                         .WithMany("Subscriptions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -106,9 +106,9 @@ namespace Subscriptions.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Subscriptions.Domain.Transaction", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.Transaction", b =>
                 {
-                    b.HasOne("Subscriptions.Domain.User", "User")
+                    b.HasOne("Subscriptions.Domain.Entities.User", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -117,7 +117,7 @@ namespace Subscriptions.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Subscriptions.Domain.User", b =>
+            modelBuilder.Entity("Subscriptions.Domain.Entities.User", b =>
                 {
                     b.Navigation("Subscriptions");
 

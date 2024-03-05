@@ -1,6 +1,7 @@
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using IdentityServer.Infrastructure.Data;
 using IdentityServer.WebApi;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkSto
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddIdentityServer(options =>
@@ -43,16 +44,28 @@ builder.Services.AddIdentityServer(options =>
     .AddAspNetIdentity<IdentityUser>()
     .AddDeveloperSigningCredential();
 
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((cxt, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        cfg.ConfigureEndpoints(cxt);
+    });
+});
 
 
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
-//}
+}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -62,7 +75,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-SeedData.EnsureSeedData(app);
+//SeedData.EnsureSeedData(app);
 
 app.Run();
 
