@@ -1,4 +1,6 @@
-﻿using MassTransit;
+﻿using Duende.IdentityServer.Events;
+using Duende.IdentityServer.Services;
+using MassTransit;
 using MessageBus.Messages.IdentityServerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +14,18 @@ namespace IdentityServer.WebApi.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IPublishEndpoint _publisher;
-
-        public TemporaryController(UserManager<IdentityUser> userManager, IPublishEndpoint publisher)
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IEventService _events;
+        public TemporaryController(UserManager<IdentityUser> userManager, IPublishEndpoint publisher,
+            SignInManager<IdentityUser> signInManager,
+            IEventService events)
         {
+            _signInManager = signInManager;
             _userManager = userManager;
+            _events = events;
             _publisher = publisher;
         }
+
 
         [HttpPost("PostSmth")]
         public async Task<IActionResult> AddUser(string UserName)
@@ -45,5 +53,9 @@ namespace IdentityServer.WebApi.Controllers
                 return BadRequest();
             }
         }
+
+      
     }
+
 }
+

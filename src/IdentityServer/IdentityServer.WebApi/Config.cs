@@ -71,9 +71,9 @@ namespace IdentityServer.WebApi
                     ClientId = "interactive",
                     ClientSecrets = {new Secret("OnlyUserKnowsThisSecret".Sha256())},
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = { "" },
-                    FrontChannelLogoutUri="",
-                    PostLogoutRedirectUris={ "" },
+                    RedirectUris = { "https://localhost:5173/signin-oidc" },
+                    FrontChannelLogoutUri="https://localhost:5173/signout-oidc",
+                    PostLogoutRedirectUris={ "https://localhost:5173/signout-callback-oidc" },
                     AllowOfflineAccess = true,
                     AllowedScopes = 
                     {"openid", "profile", "Users.WebApi.read", "Users.WebApi.write",
@@ -83,7 +83,8 @@ namespace IdentityServer.WebApi
                         "Reports.WebApi.read", "Reports.WebApi.write" },
                     RequireConsent = true,
                     RequirePkce=true,
-                    AllowPlainTextPkce=true
+                    AllowPlainTextPkce=true,
+                    AllowedCorsOrigins = { "https://localhost:5173" }
                 }
            };
     }

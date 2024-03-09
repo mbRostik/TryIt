@@ -66,17 +66,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBus", "src\MessageBu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Posts.WebApi", "src\Posts\Posts.WebApi\Posts.WebApi.csproj", "{840AB6F6-0CB7-4FE9-84E5-4C45F4092E1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chats.Application", "src\Chats\Chats.Application\Chats.Application.csproj", "{B77C314D-225B-4D91-B30F-CEBEF0B1DC76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chats.Application", "src\Chats\Chats.Application\Chats.Application.csproj", "{B77C314D-225B-4D91-B30F-CEBEF0B1DC76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Application", "src\Notifications\Notifications.Application\Notifications.Application.csproj", "{6823F7BE-A3DE-431F-8986-DF056EA7E2CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notifications.Application", "src\Notifications\Notifications.Application\Notifications.Application.csproj", "{6823F7BE-A3DE-431F-8986-DF056EA7E2CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Posts.Application", "src\Posts\Posts.Application\Posts.Application.csproj", "{775825BB-2176-4F2E-B358-97AC6A6328EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Posts.Application", "src\Posts\Posts.Application\Posts.Application.csproj", "{775825BB-2176-4F2E-B358-97AC6A6328EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Application", "src\Reports\Reports.Application\Reports.Application.csproj", "{2CFFAD0A-2718-4FAB-B7A6-B74B69F24D94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reports.Application", "src\Reports\Reports.Application\Reports.Application.csproj", "{2CFFAD0A-2718-4FAB-B7A6-B74B69F24D94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subscriptions.Application", "src\Subscriptions\Subscriptions.Application\Subscriptions.Application.csproj", "{611C439F-D91D-421B-B49B-75F83C8811E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Subscriptions.Application", "src\Subscriptions\Subscriptions.Application\Subscriptions.Application.csproj", "{611C439F-D91D-421B-B49B-75F83C8811E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users.Application", "src\Users\Users.Application\Users.Application.csproj", "{31B9509C-6805-45A1-A80E-FFB5656CFFE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Application", "src\Users\Users.Application\Users.Application.csproj", "{31B9509C-6805-45A1-A80E-FFB5656CFFE9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebUI", "WebUI", "{25447F79-8B5F-47F7-AC25-6D47E538DC27}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "webclient.client", "src\WebUI\webclient.client\webclient.client.esproj", "{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateWay", "ApiGateWay", "{39F94BE4-8034-4965-B849-7C6E423D80F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -196,6 +202,12 @@ Global
 		{31B9509C-6805-45A1-A80E-FFB5656CFFE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B9509C-6805-45A1-A80E-FFB5656CFFE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B9509C-6805-45A1-A80E-FFB5656CFFE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,6 +240,7 @@ Global
 		{2CFFAD0A-2718-4FAB-B7A6-B74B69F24D94} = {3596977D-C21B-470A-9424-F3CF9070242A}
 		{611C439F-D91D-421B-B49B-75F83C8811E3} = {0A323412-6B77-4DBE-B581-ABE834A4B737}
 		{31B9509C-6805-45A1-A80E-FFB5656CFFE9} = {267E3341-7F75-4349-8A4B-BDF7010C3E4A}
+		{AFECE3C6-B8AC-43A8-888D-5767A2EF61FE} = {25447F79-8B5F-47F7-AC25-6D47E538DC27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A775B561-5329-4CEF-B559-B2200B8A3A2F}

@@ -5,13 +5,14 @@ using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly.GetName().Name;
 var defaultConnString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
-
+builder.Services.AddRazorPages();
 builder.Services.AddDbContext<IdentityServerDbContext>(options =>
 {
     options.UseSqlServer(defaultConnString);
@@ -21,6 +22,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkSto
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddDataProtection()
+    .SetApplicationName("IdentityServer.WebApi")
+    .PersistKeysToDbContext<IdentityServerDbContext>();
 
 
 builder.Services.AddIdentityServer(options =>
@@ -43,6 +49,7 @@ builder.Services.AddIdentityServer(options =>
     })
     .AddAspNetIdentity<IdentityUser>()
     .AddDeveloperSigningCredential();
+builder.Services.AddAuthentication();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -71,9 +78,13 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseIdentityServer();
 app.UseAuthorization();
+app.MapRazorPages().RequireAuthorization();
 
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
 
 //SeedData.EnsureSeedData(app);
 
