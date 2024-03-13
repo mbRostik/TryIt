@@ -4,9 +4,11 @@ using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Consumers;
 using Users.Application.UseCases.Queries;
 using Users.Infrastructure.Data;
+using Users.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IMapperService, MapperService>();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(options =>
 {

@@ -5,6 +5,7 @@ import App from './App';
 import SignIn_CallbackPage from './AuthFiles/SignIn_CallbackPage';
 import SignOut_CallBackPage from './AuthFiles/SignOut_CallBackPage';
 import NavBar from './Components/NavBar/NavBar'; 
+import Profile from './Components/Profile/Profile';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,6 +15,7 @@ root.render(
             <NavBar />
             <Routes>
                 <Route path="/" element={<App />} />
+                <Route path="/Profile" element={<Profile />} />
                 <Route path="/signin-oidc" element={<SignIn_CallbackPage />} />
                 <Route path="/signout-callback-oidc" element={<SignOut_CallBackPage />} />
             </Routes>

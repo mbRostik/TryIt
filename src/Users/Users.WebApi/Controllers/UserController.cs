@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Users.Application.Contracts.DTOs;
 using Users.Application.UseCases.Queries;
 using Users.Domain.Entities;
 
@@ -18,22 +20,20 @@ namespace Users.WebApi.Controllers
             this.mediator = mediator;
         }
 
-        [HttpGet("GetAllPosts")]
-        public async Task<ActionResult<List<Post>>> GetItems()
+        [HttpGet("GetUser'sProfile")]
+        public async Task<ActionResult<UserProfileDTO>> GetUser()
         {
-
-            var result = await mediator.Send(new GetAllPostsQuery());
-
-            return Ok(result);
-
-        }
-
-        [HttpGet("GetUserById")]
-        //Temporary
-        public async Task<ActionResult<User>> GetUser()
-        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
-            return Ok();
+
+            var result = await mediator.Send(new GetUserQuery(userId));
+
+            if (result == null)
+                return Ok("There is no information");
+            return Ok(result);
         }
     }
 }

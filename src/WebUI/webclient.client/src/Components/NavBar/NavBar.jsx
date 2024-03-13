@@ -32,8 +32,11 @@ const NavBar = () => {
                     <Link to="/" className="NavBarButton">Home</Link>
                 {isAuthorized === false ? (
                         <button onClick={onLogin} className="NavBarButton">Login</button>
-                ) : (
-                        <button onClick={onLogout} className="NavBarButton">Logout</button>
+                    ) : (
+                            <div>
+                                <Link to="/Profile" className="NavBarButton">Profile</Link>
+                                <button onClick={onLogout} className="NavBarButton">Logout</button>
+                            </div>
                 )}
             </div>
             </div>
