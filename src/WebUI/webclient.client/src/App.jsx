@@ -5,7 +5,8 @@ import { isAuthenticated } from './Functions/CheckAuthorization';
 import { ThreeDots } from 'react-loader-spinner';
 
 function App() {
-    const [authorized, setAuth] = useState(null);
+
+    const [authorized, setAuth] = useState(false);
     const onLogin = () => {
         userManager.signinRedirect();
     };
@@ -20,18 +21,11 @@ function App() {
         const checkAuthentication = async () => {
             try {
                 const auth = await isAuthenticated();
-                console.log(await isAuthenticated());
-                if (!auth) {
-                    console.log(auth);
-                    setAuth(auth);
-                    setLoading(false);
-                } else {
-                    console.log(auth);
-                    setAuth(auth);
-                    setLoading(false);
-                }
+                setAuth(auth);
             } catch (err) {
-                console.log(err);
+                console.error(err); 
+            } finally {
+                setLoading(false); 
             }
         };
 
@@ -41,7 +35,7 @@ function App() {
         : authorized ? <button onClick={onLogout}>Logout</button> : <button onClick={onLogin}>Login</button>;
     return (
         <div>
-            Hello
+            MainPage
         </div>
     );
 }

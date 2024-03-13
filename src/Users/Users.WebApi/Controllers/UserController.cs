@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Contracts.DTOs;
+using Users.Application.UseCases.Commands;
 using Users.Application.UseCases.Queries;
 using Users.Domain.Entities;
 
@@ -34,6 +35,22 @@ namespace Users.WebApi.Controllers
             if (result == null)
                 return Ok("There is no information");
             return Ok(result);
+
+            
+        }
+
+        [HttpPost("ChangeUserSettings")]
+        public async Task<ActionResult> ChangeUserSettings([FromBody] ChangeProfileInformationDTO model)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            await mediator.Send(new ChangeUserInformationCommand(model));
+            return Ok();
+
         }
     }
 }

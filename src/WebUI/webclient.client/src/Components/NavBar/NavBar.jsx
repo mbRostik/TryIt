@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import userManager from '../../AuthFiles/authConfig';
 import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import '../Styles/NavBarStyles.css'
+import { NavLink } from 'react-router-dom';
+
 const NavBar = () => {
     const navigate = useNavigate();
     const [isAuthorized, setIsAuthorized] = React.useState(null);
@@ -29,16 +31,16 @@ const NavBar = () => {
         <div>
             <div className="NavBarMain">
                 <div className="NavBarMenu">
-                    <Link to="/" className="NavBarButton">Home</Link>
-                {isAuthorized === false ? (
+                    <NavLink to="/" className="NavBarButton">Home</NavLink>
+                    {isAuthorized === false ? (
                         <button onClick={onLogin} className="NavBarButton">Login</button>
                     ) : (
-                            <div>
-                                <Link to="/Profile" className="NavBarButton">Profile</Link>
-                                <button onClick={onLogout} className="NavBarButton">Logout</button>
-                            </div>
-                )}
-            </div>
+                        <div>
+                            <NavLink to="/Profile" className="NavBarButton">Profile</NavLink>
+                            <button onClick={onLogout} className="NavBarButton">Logout</button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
