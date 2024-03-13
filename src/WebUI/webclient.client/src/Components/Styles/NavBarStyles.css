@@ -1,0 +1,43 @@
+.NavBarMain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: #0a95ff;
+    padding: 5px 5px;
+}
+
+.NavBarMenu {
+    max-width: 600px;
+    width: 600px;
+    max-height: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.NavBarButton {
+    border-radius: 10%;
+    font-weight: 500;
+    min-height: 29px;
+    max-height: 29px;
+    color: white;
+    padding: 3px 5px;
+    display: flex;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    background-color: #0066db;
+    transition: padding 0.2s, background-color 0.2s;
+}
+
+    .NavBarButton:hover {
+        padding: 10px 5px 3px 5px;
+        color: white;
+        background-color: #0051ad;
+    }

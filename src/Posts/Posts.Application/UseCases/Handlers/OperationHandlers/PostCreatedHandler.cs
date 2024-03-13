@@ -37,10 +37,6 @@ namespace Posts.Application.UseCases.Handlers.Creation
 
                 return model.Entity;
             }
-
-
-
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());

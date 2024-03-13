@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using Users.Application.UseCases.Consumers;
@@ -53,7 +54,14 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:7174";
 
+        options.Audience = "Users.WebApi";
+
+    });
 
 var app = builder.Build();
 
@@ -66,6 +74,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

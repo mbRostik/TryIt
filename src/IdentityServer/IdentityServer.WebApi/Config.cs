@@ -29,6 +29,9 @@ namespace IdentityServer.WebApi
                new ApiScope("Reports.WebApi.read"),
                new ApiScope("Reports.WebApi.write"),
 
+               new ApiScope("Posts.WebApi.read"),
+               new ApiScope("Posts.WebApi.write"),
+
            };
 
         public static IEnumerable<ApiResource> ApiResources => new[] {
@@ -37,7 +40,11 @@ namespace IdentityServer.WebApi
                  Scopes=new List<string>{ "Users.WebApi.read", "Users.WebApi.write" },
                  ApiSecrets=new List<Secret>{new Secret("Users.WebApi.Secret".Sha256())},
              },
-
+            new ApiResource("Posts.WebApi")
+             {
+                 Scopes=new List<string>{ "Posts.WebApi.read", "Posts.WebApi.write" },
+                 ApiSecrets=new List<Secret>{new Secret("Posts.WebApi.Secret".Sha256())},
+             },
             new ApiResource("Chats.WebApi")
              {
                  Scopes=new List<string>{ "Chats.WebApi.read", "Chats.WebApi.write" },
@@ -80,7 +87,7 @@ namespace IdentityServer.WebApi
                         "Chats.WebApi.read", "Chats.WebApi.write", 
                         "Subscriptions.WebApi.read","Subscriptions.WebApi.write",
                         "Notifications.WebApi.read", "Notifications.WebApi.write",
-                        "Reports.WebApi.read", "Reports.WebApi.write" },
+                        "Reports.WebApi.read", "Reports.WebApi.write", "Posts.WebApi.read", "Posts.WebApi.write" },
                     RequireConsent = true,
                     RequirePkce=true,
                     AllowPlainTextPkce=true,

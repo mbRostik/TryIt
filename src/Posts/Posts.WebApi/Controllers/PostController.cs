@@ -9,6 +9,7 @@ namespace Posts.WebApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -23,10 +24,9 @@ namespace Posts.WebApi.Controllers
         {
 
             var result = await mediator.Send(new GetAllPostsQuery());
-
             return Ok(result);
-
         }
+
 
         [HttpPut("CreateTemporaryPost")]
         public async Task<ActionResult<Post>> PutPost()

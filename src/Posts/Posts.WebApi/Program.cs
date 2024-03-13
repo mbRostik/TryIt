@@ -1,6 +1,7 @@
 using MassTransit;
 using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Posts.Application.UseCases.Consumers;
 using Posts.Application.UseCases.Queries;
@@ -45,9 +46,14 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
- 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:7174";
 
+        options.Audience = "Posts.WebApi";
 
+    });
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

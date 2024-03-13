@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Contracts\DTOs\" />
+    <Folder Include="Contracts\Interfaces\" />
     <Folder Include="UseCases\Handlers\NotifyHandlers\" />
     <Folder Include="UseCases\Notifications\" />
   </ItemGroup>
