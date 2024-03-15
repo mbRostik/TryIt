@@ -6,6 +6,7 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using IdentityServerHost.Pages.Login;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Authentication;
@@ -70,43 +71,53 @@ public class RegisterModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl ??= Url.Content("~/");
+        returnUrl ??= Url.Content("~/Account/Login");
         if (ModelState.IsValid)
         {
-            var user = new IdentityUser { UserName = Input.Username, Email = Input.Email, EmailConfirmed = false, TwoFactorEnabled = false};
-            var result = await _userManager.CreateAsync(user, Input.Password);
-
-            if (result.Succeeded)
+            var chechkEmail = await _userManager.FindByEmailAsync(Input.Email);
+            if (chechkEmail != null)
             {
-                var CreatedUser = await _userManager.FindByEmailAsync(user.Email);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                ModelState.AddModelError(string.Empty, "This email is already taken");
+                return Page();
+            }
+            else
+            {
+                var user = new IdentityUser { UserName = Input.Username, Email = Input.Email, EmailConfirmed = false, TwoFactorEnabled = false };
+                var result = await _userManager.CreateAsync(user, Input.Password);
 
-              
-                var callbackUrl = $"https://localhost:7174/ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}";
-
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("rost.daskalyuk@gmail.com");
-                message.Subject = "TryIt verification";
-                message.To.Add(new MailAddress(user.Email));
-                message.Body = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.";
-                message.IsBodyHtml = true;
-
-                var smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com")
+                if (result.Succeeded)
                 {
-                    Port = 587,
-                    Credentials = new NetworkCredential("rost.daskalyuk@gmail.com", "ueexgknctftcjnpo"),
-                    EnableSsl = true
+                    var CreatedUser = await _userManager.FindByEmailAsync(user.Email);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                };
 
-                smtpClient.Send(message);
+                    var callbackUrl = $"https://localhost:7174/ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}";
 
-                return LocalRedirect(returnUrl);
+                    MailMessage message = new MailMessage();
+                    message.From = new MailAddress("rost.daskalyuk@gmail.com");
+                    message.Subject = "TryIt verification";
+                    message.To.Add(new MailAddress(user.Email));
+                    message.Body = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.";
+                    message.IsBodyHtml = true;
+
+                    var smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com")
+                    {
+                        Port = 587,
+                        Credentials = new NetworkCredential("rost.daskalyuk@gmail.com", "ueexgknctftcjnpo"),
+                        EnableSsl = true
+
+                    };
+
+                    smtpClient.Send(message);
+
+                    return LocalRedirect(returnUrl);
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+           
         }
 
         return Page();
