@@ -17,7 +17,9 @@ builder.Services.AddDbContext<IdentityServerDbContext>(options =>
 {
     options.UseSqlServer(defaultConnString);
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityServerDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<IdentityServerDbContext>()
+     .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

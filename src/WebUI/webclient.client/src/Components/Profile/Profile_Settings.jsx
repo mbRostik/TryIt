@@ -3,6 +3,7 @@ import userManager from '../../AuthFiles/authConfig';
 import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
+import '../Styles/Profile_Settings.css'
 
 const Profile_Settings = () => {
     const [isAuthorized, setIsAuthorized] = useState(null);
@@ -85,6 +86,7 @@ const Profile_Settings = () => {
         setUserData({ ...userData, [e.target.name]: value });
     };
 
+
     return (
         <div>
             {loading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }} ><ThreeDots color="#00BFFF" height={80} width={80} /></div>
@@ -93,43 +95,79 @@ const Profile_Settings = () => {
                 ) : userData === null ? (
                     <div>There is no information</div>
                 ) : (
-                    <div className="profile">
+                     <div className="Settings_Form">
                         {userData && (
                                     <form onSubmit={handleSaveChanges}>
-                                        <label>
-                                            Name:
-                                            <input type="text" name="name" value={userData.name || ''} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            NickName:
-                                            <input type="text" name="nickName" value={userData.nickName || ''} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            Email:
-                                            <input type="email" name="email" value={userData.email || ''} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            Phone:
-                                            <input type="tel" name="phone" value={userData.phone || ''} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            Bio:
-                                            <textarea name="bio" value={userData.bio || ''} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            Private Account:
-                                            <input type="checkbox" name="isPrivate" checked={userData.isPrivate || false} onChange={handleChange} />
-                                        </label>
-                                        <label>
-                                            Date of Birth:
-                                            <input
-                                                type="date"
-                                                name="dateOfBirth"
-                                                value={userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().split('T')[0] : ''}
-                                                onChange={handleChange}
-                                            />
-                                        </label>
-                                        <button type="submit">Save Changes</button>
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Name:
+                                                <input type="text" name="name" value={userData.name || ''} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                NickName:
+                                                <input type="text" name="nickName" value={userData.nickName || ''} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Email:
+                                                <input type="email" name="email" value={userData.email || ''} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Phone:
+                                                <input type="tel" name="phone" value={userData.phone || ''} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Bio:
+                                                <textarea name="bio" value={userData.bio || ''} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Private Account:
+                                                <input type="checkbox" name="isPrivate" checked={userData.isPrivate || false} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Date of Birth:
+                                                <input
+                                                    type="date"
+                                                    name="dateOfBirth"
+                                                    value={userData.dateOfBirth ? new Date(userData.dateOfBirth).toISOString().split('T')[0] : ''}
+                                                    onChange={handleChange}
+                                                />
+                                            </label>
+                                        </div>
+
+                                        <div className="Settings_Component">
+                                            <label>
+                                                Sex:
+                                                <select name="sexId" value={userData.sexId || 'UnIdentify'} onChange={handleChange}>
+                                                    <option value="UnIdentify">UnIdentify</option>
+                                                    <option value="Man">Man</option>
+                                                    <option value="Woman">Woman</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div className="Settings_Component">
+                                            <button type="submit">Save Changes</button>
+                                        </div>
+
+
+                                        
                                     </form>
                         )}
                     </div>

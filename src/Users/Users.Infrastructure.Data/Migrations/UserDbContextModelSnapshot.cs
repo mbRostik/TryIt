@@ -113,7 +113,24 @@ namespace Users.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sexs");
+                    b.ToTable("Sexes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            SexType = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            SexType = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            SexType = 2
+                        });
                 });
 
             modelBuilder.Entity("Users.Domain.Entities.User", b =>

@@ -42,6 +42,7 @@ namespace Users.WebApi.Controllers
         [HttpPost("ChangeUserSettings")]
         public async Task<ActionResult> ChangeUserSettings([FromBody] ChangeProfileInformationDTO model)
         {
+            Console.WriteLine("KEJGHDE");
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Unauthorized();

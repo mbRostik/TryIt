@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Users.Domain.Entities;
+using Users.Domain.Enums;
 
 namespace Users.Application.Contracts.DTOs
 {
@@ -27,5 +28,7 @@ namespace Users.Application.Contracts.DTOs
         public int FollowersCount { get; set; } = 0;
 
         public int FollowsCount { get; set; } = 0;
+
+        public string SexId { get; set; } = "UnIdentify";
     }
 }

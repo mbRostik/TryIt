@@ -20,9 +20,9 @@
 
         public int SexId { get; set; }
 
-        public bool IsBanned { get; set; }
+        public bool IsBanned { get; set; } = false;
 
-        public bool IsPrivate { get; set; }
+        public bool IsPrivate { get; set; } = false;
 
         public virtual ICollection<SavedPost> SavedPosts { get; set;}
 

@@ -2,6 +2,6 @@
 {
     public enum SexType
     {
-        Man, Woman
+        Man, Woman, UnIdentify
     }
 }

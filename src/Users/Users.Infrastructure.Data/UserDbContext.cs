@@ -16,7 +16,7 @@ namespace Users.Infrastructure.Data
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<SavedPost> SavedPosts { get; set; }
-        public DbSet<Sex> Sexs { get; set; }
+        public DbSet<Sex> Sexes { get; set; }
         public DbSet<User> Users { get; set; }
 
 

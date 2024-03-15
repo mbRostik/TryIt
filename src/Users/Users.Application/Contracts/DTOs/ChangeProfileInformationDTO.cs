@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Users.Domain.Enums;
 
 namespace Users.Application.Contracts.DTOs
 {
@@ -24,5 +25,7 @@ namespace Users.Application.Contracts.DTOs
 
         public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public bool IsPrivate { get; set; } = false;
+
+        public string SexId { get; set; } = "UnIdentify"; 
     }
 }

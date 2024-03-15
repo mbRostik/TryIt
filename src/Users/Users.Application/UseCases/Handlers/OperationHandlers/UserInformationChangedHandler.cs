@@ -10,6 +10,7 @@ using Users.Application.Contracts.DTOs;
 using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Commands;
 using Users.Domain.Entities;
+using Users.Domain.Enums;
 using Users.Infrastructure.Data;
 
 namespace Users.Application.UseCases.Handlers.OperationHandlers
@@ -31,7 +32,6 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
         public async Task Handle(ChangeUserInformationCommand request, CancellationToken cancellationToken)
         {
             User userInfo = mapper.Map<User>(request.model);
-            userInfo.SexId = 2;
             dbContext.Users.Update(userInfo);
 
             await dbContext.SaveChangesAsync();

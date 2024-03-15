@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Users.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using Users.Domain.Enums;
 
 namespace Users.Infrastructure.Data.EntityTypeConfiguration
 {
@@ -24,6 +25,12 @@ namespace Users.Infrastructure.Data.EntityTypeConfiguration
                 .WithOne(x=>x.Sex)
                 .HasForeignKey(x=>x.SexId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasData(
+               new Sex { Id = 1, SexType = SexType.Man },
+               new Sex { Id = 2, SexType = SexType.Woman },
+               new Sex { Id = 3, SexType = SexType.UnIdentify }
+            );
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
                     .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
                     .ForMember(dest => dest.IsPrivate, opt => opt.MapFrom(src => src.IsPrivate))
+                    .ForMember(dest => dest.SexId, opt => opt.MapFrom(src =>
+                         sexStringToIdMapping.ContainsKey(src.SexId) ? sexStringToIdMapping[src.SexId] : 3))
                     .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
             });
             mapper = configuration.CreateMapper();
@@ -46,5 +48,12 @@ namespace Users.Infrastructure.Services
             });
             mapper = configuration.CreateMapper();
         }
+
+        Dictionary<string, int> sexStringToIdMapping = new Dictionary<string, int>
+        {
+            {"Man", 1}, 
+            {"Woman", 2}, 
+            {"UnIdentify", 3} 
+        };
     }
 }

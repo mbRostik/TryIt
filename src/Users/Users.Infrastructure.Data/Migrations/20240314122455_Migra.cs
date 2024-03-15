@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Users.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
@@ -23,7 +25,7 @@ namespace Users.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sexs",
+                name: "Sexes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -32,7 +34,7 @@ namespace Users.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sexs", x => x.Id);
+                    table.PrimaryKey("PK_Sexes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,9 +57,9 @@ namespace Users.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Sexs_SexId",
+                        name: "FK_Users_Sexes_SexId",
                         column: x => x.SexId,
-                        principalTable: "Sexs",
+                        principalTable: "Sexes",
                         principalColumn: "Id");
                 });
 
@@ -133,6 +135,16 @@ namespace Users.Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Sexes",
+                columns: new[] { "Id", "SexType" },
+                values: new object[,]
+                {
+                    { 1, 0 },
+                    { 2, 1 },
+                    { 3, 2 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BannedUsers_ModeratorId",
                 table: "BannedUsers",
@@ -178,7 +190,7 @@ namespace Users.Infrastructure.Data.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Sexs");
+                name: "Sexes");
         }
     }
 }

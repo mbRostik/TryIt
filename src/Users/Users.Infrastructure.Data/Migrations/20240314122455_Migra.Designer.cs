@@ -13,7 +13,7 @@ using Users.Infrastructure.Data;
 namespace Users.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20240305120425_Migra")]
+    [Migration("20240314122455_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -116,7 +116,24 @@ namespace Users.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sexs");
+                    b.ToTable("Sexes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            SexType = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            SexType = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            SexType = 2
+                        });
                 });
 
             modelBuilder.Entity("Users.Domain.Entities.User", b =>

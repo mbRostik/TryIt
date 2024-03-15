@@ -48,11 +48,16 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnGet(string? returnUrl)
     {
+
+        if (User.Identity.IsAuthenticated)
+        {
+            return LocalRedirect("~/");
+        }
+
         await BuildModelAsync(returnUrl);
             
         if (View.IsExternalLoginOnly)
         {
-            // we only have one option for logging in and it's an external provider
             return RedirectToPage("/ExternalLogin/Challenge", new { scheme = View.ExternalLoginScheme, returnUrl });
         }
 
@@ -61,6 +66,10 @@ public class Index : PageModel
         
     public async Task<IActionResult> OnPost()
     {
+        if (User.Identity.IsAuthenticated)
+        {
+            return LocalRedirect("~/");
+        }
         // check if we are in the context of an authorization request
         var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
 

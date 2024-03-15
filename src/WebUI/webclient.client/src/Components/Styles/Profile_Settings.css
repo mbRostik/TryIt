@@ -1,0 +1,9 @@
+.Settings_Form {
+    display: flex;
+    flex-direction: column;
+}
+
+.Settings_Component {
+    margin-top: 15px;
+}
+
