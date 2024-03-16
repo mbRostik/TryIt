@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -59,19 +60,25 @@ public class RegisterModel : PageModel
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
-
-    public async Task<IActionResult> OnGet()
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; } = "https://localhost:7174/Account/Login";
+    public async Task<IActionResult> OnGet(string returnUrl = null)
     {
         if (User.Identity.IsAuthenticated)
         {
             return LocalRedirect("~/");
         }
+        ReturnUrl = returnUrl;
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
     {
-        returnUrl ??= Url.Content("~/Account/Login");
+        if (User.Identity.IsAuthenticated)
+        {
+            return LocalRedirect("~/");
+        }
+
         if (ModelState.IsValid)
         {
             var chechkEmail = await _userManager.FindByEmailAsync(Input.Email);
@@ -87,11 +94,14 @@ public class RegisterModel : PageModel
 
                 if (result.Succeeded)
                 {
+                    //Створюємо Юзера та токен підтвердження
                     var CreatedUser = await _userManager.FindByEmailAsync(user.Email);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
+                    //силка для підтверження де міститься айді користувача, токен та returnUrl яку ми достали з LoginPage, коли натиснули Зареєструватись
 
-                    var callbackUrl = $"https://localhost:7174/ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}";
+                    var returnUrlQuery = !string.IsNullOrEmpty(ReturnUrl) ? $"&returnUrl={Uri.EscapeDataString(ReturnUrl)}" : string.Empty;
+                    var callbackUrl = $"https://localhost:7174/ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}{returnUrlQuery}";
 
                     MailMessage message = new MailMessage();
                     message.From = new MailAddress("rost.daskalyuk@gmail.com");
@@ -109,8 +119,11 @@ public class RegisterModel : PageModel
                     };
 
                     smtpClient.Send(message);
-
-                    return LocalRedirect(returnUrl);
+                    if (ReturnUrl != null && ReturnUrl != "")
+                    {
+                        return LocalRedirect(ReturnUrl);
+                    }
+                    return Redirect("~/");
                 }
                 foreach (var error in result.Errors)
                 {

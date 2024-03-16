@@ -121,21 +121,21 @@ public class Index : PageModel
                     {
                         // The client is native, so this change in how to
                         // return the response is for better UX for the end user.
-                        return Redirect("https://localhost:5173/");
+                        return this.LoadingPage(Input.ReturnUrl);
                     }
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    return Redirect("https://localhost:5173/");
+                    return Redirect(Input.ReturnUrl ?? "~/");
                 }
 
                 // request for a local page
                 if (Url.IsLocalUrl(Input.ReturnUrl))
                 {
-                    return Redirect("https://localhost:5173/");
+                    return Redirect(Input.ReturnUrl);
                 }
                 else if (string.IsNullOrEmpty(Input.ReturnUrl))
                 {
-                    return Redirect("https://localhost:5173/");
+                    return Redirect("~/");
                 }
                 else
                 {
@@ -222,3 +222,5 @@ public class Index : PageModel
         };
     }
 }
+
+

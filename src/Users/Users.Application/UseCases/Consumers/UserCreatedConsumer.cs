@@ -31,7 +31,7 @@ namespace Users.Application.UseCases.Consumers
                 Bio=" ",
                 Photo = [],
                 DateOfBirth = DateTime.Now,
-                SexId=2,
+                SexId=1,
                 IsBanned=false,
                 IsPrivate=false
             };
