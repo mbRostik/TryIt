@@ -36,7 +36,7 @@ namespace Users.WebApi.Controllers
                 return Ok("There is no information");
             return Ok(result);
 
-            
+
         }
 
         [HttpPost("ChangeUserSettings")]
@@ -52,6 +52,23 @@ namespace Users.WebApi.Controllers
             await mediator.Send(new ChangeUserInformationCommand(model));
             return Ok();
 
+        }
+
+        [HttpPost("UploadProfilePhoto")]
+        public async Task<IActionResult> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
+        {
+            try
+            {
+                model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                await mediator.Send(new ChangeUserAvatarCommand(model));
+
+
+                return Ok("Image uploaded successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while uploading the image");
+            }
         }
     }
 }

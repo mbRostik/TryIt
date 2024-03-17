@@ -1,16 +1,15 @@
 .NavBarMain {
+    max-width:100%;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 999;
     background: #0a95ff;
-    padding: 5px 5px;
+    padding: 5px 100px;
 }
 
 .NavBarMenu {
-    max-width: 600px;
-    width: 600px;
     max-height: 50px;
     height: 50px;
     display: flex;
@@ -41,3 +40,14 @@
         color: white;
         background-color: #0051ad;
     }
+
+.NavBarAvatar {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.NavBarHome{
+    max-height:30px;
+}

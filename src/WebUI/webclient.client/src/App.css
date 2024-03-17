@@ -17,3 +17,10 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+.container {
+    padding-top: 80px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 15px;
+}

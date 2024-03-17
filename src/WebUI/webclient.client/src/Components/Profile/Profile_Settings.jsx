@@ -5,13 +5,45 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import '../Styles/Profile_Settings.css'
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 const Profile_Settings = () => {
     const [isAuthorized, setIsAuthorized] = useState(null);
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState({});
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const validateData = () => {
+        let isValid = true;
 
+        if (userData.nickName.length < 4 || userData.nickName.length > 10) {
+            toast.error("NickName between 4 and 10");
+            isValid = false;
+        }
+
+        if (userData.name.length > 30) {
+            toast.error("Name 30");
+            isValid = false;
+        }
+
+        if (!userData.email.endsWith('@gmail.com')) {
+            toast.error("Email should ends @gmail.com");
+            isValid = false;
+        }
+
+        if (userData.phone.length > 10) {
+            toast.error("Phone 10 ");
+            isValid = false;
+        }
+
+        if (userData.bio.length > 400) {
+            toast.error("Bio 400 ");
+            isValid = false;
+        }
+
+        return isValid;
+    };
+    
     async function fetchUserData(accessToken) {
         try {
             const response = await fetch('https://localhost:7062/ocelot/user', {
@@ -56,6 +88,8 @@ const Profile_Settings = () => {
 
     const handleSaveChanges = async (e) => {
         e.preventDefault();
+        if (!validateData()) return; 
+
         setLoading(true);
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
@@ -89,6 +123,7 @@ const Profile_Settings = () => {
 
     return (
         <div>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             {loading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }} ><ThreeDots color="#00BFFF" height={80} width={80} /></div>
                 : isAuthorized === false ? (
                     <div>UnAuthorized</div>
@@ -98,49 +133,49 @@ const Profile_Settings = () => {
                      <div className="Settings_Form">
                         {userData && (
                                     <form onSubmit={handleSaveChanges}>
-                                        <div className="Settings_Component">
+                                        <div className="Name">
                                             <label>
                                                 Name:
                                                 <input type="text" name="name" value={userData.name || ''} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="NickName">
                                             <label>
                                                 NickName:
                                                 <input type="text" name="nickName" value={userData.nickName || ''} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="Email">
                                             <label>
                                                 Email:
                                                 <input type="email" name="email" value={userData.email || ''} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="Phone">
                                             <label>
                                                 Phone:
                                                 <input type="tel" name="phone" value={userData.phone || ''} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="Bio">
                                             <label>
                                                 Bio:
                                                 <textarea name="bio" value={userData.bio || ''} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="PrivateAccount">
                                             <label>
                                                 Private Account:
                                                 <input type="checkbox" name="isPrivate" checked={userData.isPrivate || false} onChange={handleChange} />
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="DateOfBirth">
                                             <label>
                                                 Date of Birth:
                                                 <input
@@ -152,7 +187,7 @@ const Profile_Settings = () => {
                                             </label>
                                         </div>
 
-                                        <div className="Settings_Component">
+                                        <div className="Sex">
                                             <label>
                                                 Sex:
                                                 <select name="sexId" value={userData.sexId || 'UnIdentify'} onChange={handleChange}>
@@ -163,7 +198,7 @@ const Profile_Settings = () => {
                                             </label>
                                         </div>
                                         <div className="Settings_Component">
-                                            <button type="submit">Save Changes</button>
+                                            <button type="submit" className="ProfileSettingsButton">Save Changes</button>
                                         </div>
 
 

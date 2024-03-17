@@ -1,0 +1,112 @@
+﻿
+
+.UpProfile {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.First_UpProfile {
+    display: flex;
+    justify-content: space-between;
+    max-width: 60%;
+}
+
+.Profile_Information {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.Second_UpProfile {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 50%;
+}
+.ProfileButton {
+    font-size: 14px;
+    background-color: #05a2eb;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 5px 3px 5px;
+    transition: padding 0.2s, background-color 0.2s ease-in-out;
+    text-align: center;
+}
+
+    .ProfileButton:hover {
+        background-color: #68c6f2;
+        padding: 9px 15px 9px 15px;
+    }
+
+    .ProfileButton.disabled {
+        opacity: 0.5;
+    }
+
+
+.avatar {
+    max-width: 400px;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 5%;
+    transition: filter 1s ease;
+}
+
+.avatar-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 400px;
+    object-fit: cover;
+    max-height: 600px;
+}
+
+.buttons-container {
+    position: absolute;
+    display: flex;
+    justify-content: space-around; 
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-container:hover .buttons-container {
+    opacity: 1; 
+}
+
+.avatar-container:hover .avatar {
+    filter: brightness(60%);
+}
+
+.edit-button, .delete-button { 
+    display: inline-block;
+    padding: 8px 15px; 
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px; 
+}
+
+    .edit-button:hover, .delete-button:hover {
+        background-color: #e0e0e0;
+    }
+
+    .edit-button input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }

@@ -1,9 +1,54 @@
-.Settings_Form {
+﻿.Settings_Form {
     display: flex;
     flex-direction: column;
 }
 
-.Settings_Component {
-    margin-top: 15px;
+.ProfileSettingsButton {
+    font-size: 14px;
+    background-color: #05a2eb;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 5px 3px 5px;
+    transition: padding 0.2s, background-color 0.2s ease-in-out;
+    text-align: center;
 }
 
+    .ProfileSettingsButton:hover {
+        background-color: #68c6f2;
+        padding: 9px 15px 9px 15px;
+    }
+
+    .ProfileSettingsButton.disabled {
+        opacity: 0.5;
+    }
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #1fbcff;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+
+
+input[type="checkbox"] {
+    margin-top: 5px;
+}
+
+div.Name, div.NickName, div.Email, div.Phone, div.Bio, div.PrivateAccount, div.DateOfBirth, div.Sex {
+    margin-bottom: 20px;
+}

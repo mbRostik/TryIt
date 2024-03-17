@@ -11,16 +11,20 @@ import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+    
     <React.StrictMode>
         <Router>
             <NavBar />
-            <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/Profile" element={<Profile />} />
-                <Route path="/signin-oidc" element={<SignIn_CallbackPage />} />
-                <Route path="/Profile_Settings" element={<Profile_Settings />} />
-                <Route path="/signout-callback-oidc" element={<SignOut_CallBackPage />} />
-            </Routes>
+            <div className="container">
+                <Routes>
+                    <Route path="/" element={<App />} />
+                    <Route path="/Profile" element={<Profile />} />
+                    <Route path="/signin-oidc" element={<SignIn_CallbackPage />} />
+                    <Route path="/Profile_Settings" element={<Profile_Settings />} />
+                    <Route path="/signout-callback-oidc" element={<SignOut_CallBackPage />} />
+                </Routes>
+            </div >
         </Router>
-    </React.StrictMode>
+        </React.StrictMode>
+    
 );
