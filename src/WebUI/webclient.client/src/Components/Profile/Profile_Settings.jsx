@@ -4,6 +4,8 @@ import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import '../Styles/Profile_Settings.css'
+import config from '../../config.json'; 
+
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -46,7 +48,7 @@ const Profile_Settings = () => {
     
     async function fetchUserData(accessToken) {
         try {
-            const response = await fetch('https://localhost:7062/ocelot/user', {
+            const response = await fetch(`${config.apiBaseUrl}/user`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -93,14 +95,14 @@ const Profile_Settings = () => {
         setLoading(true);
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
-            const response = await fetch('https://localhost:7062/ocelot/userUpdate', {
+            const response = await fetch(await fetch(`${config.apiBaseUrl}/userUpdate`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(userData)
-            });
+            }));
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

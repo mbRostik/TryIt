@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom';
 import axios from '../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from '../../config.json'; 
+
 const Someones_Profile = () => {
 
     const [isAuthorized, setIsAuthorized] = useState(null);
@@ -20,14 +22,14 @@ const Someones_Profile = () => {
 
     async function fetchUserData(accessToken) {
         try {
-            const response = await fetch('https://localhost:7062/ocelot/SomeonesProfile', {
+            const response = await fetch(await fetch(`${config.apiBaseUrl}/SomeonesProfile`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id })
-            });
+            }));
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

@@ -29,12 +29,14 @@ public class RegisterModel : PageModel
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-
+    private readonly IConfiguration _configuration;
     public RegisterModel(
         UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        SignInManager<IdentityUser> signInManager,
+        IConfiguration configuration)
     {
         _userManager = userManager;
+        _configuration= configuration;
         _signInManager = signInManager;
     }
 
@@ -61,7 +63,7 @@ public class RegisterModel : PageModel
         public string ConfirmPassword { get; set; }
     }
     [BindProperty(SupportsGet = true)]
-    public string? ReturnUrl { get; set; } = "https://localhost:7174/Account/Login";
+    public string? ReturnUrl { get; set; }
     public async Task<IActionResult> OnGet(string returnUrl = null)
     {
         if (User.Identity.IsAuthenticated)
@@ -101,19 +103,21 @@ public class RegisterModel : PageModel
                     //силка для підтверження де міститься айді користувача, токен та returnUrl яку ми достали з LoginPage, коли натиснули Зареєструватись
 
                     var returnUrlQuery = !string.IsNullOrEmpty(ReturnUrl) ? $"&returnUrl={Uri.EscapeDataString(ReturnUrl)}" : string.Empty;
-                    var callbackUrl = $"https://localhost:7174/ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}{returnUrlQuery}";
+                    var baseUrl = _configuration.GetValue<string>("Links:BaseUrl");
+
+                    var callbackUrl = $"{baseUrl}ConfirmEmail?id={CreatedUser.Id}&token={Uri.EscapeDataString(code)}{returnUrlQuery}";
 
                     MailMessage message = new MailMessage();
-                    message.From = new MailAddress("rost.daskalyuk@gmail.com");
+                    message.From = new MailAddress(_configuration.GetValue<string>("EmailSettings:Email"));
                     message.Subject = "TryIt verification";
                     message.To.Add(new MailAddress(user.Email));
                     message.Body = $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.";
                     message.IsBodyHtml = true;
 
-                    var smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com")
+                    var smtpClient = new System.Net.Mail.SmtpClient(_configuration.GetValue<string>("EmailSettings:Host"))
                     {
                         Port = 587,
-                        Credentials = new NetworkCredential("rost.daskalyuk@gmail.com", "ueexgknctftcjnpo"),
+                        Credentials = new NetworkCredential(_configuration.GetValue<string>("EmailSettings:Email"), _configuration.GetValue<string>("EmailSettings:Password")),
                         EnableSsl = true
 
                     };

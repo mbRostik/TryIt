@@ -31,13 +31,14 @@ namespace IdentityServer.WebApi.Pages.ConfirmEmail
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IIdentityProviderStore _identityProviderStore;
         private readonly SignInManager<IdentityUser> _signInManager;
-
+        private readonly IConfiguration _configuration;
 
         public ViewModel View { get; set; } = default!;
         public IndexModel(UserManager<IdentityUser> userManager, IPublishEndpoint publisher, IIdentityServerInteractionService interaction,
         IAuthenticationSchemeProvider schemeProvider,
         IIdentityProviderStore identityProviderStore,
-        IEventService events, SignInManager<IdentityUser> signInManager)
+        IEventService events, SignInManager<IdentityUser> signInManager,
+        IConfiguration configuration)
         {
             _userManager = userManager;
             _publisher = publisher;
@@ -46,6 +47,7 @@ namespace IdentityServer.WebApi.Pages.ConfirmEmail
             _identityProviderStore = identityProviderStore;
             _events = events;
             _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         public string StatusMessage { get; set; }
@@ -116,7 +118,7 @@ namespace IdentityServer.WebApi.Pages.ConfirmEmail
             }
             else if (string.IsNullOrEmpty(returnUrl))
             {
-                return Redirect("https://localhost:5173/");
+                return Redirect(_configuration.GetValue<string>("Links:ReactLink"));
             }
             else
             {

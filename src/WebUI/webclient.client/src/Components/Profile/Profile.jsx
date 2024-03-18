@@ -8,6 +8,7 @@ import '../Styles/Profile.css'
 import axios from '../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from '../../config.json'; 
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Profile = () => {
 
     async function fetchUserData(accessToken) {
         try {
-            const response = await fetch('https://localhost:7062/ocelot/user', {
+            const response = await fetch(`${config.apiBaseUrl}/user`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -143,7 +144,7 @@ const Profile = () => {
                         });
                         try {
                             const accessToken = await userManager.getUser().then(user => user.access_token);
-                            const response = await fetch('https://localhost:7062/ocelot/userProfilePhotoUpload', {
+                            const response = await fetch(`${config.apiBaseUrl}/userProfilePhotoUpload`, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': `Bearer ${accessToken}`,
@@ -221,7 +222,7 @@ const Profile = () => {
         try {
 
             const accessToken = await userManager.getUser().then(user => user.access_token);
-            await fetch('https://localhost:7062/ocelot/userProfilePhotoUpload', {
+            await fetch(`${config.apiBaseUrl}/userProfilePhotoUpload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,

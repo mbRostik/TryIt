@@ -6,17 +6,17 @@ import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import '../Styles/NavBarStyles.css'
 import { NavLink } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
+import config from '../../config.json'; 
 
 const NavBar = () => {
     const navigate = useNavigate();
     const [isAuthorized, setIsAuthorized] = React.useState(false);
     const [loading, setLoading] = useState(true); 
-
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState(null);
     async function fetchUserData(accessToken) {
         try {
-            const response = await fetch('https://localhost:7062/ocelot/user', {
+            const response = await fetch(`${config.apiBaseUrl}/user`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -28,14 +28,10 @@ const NavBar = () => {
 
             return await response.json();
         } catch (error) {
-            setLoading(false);
             console.error('Error while sending the request to the UserService ', error);
             return null;
         }
     }
-
-
-
     useEffect(() => {
         const checkAuth = async () => {
             const authStatus = await isAuthenticated();
