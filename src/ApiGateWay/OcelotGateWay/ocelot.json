@@ -52,6 +52,18 @@
         }
       ],
       "DownstreamPathTemplate": "/User/UploadProfilePhoto"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/SomeonesProfile",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7075
+        }
+      ],
+      "DownstreamPathTemplate": "/User/GetSomeonesProfile"
     }
   ],
   "GlobalConfiguration": {

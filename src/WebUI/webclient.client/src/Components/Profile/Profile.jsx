@@ -8,6 +8,7 @@ import '../Styles/Profile.css'
 import axios from '../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 const Profile = () => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
@@ -141,9 +142,8 @@ const Profile = () => {
 
                         });
                         try {
-
                             const accessToken = await userManager.getUser().then(user => user.access_token);
-                            await fetch('https://localhost:7062/ocelot/userProfilePhotoUpload', {
+                            const response = await fetch('https://localhost:7062/ocelot/userProfilePhotoUpload', {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': `Bearer ${accessToken}`,
@@ -152,9 +152,35 @@ const Profile = () => {
                                 body: JSON.stringify({ avatar: base64Avatar })
                             });
 
-                        }
-                        catch (err) {
-                            toast.error(err, {
+                            if (!response.ok) {
+                                toast.error('Smth went wrong.', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                });
+                                throw new Error(`Error from server: ${response.status} ${response.statusText}`);
+                            }
+
+                            else {
+                                const data = await response.json();
+                                setUserData(data);
+                                toast.success('Profile photo uploaded successfully.', {
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                });
+                            }
+                           
+                        } catch (err) {
+                            toast.error(`Error occurred: ${err.message}`, {
                                 position: "top-right",
                                 autoClose: 5000,
                                 hideProgressBar: false,
@@ -163,8 +189,10 @@ const Profile = () => {
                                 draggable: true,
                                 progress: undefined,
                             });
+                            console.error('Error while sending the request', err);
+                        } finally {
+                            setLoadingOverlay(false);
                         }
-                        setLoadingOverlay(false);
                     };
                     reader.readAsArrayBuffer(file);
                 }

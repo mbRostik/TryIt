@@ -72,7 +72,9 @@ const NavBar = () => {
                         <div><button onClick={onLogin} className="NavBarButton">Login</button></div>
                     </div>
                 ) : userData === null ? (
-                    <div>There is no information</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                            <ThreeDots color="#00BFFF" height={80} width={80} />
+                        </div>
                 ) : (
                     <div className="profile">
                         {userData && (
@@ -89,7 +91,11 @@ const NavBar = () => {
                                                 <NavLink to="/Profile" className="NavBarButton">
                                                     {console.log(userData.nickName)}
                                                     {userData.nickName}
-                                                    <img className="NavBarAvatar" src="../../public/NoPhoto.jpg" alt="" />
+                                                    <img
+                                                        className="NavBarAvatar"
+                                                        src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"}
+                                                        alt=""
+                                                    />
                                                 </NavLink>
                                             </div>
                                 </div>

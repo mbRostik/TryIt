@@ -42,7 +42,6 @@ namespace Users.WebApi.Controllers
         [HttpPost("ChangeUserSettings")]
         public async Task<ActionResult> ChangeUserSettings([FromBody] ChangeProfileInformationDTO model)
         {
-            Console.WriteLine("KEJGHDE");
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Unauthorized();
@@ -55,20 +54,37 @@ namespace Users.WebApi.Controllers
         }
 
         [HttpPost("UploadProfilePhoto")]
-        public async Task<IActionResult> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
+        public async Task<ActionResult<UserProfileDTO>> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
         {
             try
             {
                 model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
                 await mediator.Send(new ChangeUserAvatarCommand(model));
 
-
-                return Ok("Image uploaded successfully");
+                var result = await mediator.Send(new GetUserQuery(model.Id));
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest("An error occurred while uploading the image");
+                return BadRequest("Smth went wrong");
             }
+        }
+
+        [HttpPost("GetSomeonesProfile")]
+        public async Task<ActionResult<UserProfileDTO>> GetSomeonesProfile([FromBody] SomeonesProfileDTO request)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            var result = await mediator.Send(new GetUserQuery(request.Id));
+
+            if (result == null)
+                return Ok("There is no information");
+            return Ok(result);
+
+
         }
     }
 }

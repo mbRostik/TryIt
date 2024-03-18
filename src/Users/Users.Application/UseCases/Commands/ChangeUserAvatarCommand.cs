@@ -8,6 +8,6 @@ using Users.Application.Contracts.DTOs;
 
 namespace Users.Application.UseCases.Commands
 {
-    public record ChangeUserAvatarCommand(ProfilePhotoDTO model) : IRequest;
+    public record ChangeUserAvatarCommand(ProfilePhotoDTO model) : IRequest<UserProfileDTO>;
 
 }
