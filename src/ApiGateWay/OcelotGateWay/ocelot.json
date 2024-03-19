@@ -76,8 +76,25 @@
         }
       ],
       "DownstreamPathTemplate": "/Chat/GetChatId"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/Temp",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7192
+        }
+      ],
+      "DownstreamPathTemplate": "/Aggregator/Temp"
     }
   ],
+
+
+
+
+
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5000",
     "QoSOptions": {

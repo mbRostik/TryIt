@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.61.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
     <PackageReference Include="MassTransit" Version="8.1.3" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.3" />
     <PackageReference Include="MediatR" Version="12.2.0" />
@@ -29,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Chats.Application\Chats.Application.csproj" />
     <ProjectReference Include="..\Chats.Infrastructure.Data\Chats.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Chats.Infrastructure\Chats.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

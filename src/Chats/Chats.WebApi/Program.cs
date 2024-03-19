@@ -1,6 +1,7 @@
 ﻿using Chats.Application.UseCases.Consumers;
 using Chats.Application.UseCases.Queries;
 using Chats.Infrastructure.Data;
+using Chats.Infrastructure.Services.grpcServices;
 using Chats.WebApi.ChatHubSpace;
 using MassTransit;
 using MessageBus.Messages.IdentityServerService;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
+builder.Services.AddGrpc();
 
 builder.Services.AddDbContext<ChatDbContext>(options =>
 {
@@ -76,8 +78,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting(); 
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<grpcUserChats_Service>();
+    endpoints.MapControllers(); 
+
+    endpoints.MapGet("../Chats.Application/Contracts/protos/userchats.proto", async context =>
+    {
+        var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Chats.Application/Contracts/protos/userchats.proto");
+        await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
+    });
+});
+
 app.MapHub<ChatHub>("/Сhat");
+
 app.Run();

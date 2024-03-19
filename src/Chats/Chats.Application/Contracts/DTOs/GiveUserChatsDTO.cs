@@ -8,13 +8,10 @@ namespace Chats.Application.Contracts.DTOs
 {
     public class GiveUserChatsDTO
     {
-        public int Id { get; set; }
+        public int ChatId { get; set; }
 
         public string ContactId { get; set; }
 
-        public string NameContact { get; set; }
-
-        public byte[] Photo { get; set; }
         public DateTime LastActivity { get; set; }
 
         public string LastMessage { get; set; }

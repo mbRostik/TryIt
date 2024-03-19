@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+package userchats;
+import "google/protobuf/timestamp.proto";
+
+message GiveUserChats {
+  int32 chatid = 1;
+  string contactId = 2;
+  google.protobuf.Timestamp lastActivity = 3;
+  string lastMessage = 4;
+}
+
+
+service UserChatsService {
+  rpc GetUserChats(GetUserChatsRequest) returns (GetUserChatsResponse);
+}
+
+message GetUserChatsRequest {
+  string userId = 1;
+}
+
+message GetUserChatsResponse {
+  repeated GiveUserChats chats = 1;
+}

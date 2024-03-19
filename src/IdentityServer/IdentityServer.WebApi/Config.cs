@@ -92,7 +92,22 @@ namespace IdentityServer.WebApi
                     RequirePkce=true,
                     AllowPlainTextPkce=true,
                     AllowedCorsOrigins = { "https://localhost:5173" }
-                }
+                },
+
+                new Client
+                   {
+                        ClientId = "Aggregator",
+                        ClientName="Client Credential Client",
+                        AllowedGrantTypes = GrantTypes.ClientCredentials,
+
+                        ClientSecrets ={ new Secret("AggregatorSecret".Sha256()) },
+                         AllowedScopes =
+                    {"openid", "profile", "Users.WebApi.read", "Users.WebApi.write",
+                        "Chats.WebApi.read", "Chats.WebApi.write",
+                        "Subscriptions.WebApi.read","Subscriptions.WebApi.write",
+                        "Notifications.WebApi.read", "Notifications.WebApi.write",
+                        "Reports.WebApi.read", "Reports.WebApi.write", "Posts.WebApi.read", "Posts.WebApi.write" }
+                   },
            };
     }
 }
