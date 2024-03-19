@@ -41,11 +41,6 @@ namespace Chats.Infrastructure.Data.EntityTypeConfiguration
               .HasForeignKey(m => m.ChatId)
               .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(m=>m.Chats)
-                .WithOne(x=>x.LastMessage)
-                .HasForeignKey(x=>x.LastMessageId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             
             builder.HasMany(f => f.MessageWithFiles)
               .WithOne(mf => mf.Message)

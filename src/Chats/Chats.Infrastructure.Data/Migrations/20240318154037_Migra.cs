@@ -60,8 +60,8 @@ namespace Chats.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LastMessageId = table.Column<int>(type: "int", nullable: false),
-                    LastActivity = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastActivity = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MessageId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,9 +127,9 @@ namespace Chats.Infrastructure.Data.Migrations
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_LastMessageId",
+                name: "IX_Chats_MessageId",
                 table: "Chats",
-                column: "LastMessageId");
+                column: "MessageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ChatId",
@@ -155,12 +155,11 @@ namespace Chats.Infrastructure.Data.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Chats_Messages_LastMessageId",
+                name: "FK_Chats_Messages_MessageId",
                 table: "Chats",
-                column: "LastMessageId",
+                column: "MessageId",
                 principalTable: "Messages",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />

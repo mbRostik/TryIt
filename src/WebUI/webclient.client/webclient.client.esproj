@@ -14,7 +14,6 @@
     <Folder Include="src\Components\Posts\" />
     <Folder Include="src\Components\NavBar\" />
     <Folder Include="src\Components\Registration\" />
-    <Folder Include="src\Components\Chats\" />
     <Folder Include="src\Functions\" />
   </ItemGroup>
 </Project>

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Users.Application.Contracts.DTOs
+namespace Chats.Application.Contracts.DTOs
 {
-    public class SomeonesProfileDTO
+    public class GetChatMessagesDTO
     {
-        public string ProfileId { get; set; }
-
+        public int ChatId { get; set; }
     }
 }

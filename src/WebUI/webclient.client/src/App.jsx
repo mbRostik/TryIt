@@ -35,7 +35,7 @@ function App() {
         : authorized ? <button onClick={onLogout}>Logout</button> : <button onClick={onLogin}>Login</button>;
     return (
         <div>
-            MainPage
+            <h1>MainPage</h1>
         </div>
     );
 }

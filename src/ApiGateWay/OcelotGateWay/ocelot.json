@@ -64,6 +64,18 @@
         }
       ],
       "DownstreamPathTemplate": "/User/GetSomeonesProfile"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetChatByUserId",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7234
+        }
+      ],
+      "DownstreamPathTemplate": "/Chat/GetChatId"
     }
   ],
   "GlobalConfiguration": {

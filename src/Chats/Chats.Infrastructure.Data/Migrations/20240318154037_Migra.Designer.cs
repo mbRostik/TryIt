@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chats.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    [Migration("20240305133617_Migra")]
+    [Migration("20240318154037_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -65,12 +65,12 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Property<DateTime>("LastActivity")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LastMessageId")
+                    b.Property<int?>("MessageId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LastMessageId");
+                    b.HasIndex("MessageId");
 
                     b.ToTable("Chats");
                 });
@@ -160,13 +160,9 @@ namespace Chats.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Chats.Domain.Entities.Chat", b =>
                 {
-                    b.HasOne("Chats.Domain.Entities.Message", "LastMessage")
+                    b.HasOne("Chats.Domain.Entities.Message", null)
                         .WithMany("Chats")
-                        .HasForeignKey("LastMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LastMessage");
+                        .HasForeignKey("MessageId");
                 });
 
             modelBuilder.Entity("Chats.Domain.Entities.ChatParticipant", b =>

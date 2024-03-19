@@ -20,14 +20,10 @@ namespace Chats.Infrastructure.Data.EntityTypeConfiguration
                .ValueGeneratedOnAdd()
                .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.Identity);
 
+
             builder.HasMany(x => x.ChatParticipants)
                 .WithOne(c => c.Chat)
                 .HasForeignKey(v => v.ChatId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(x=>x.LastMessage)
-                .WithMany(c=>c.Chats)
-                .HasForeignKey(c=>c.LastMessageId) 
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Messages)

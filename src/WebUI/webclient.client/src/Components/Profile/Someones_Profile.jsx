@@ -18,18 +18,23 @@ const Someones_Profile = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingOverlay, setLoadingOverlay] = useState(false);
-    const { id } = useParams();
-
+    const { ProfileId } = useParams();
     async function fetchUserData(accessToken) {
         try {
-            const response = await fetch(await fetch(`${config.apiBaseUrl}/SomeonesProfile`, {
+            const response = await fetch(`${config.apiBaseUrl}/SomeonesProfile`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id })
-            }));
+                body: JSON.stringify({ ProfileId })
+            });
+
+            if (ProfileId == null || ProfileId == '') {
+                console.log("Smth went wrong");
+            }
+
+
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -68,7 +73,43 @@ const Someones_Profile = () => {
         checkAuth();
     }, []);
     
+    async function OpenChat() {
+        const accessToken = user.access_token;
+        setLoadingOverlay(true);
+        try {
+            const response = await fetch(`${config.apiBaseUrl}/GetChatByUserId`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ProfileId })
+            });
 
+            if (!response.ok) {
+                setLoadingOverlay(false);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data);
+            if (data) {
+                window.location.href = `/OpenedChat/${data}`;
+            } else {
+                console.error('The is no id');
+                setLoadingOverlay(false);
+
+            }
+
+            return;
+        } catch (error) {
+            setLoading(false);
+            console.error('Error while sending the request to the UserService ', error);
+            setLoadingOverlay(false);
+            return null;
+        }
+       
+    }
 
     return (
 
@@ -109,7 +150,11 @@ const Someones_Profile = () => {
                                     <div className="Second_UpProfile">
                                         <h2>Followers: {userData.followersCount}</h2>
                                         <h2>Following: {userData.followsCount}</h2>
-                                    </div>
+                                            </div>
+                                            <div>
+                                                <button className="delete-button" onClick={OpenChat}>Write</button>
+
+                                            </div>
                                 </div>
                             </>
                         )}

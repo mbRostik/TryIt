@@ -10,6 +10,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json'; 
 
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+
 const Profile = () => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);

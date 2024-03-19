@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Users.Application.Contracts.DTOs;
 using Users.Application.UseCases.Commands;
 using Users.Application.UseCases.Queries;
@@ -28,7 +29,7 @@ namespace Users.WebApi.Controllers
             {
                 return Unauthorized();
             }
-            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             var result = await mediator.Send(new GetUserQuery(userId));
 
@@ -46,7 +47,7 @@ namespace Users.WebApi.Controllers
             {
                 return Unauthorized();
             }
-            model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             await mediator.Send(new ChangeUserInformationCommand(model));
             return Ok();
@@ -58,7 +59,7 @@ namespace Users.WebApi.Controllers
         {
             try
             {
-                model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 await mediator.Send(new ChangeUserAvatarCommand(model));
 
                 var result = await mediator.Send(new GetUserQuery(model.Id));
@@ -78,7 +79,7 @@ namespace Users.WebApi.Controllers
                 return Unauthorized();
             }
 
-            var result = await mediator.Send(new GetUserQuery(request.Id));
+            var result = await mediator.Send(new GetUserQuery(request.ProfileId));
 
             if (result == null)
                 return Ok("There is no information");

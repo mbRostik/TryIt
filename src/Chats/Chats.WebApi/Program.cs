@@ -1,8 +1,11 @@
-using Chats.Application.UseCases.Consumers;
+﻿using Chats.Application.UseCases.Consumers;
 using Chats.Application.UseCases.Queries;
 using Chats.Infrastructure.Data;
+using Chats.WebApi.ChatHubSpace;
 using MassTransit;
 using MessageBus.Messages.IdentityServerService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 
@@ -24,7 +27,26 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssemblies(typeof(GetAllChatsQuery).Assembly);
 
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:7174";
 
+        options.Audience = "Chats.WebApi";
+
+    });
+
+builder.Services
+    .AddSignalR(options =>
+    {
+        options.HandshakeTimeout = TimeSpan.FromHours(1);
+    })
+    .AddHubOptions<ChatHub>(options =>
+{
+    options.MaximumReceiveMessageSize= 10000000;
+    options.EnableDetailedErrors = true;
+    options.KeepAliveInterval = TimeSpan.FromMinutes(5);
+});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreatedConsumer>();
@@ -54,8 +76,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
+app.MapHub<ChatHub>("/Сhat");
 app.Run();
