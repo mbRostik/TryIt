@@ -1,4 +1,4 @@
-using Aggregator.WebApi.Services.ProtoServices;
+﻿using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -8,15 +8,21 @@ namespace Aggregator.WebApi.Controllers
     [Route("[controller]")]
     public class AggregatorController : ControllerBase
     {
-
+        /////////////////////////////////////////////////
+        //
+        //
+        // РОБИЛОСЬ ПІЗНОЇ НОЧІ. ПОТІМ КОД ПОЗАМІТАЮ XD
+        //
+        /////////////////////////////////////////////////
         private readonly ILogger<AggregatorController> _logger;
-
-        private grpcGetUserChatsService grpcService { get; set; }
-        public AggregatorController(ILogger<AggregatorController> logger, grpcGetUserChatsService grpcService)
+        private grpcGetUserForChatService UsergrpcService { get; set; }
+        private grpcGetUserChatsService ChatgrpcService { get; set; }
+        public AggregatorController(ILogger<AggregatorController> logger, grpcGetUserChatsService ChatgrpcService, grpcGetUserForChatService UsergrpcService)
         {
 
             _logger = logger;
-            this.grpcService = grpcService;
+            this.ChatgrpcService = ChatgrpcService;
+            this.UsergrpcService = UsergrpcService;
         }
 
         [HttpGet("Temp")]
@@ -32,8 +38,19 @@ namespace Aggregator.WebApi.Controllers
                     accessToken = headerValue.Substring("Bearer ".Length).Trim();
                 }
             }
-            Console.WriteLine(accessToken);
-            await grpcService.GetUserChatsAsync("7fc89f0e-c0cc-4b5b-aa3c-5c9d6becec57", accessToken);
+            var result = await ChatgrpcService.GetUserChatsAsync("7fc89f0e-c0cc-4b5b-aa3c-5c9d6becec57", accessToken);
+
+            if (result.Chats.Count==1 && result.Chats[0].Chatid==0)
+            {
+                return Ok();
+            }
+            List<string> chatsIds = new List<string>();
+            foreach (var item in result.Chats)
+            {
+                chatsIds.Add(item.ContactId);
+            }
+
+            var result2 = await UsergrpcService.GetUserChatsAsync(chatsIds, accessToken);
             return Ok();
         }
     }

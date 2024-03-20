@@ -59,15 +59,7 @@ namespace Chats.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("LastActivity")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("MessageId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("MessageId");
 
                     b.ToTable("Chats");
                 });
@@ -155,13 +147,6 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Chats.Domain.Entities.Chat", b =>
-                {
-                    b.HasOne("Chats.Domain.Entities.Message", null)
-                        .WithMany("Chats")
-                        .HasForeignKey("MessageId");
-                });
-
             modelBuilder.Entity("Chats.Domain.Entities.ChatParticipant", b =>
                 {
                     b.HasOne("Chats.Domain.Entities.Chat", "Chat")
@@ -233,8 +218,6 @@ namespace Chats.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Chats.Domain.Entities.Message", b =>
                 {
-                    b.Navigation("Chats");
-
                     b.Navigation("MessageWithFiles");
                 });
 

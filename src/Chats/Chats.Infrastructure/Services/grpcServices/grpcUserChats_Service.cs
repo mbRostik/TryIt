@@ -2,6 +2,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MediatR;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,22 +24,56 @@ namespace Chats.Infrastructure.Services.grpcServices
         {
             var response = new GetUserChatsResponse();
 
-            var result = await _mediator.Send(new GetUserChatsQuery(request.UserId));
-
-            foreach (var item in result)
+            try
             {
-                var lastActivityTimestamp = Timestamp.FromDateTime(item.LastActivity.ToUniversalTime());
+
+                var result = await _mediator.Send(new GetUserChatsQuery(request.UserId));
+                if (result == null)
+                {
+                    var chat = new GiveUserChats
+                    {
+                        Chatid = 0,
+                        ContactId = "",
+                        LastActivity = null,
+                        LastMessage = ""
+                    };
+                    response.Chats.Add(chat);
+                    return response;
+
+                }
+                foreach (var item in result)
+                {
+                    Timestamp lastActivityTimestamp = null;
+                    if (item.LastActivity.HasValue)
+                    {
+                        lastActivityTimestamp = Timestamp.FromDateTime(item.LastActivity.Value.ToUniversalTime());
+                    }
+                    var chat = new GiveUserChats
+                    {
+                        Chatid = item.ChatId,
+                        ContactId = item.ContactId,
+                        LastActivity = lastActivityTimestamp,
+                        LastMessage = item.LastMessage
+                    };
+                    response.Chats.Add(chat);
+                }
+
+                return response;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
                 var chat = new GiveUserChats
                 {
-                    Chatid = item.ChatId,
-                    ContactId = item.ContactId,
-                    LastActivity = lastActivityTimestamp,
-                    LastMessage = item.LastMessage
+                    Chatid = 0,
+                    ContactId = "",
+                    LastActivity = null,
+                    LastMessage = ""
                 };
                 response.Chats.Add(chat);
+                return response;
             }
 
-            return response;
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+package userforchat;
+
+message GiveUserForChat {
+  string userId =1;
+  string nickName = 2;
+  bytes photo = 3;
+}
+
+service UserForChatService {
+  rpc GetUserForChat(GetUserForChatRequest) returns (GetUserForChatResponse);
+}
+
+message GetUserForChatRequest {
+  repeated string userId = 1;
+}
+
+message GetUserForChatResponse {
+  repeated GiveUserForChat users = 1;
+}

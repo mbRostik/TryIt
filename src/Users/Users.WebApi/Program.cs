@@ -9,6 +9,7 @@ using Users.Application.UseCases.Consumers;
 using Users.Application.UseCases.Queries;
 using Users.Infrastructure.Data;
 using Users.Infrastructure.Services;
+using Users.Infrastructure.Services.grpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
+builder.Services.AddGrpc();
 
 builder.Services.AddDbContext<UserDbContext>(options =>
 {
@@ -77,10 +79,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<grpcUserForChat_Service>();
+    endpoints.MapControllers();
+
+    endpoints.MapGet("../Users.Application/Contracts/protos/userforchat.proto", async context =>
+    {
+        var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Users.Application/Contracts/protos/userforchat.proto");
+        await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
+    });
+});
 
 app.Run();

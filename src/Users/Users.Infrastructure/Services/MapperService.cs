@@ -49,6 +49,19 @@ namespace Users.Infrastructure.Services
             mapper = configuration.CreateMapper();
         }
 
+        public void Mapper_UserToUserChatProfileDTO(ref IMapper mapper)
+        {
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<User, UserChatProfileDTO>()
+                    .ForMember(dest => dest.NickName, opt => opt.MapFrom(src => src.NickName))
+                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo));
+            });
+            mapper = configuration.CreateMapper();
+        }
+
+
         Dictionary<string, int> sexStringToIdMapping = new Dictionary<string, int>
         {
             {"Man", 1}, 

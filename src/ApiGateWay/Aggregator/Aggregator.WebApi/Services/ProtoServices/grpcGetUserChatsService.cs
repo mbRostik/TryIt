@@ -6,7 +6,7 @@ namespace Aggregator.WebApi.Services.ProtoServices
 {
     public class grpcGetUserChatsService
     {
-        public async Task GetUserChatsAsync(string userId, string token)
+        public async Task<GetUserChatsResponse> GetUserChatsAsync(string userId, string token)
         {
             var headers = new Metadata
                 {
@@ -21,10 +21,7 @@ namespace Aggregator.WebApi.Services.ProtoServices
 
             var response = await client.GetUserChatsAsync(request);
 
-            foreach (var chat in response.Chats)
-            {
-                Console.WriteLine($"Chat ID: {chat.Chatid}, Contact ID: {chat.ContactId}, Last Message: {chat.LastMessage}");
-            }
+            return response;
         }
     }
 }

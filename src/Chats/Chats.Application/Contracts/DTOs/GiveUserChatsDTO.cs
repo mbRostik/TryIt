@@ -12,7 +12,7 @@ namespace Chats.Application.Contracts.DTOs
 
         public string ContactId { get; set; }
 
-        public DateTime LastActivity { get; set; }
+        public DateTime? LastActivity { get; set; }
 
         public string LastMessage { get; set; }
     }

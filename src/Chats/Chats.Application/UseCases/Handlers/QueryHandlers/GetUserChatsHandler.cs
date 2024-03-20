@@ -46,13 +46,19 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
 
                 for (int i=0;i!=chats.Count;i++)
                 {
-                    GiveUserChatsDTO temp = new GiveUserChatsDTO
+
+                    GiveUserChatsDTO temp = new GiveUserChatsDTO();
+
+                    temp.ChatId = chats[i].Id;
+                    temp.ContactId = filteredChatParticipants[i].UserId;
+                    temp.LastActivity = null;
+                    temp.LastMessage = "";
+                    if (chats[i].LastMessage != null)
                     {
-                        ChatId = chats[i].Id,
-                        ContactId = filteredChatParticipants[i].UserId,
-                        LastActivity = chats[i].LastMessage.Date,
-                        LastMessage = chats[i].LastMessage.Content
-                    };
+                        temp.LastActivity = chats[i].LastMessage.Date;
+                        temp.LastMessage = chats[i].LastMessage.Content;
+                    }
+
                     result.Add(temp);
                 }
                 return result;

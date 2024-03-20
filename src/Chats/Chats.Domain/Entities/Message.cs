@@ -18,8 +18,6 @@
 
         public virtual User User { get; set; }
 
-        public virtual ICollection<Chat> Chats { get; set; }
-
         public virtual Chat Chat { get; set; }
     }
 }

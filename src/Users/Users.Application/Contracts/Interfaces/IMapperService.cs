@@ -11,5 +11,7 @@ namespace Users.Application.Contracts.Interfaces
     {
         void Mapper_UserToUserProfileDTO(ref IMapper mapper);
         void Mapper_ChangeUserProfileToUserDTO(ref IMapper mapper);
+
+        void Mapper_UserToUserChatProfileDTO (ref IMapper mapper);
     }
 }

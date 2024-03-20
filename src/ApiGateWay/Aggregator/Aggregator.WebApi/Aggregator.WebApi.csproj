@@ -15,11 +15,9 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="protos\UserProtos\" />
-  </ItemGroup>
 	<ItemGroup>
 		<Protobuf Include="protos\ChatProtos\userchats.proto" GrpcServices="Client" />
+		<Protobuf Include="protos\UserProtos\userforchat.proto" GrpcServices="Client" />
+
 	</ItemGroup>
 </Project>

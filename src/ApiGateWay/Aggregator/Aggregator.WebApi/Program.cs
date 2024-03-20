@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<grpcGetUserChatsService>();
+builder.Services.AddScoped<grpcGetUserForChatService>();
 
 var app = builder.Build();
 
