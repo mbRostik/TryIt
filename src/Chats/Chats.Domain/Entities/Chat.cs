@@ -7,7 +7,7 @@ namespace Chats.Domain.Entities
         public int Id { get; set; }
 
         [NotMapped]
-        public virtual Message LastMessage
+        public Message LastMessage
         {
             get
             {
@@ -16,6 +16,8 @@ namespace Chats.Domain.Entities
 
                 return Messages.OrderByDescending(m => m.Date).FirstOrDefault();
             }
+
+            set { }
         }
         public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 

@@ -15,5 +15,7 @@ namespace Chats.Application.Contracts.DTOs
         public DateTime? LastActivity { get; set; }
 
         public string LastMessage { get; set; }
+
+        public string LastMessageSenderId { get; set; }
     }
 }

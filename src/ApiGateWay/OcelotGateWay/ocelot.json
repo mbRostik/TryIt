@@ -78,7 +78,7 @@
       "DownstreamPathTemplate": "/Chat/GetChatId"
     },
     {
-      "UpstreamPathTemplate": "/ocelot/Temp",
+      "UpstreamPathTemplate": "/ocelot/GetUserChats",
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -87,7 +87,7 @@
           "Port": 7192
         }
       ],
-      "DownstreamPathTemplate": "/Aggregator/Temp"
+      "DownstreamPathTemplate": "/Aggregator/GetUserChats"
     }
   ],
 

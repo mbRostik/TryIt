@@ -1,3 +1,5 @@
+using Aggregator.Application.Contracts.Interfaces;
+using Aggregator.Infrastructure.Services;
 using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -12,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<grpcGetUserChatsService>();
 builder.Services.AddScoped<grpcGetUserForChatService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

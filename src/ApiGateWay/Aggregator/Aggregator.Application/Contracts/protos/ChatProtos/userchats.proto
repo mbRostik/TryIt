@@ -8,6 +8,7 @@ message GiveUserChats {
   string contactId = 2;
   google.protobuf.Timestamp lastActivity = 3;
   string lastMessage = 4;
+  string lastMessageSenderId = 5;
 }
 
 

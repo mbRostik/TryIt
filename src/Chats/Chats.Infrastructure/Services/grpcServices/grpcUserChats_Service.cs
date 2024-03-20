@@ -53,7 +53,8 @@ namespace Chats.Infrastructure.Services.grpcServices
                         Chatid = item.ChatId,
                         ContactId = item.ContactId,
                         LastActivity = lastActivityTimestamp,
-                        LastMessage = item.LastMessage
+                        LastMessage = item.LastMessage,
+                        LastMessageSenderId = item.LastMessageSenderId
                     };
                     response.Chats.Add(chat);
                 }

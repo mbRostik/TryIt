@@ -1,4 +1,6 @@
-﻿using Aggregator.WebApi.Services.ProtoServices;
+﻿using Aggregator.Application.Contracts.DTOs;
+using Aggregator.Application.Contracts.Interfaces;
+using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,19 +17,14 @@ namespace Aggregator.WebApi.Controllers
         // РОБИЛОСЬ ПІЗНОЇ НОЧІ. ПОТІМ КОД ПОЗАМІТАЮ XD
         //
         /////////////////////////////////////////////////
-        private readonly ILogger<AggregatorController> _logger;
-        private grpcGetUserForChatService UsergrpcService { get; set; }
-        private grpcGetUserChatsService ChatgrpcService { get; set; }
-        public AggregatorController(ILogger<AggregatorController> logger, grpcGetUserChatsService ChatgrpcService, grpcGetUserForChatService UsergrpcService)
+        private IChatService ChatService { get; set; }
+        public AggregatorController(IChatService ChatService)
         {
-
-            _logger = logger;
-            this.ChatgrpcService = ChatgrpcService;
-            this.UsergrpcService = UsergrpcService;
+            this.ChatService = ChatService;
         }
 
-        [HttpGet("Temp")]
-        public async Task<IActionResult> Get()
+        [HttpGet("GetUserChats")]
+        public async Task<ActionResult<List<GiveUserChatsDTO>>> GetUserChats()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             string accessToken = null;
@@ -39,24 +36,12 @@ namespace Aggregator.WebApi.Controllers
                     accessToken = headerValue.Substring("Bearer ".Length).Trim();
                 }
             }
-            var result = await ChatgrpcService.GetUserChatsAsync(userId, accessToken);
-
-            if (result.Chats.Count == 1 && result.Chats[0].Chatid == 0)
+            if(userId==null || accessToken == null)
             {
-                return Ok();
+                return null;
             }
-            List<string> chatsIds = new List<string>();
-            foreach (var item in result.Chats)
-            {
-                chatsIds.Add(item.ContactId);
-            }
-
-            var result2 = await UsergrpcService.GetUserChatsAsync(chatsIds, accessToken);
-            Console.WriteLine();
-            return Ok();
-
+            var result = await ChatService.GetUserChats(userId, accessToken);
+            return result;
         }
-
-        //Користувач нажимає або на чат або на Повідомлення і повертається моделька з Chat та користувачом (всі повідомлення та профіль користувача)
     }
 }

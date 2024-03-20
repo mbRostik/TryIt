@@ -31,6 +31,7 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
                 {
                     return null;
                 }
+
                 var chatIds = members.Select(m => m.ChatId).Distinct().ToList();
 
 
@@ -41,6 +42,14 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
                 var chats = await dbContext.Chats
                 .Where(chat => chatIds.Contains(chat.Id))
                 .ToListAsync();
+
+                foreach (var chat in chats)
+                {
+                    chat.LastMessage = await dbContext.Messages
+                     .Where(m => m.ChatId == chat.Id) 
+                     .OrderByDescending(m => m.Date) 
+                     .FirstOrDefaultAsync();
+                }
 
                 List<GiveUserChatsDTO> result = new List<GiveUserChatsDTO>();
 
@@ -57,6 +66,7 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
                     {
                         temp.LastActivity = chats[i].LastMessage.Date;
                         temp.LastMessage = chats[i].LastMessage.Content;
+                        temp.LastMessageSenderId = chats[i].LastMessage.SenderId;
                     }
 
                     result.Add(temp);

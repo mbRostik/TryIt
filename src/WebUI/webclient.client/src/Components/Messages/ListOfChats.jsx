@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import userManager from '../../AuthFiles/authConfig';
 import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import { NavLink } from 'react-router-dom';
@@ -17,7 +17,7 @@ const ListOfChats = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingOverlay, setLoadingOverlay] = useState(false);
-
+    const [chats, setChats] = useState(null);
     async function fetchUserData(accessToken) {
         try {
             const response = await fetch(`${config.apiBaseUrl}/user`, {
@@ -28,6 +28,20 @@ const ListOfChats = () => {
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const response_chats = await fetch(`${config.apiBaseUrl}/GetUserChats`, {
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response_chats.ok) {
+                const chatsData = await response_chats.json();
+                setChats(chatsData);
+            } else {
+                console.error('Error while receiving chats:', response_chats.statusText);
             }
 
             return await response.json();
@@ -74,15 +88,29 @@ const ListOfChats = () => {
             </div>
                 : isAuthorized === false ? (
                     <div>UnAuthorized</div>
-                ) : userData === null ? (
+                ) : userData === null || chats===null ? (
                     <div>
                         <div>There is any chats(</div>
                     </div>
 
                 ) : (
-                    <div className="profile">
-
-                    </div>
+                            <div>
+                                {chats.map((chat, index) => (
+                                    <div key={index} style={{ marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #ccc' }}>
+                                        <div>Chat ID: {chat.chatId}</div>
+                                        <div>Contact ID: {chat.contactId}</div>
+                                        <div>Last Activity: {chat.lastActivity ? new Date(chat.lastActivity).toLocaleString() : 'N/A'}</div>
+                                        <div>Last Message: {chat.lastMessage || 'No message'}</div>
+                                        <div>Last Message Sender: {chat.lastMessageSender}</div>
+                                        <div>Contact NickName: {chat.contactNickName}</div>
+                                        {chat.contactPhoto && (
+                                            <div>
+                                                <img src={`data:image/jpeg;base64,${chat.contactPhoto}`} alt="Contact" style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                 )}
         </div>
     );
