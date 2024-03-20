@@ -53,6 +53,8 @@ namespace Chats.WebApi.Controllers
         }
 
         [HttpPost("GetChatId")]
+        //If there is no chat - chat will be created
+        //Потрібно зробити повне поверення чату з повідомленнями
         public async Task<ActionResult<int>> GetChatId([FromBody] GetChatIdDTO request)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;

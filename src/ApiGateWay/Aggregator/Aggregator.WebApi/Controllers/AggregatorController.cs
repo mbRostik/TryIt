@@ -1,11 +1,12 @@
 ﻿using Aggregator.WebApi.Services.ProtoServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
 namespace Aggregator.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class AggregatorController : ControllerBase
     {
         /////////////////////////////////////////////////
@@ -38,9 +39,9 @@ namespace Aggregator.WebApi.Controllers
                     accessToken = headerValue.Substring("Bearer ".Length).Trim();
                 }
             }
-            var result = await ChatgrpcService.GetUserChatsAsync("7fc89f0e-c0cc-4b5b-aa3c-5c9d6becec57", accessToken);
+            var result = await ChatgrpcService.GetUserChatsAsync(userId, accessToken);
 
-            if (result.Chats.Count==1 && result.Chats[0].Chatid==0)
+            if (result.Chats.Count == 1 && result.Chats[0].Chatid == 0)
             {
                 return Ok();
             }
@@ -51,7 +52,11 @@ namespace Aggregator.WebApi.Controllers
             }
 
             var result2 = await UsergrpcService.GetUserChatsAsync(chatsIds, accessToken);
+            Console.WriteLine();
             return Ok();
+
         }
+
+        //Користувач нажимає або на чат або на Повідомлення і повертається моделька з Chat та користувачом (всі повідомлення та профіль користувача)
     }
 }
