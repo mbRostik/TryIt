@@ -4,15 +4,14 @@ import userManager from './authConfig';
 
 const SignIn_CallbackPage = () => {
     const navigate = useNavigate();
-
     useEffect(() => {
         userManager.signinRedirectCallback().then(() => {
-            navigate('/'); 
+
+            window.location.href = '/';
         }).catch(error => {
             console.error(error);
-            navigate('/'); 
         });
-    }, [navigate]);
+    }, []);
 
     return <div>Loading...</div>;
 };

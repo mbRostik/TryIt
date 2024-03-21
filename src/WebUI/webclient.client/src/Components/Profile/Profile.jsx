@@ -9,6 +9,7 @@ import axios from '../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json'; 
+import { useAuth } from '../AuthProvider';
 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -16,57 +17,11 @@ import 'react-image-crop/dist/ReactCrop.css';
 const Profile = () => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
+    const { user, userData, loading, isAuthorized, setLoadingState,
+        setIsAuthorizedState,
+        setUserState,
+        setUserDataState } = useAuth();
 
-    const [isAuthorized, setIsAuthorized] = useState(null);
-    const [user, setUser] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true); 
-    const [loadingOverlay, setLoadingOverlay] = useState(false);
-
-    async function fetchUserData(accessToken) {
-        try {
-            const response = await fetch(`${config.apiBaseUrl}/user`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            setLoading(false);
-            console.error('Error while sending the request to the UserService ', error);
-            return null;
-        }
-    }
-
-
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            
-            const authStatus = await isAuthenticated();
-            setIsAuthorized(authStatus)
-            if (authStatus) {
-                userManager.getUser().then(user => {
-                    setUser(user);
-                    if (user) {
-                        fetchUserData(user.access_token).then(data => {
-                            setUserData(data);
-                        });
-
-                    }
-                });
-
-            }
-            setLoading(false);
-        };
-
-        checkAuth();
-    }, []);
     const onLogout = async () => {
         await userManager.signoutRedirect();
         navigate('/');
@@ -80,7 +35,7 @@ const Profile = () => {
     }
 
     const handleImageUpload = (e) => {
-        setLoadingOverlay(true);
+        setLoadingState(true);
         const file = e.target.files[0];
         const maxSize = 5 * 1024 * 1024;
         const maxResolution = 1920;
@@ -96,7 +51,7 @@ const Profile = () => {
                 progress: undefined,
             });
             e.target.value = null;
-            setLoadingOverlay(false);
+            setLoadingState(false);
             return;
         }
 
@@ -111,7 +66,7 @@ const Profile = () => {
                 progress: undefined,
             });
             e.target.value = null;
-            setLoadingOverlay(false);
+            setLoadingState(false);
             return;
         }
 
@@ -131,7 +86,7 @@ const Profile = () => {
                         progress: undefined,
                     });
                     e.target.value = null;
-                    setLoadingOverlay(false);
+                    setLoadingState(false);
                     return;
                 }
                 else {
@@ -171,7 +126,7 @@ const Profile = () => {
 
                             else {
                                 const data = await response.json();
-                                setUserData(data);
+                                setUserDataState(data);
                                 toast.success('Profile photo uploaded successfully.', {
                                     position: "top-right",
                                     autoClose: 5000,
@@ -195,7 +150,7 @@ const Profile = () => {
                             });
                             console.error('Error while sending the request', err);
                         } finally {
-                            setLoadingOverlay(false);
+                            setLoadingState(false);
                         }
                     };
                     reader.readAsArrayBuffer(file);
@@ -206,7 +161,7 @@ const Profile = () => {
     };
 
     const handleImageDelete = async  (e) => {
-        setLoadingOverlay(true);
+        setLoadingState(true);
         if (userData.photo == null || (Array.isArray(userData.photo) && userData.photo.length === 0) || userData.photo =='') {
             toast.error('You do not have a photo', {
                 position: "top-right",
@@ -218,7 +173,7 @@ const Profile = () => {
                 progress: undefined,
             });
             e.target.value = null;
-            setLoadingOverlay(false);
+            setLoadingState(false);
             return;
         }
         
@@ -246,7 +201,7 @@ const Profile = () => {
                 progress: undefined,
             });
         }
-        setLoadingOverlay(false);
+        setLoadingState(false);
     };
 
     const isImageFile = (file) => {
@@ -257,10 +212,9 @@ const Profile = () => {
 
 
     return (
-
         <div>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-            {loadingOverlay ? <div className={`overlay ${loadingOverlay ? 'visible' : ''}`}>
+            {loading ? <div className={`overlay ${loading ? 'visible' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                     <ThreeDots color="#00BFFF" height={80} width={80} />
                 </div>

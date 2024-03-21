@@ -7,12 +7,14 @@ const SignoutCallbackPage = () => {
 
     useEffect(() => {
         userManager.signoutRedirectCallback().then(() => {
-            navigate('/'); 
+            
+            window.location.href = '/';
         }).catch(error => {
             console.error(error);
-            navigate('/'); 
+
+            window.location.href = '/';
         });
-    }, [navigate]);
+    }, []);
 
     return <div>Loading...</div>;
 };

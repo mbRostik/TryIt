@@ -5,15 +5,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import '../Styles/Profile_Settings.css'
 import config from '../../config.json'; 
+import { useAuth } from '../AuthProvider';
 
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
 const Profile_Settings = () => {
-    const [isAuthorized, setIsAuthorized] = useState(null);
-    const [user, setUser] = useState(null);
-    const [userData, setUserData] = useState({});
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const validateData = () => {
         let isValid = true;
@@ -46,53 +43,18 @@ const Profile_Settings = () => {
         return isValid;
     };
     
-    async function fetchUserData(accessToken) {
-        try {
-            const response = await fetch(`${config.apiBaseUrl}/user`, {
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
-            });
+    const { user, userData, loading, isAuthorized, setLoadingState,
+        setIsAuthorizedState,
+        setUserState,
+        setUserDataState } = useAuth();
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            setLoading(false);
-            console.error('Error while sending the request to the UserService ', error);
-            return null;
-        }
-    }
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            const authStatus = await isAuthenticated();
-            setIsAuthorized(authStatus)
-            if (authStatus) {
-                userManager.getUser().then(user => {
-                    setUser(user);
-                    if (user) {
-                        fetchUserData(user.access_token).then(data => {
-                            setUserData(data);
-                        });
-                    }
-                });
-
-            }
-            setLoading(false);
-        };
-
-        checkAuth();
-    }, []);
 
 
     const handleSaveChanges = async (e) => {
         e.preventDefault();
         if (!validateData()) return; 
 
-        setLoading(true);
+        setLoadingState(true);
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
             const response = await fetch(await fetch(`${config.apiBaseUrl}/userUpdate`, {
@@ -113,13 +75,13 @@ const Profile_Settings = () => {
         } catch (error) {
             console.error('Error while saving the user data', error);
         } finally {
-            setLoading(false);
+            setLoadingState(false);
         }
     };
 
     const handleChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setUserData({ ...userData, [e.target.name]: value });
+        setUserDataState({ ...userData, [e.target.name]: value });
     };
 
 
