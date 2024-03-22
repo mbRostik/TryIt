@@ -100,6 +100,18 @@
         }
       ],
       "DownstreamPathTemplate": "/Chat/GetChatMessages"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/chatHub",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7234
+        }
+      ],
+      "DownstreamPathTemplate": "/SendMessage"
     }
   ],
 

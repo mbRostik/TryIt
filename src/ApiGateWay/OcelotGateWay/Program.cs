@@ -1,6 +1,7 @@
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Polly;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +13,12 @@ builder.Services.AddOcelot().AddPolly();
 builder.Services.AddCors();
 
 var app = builder.Build();
-app.UseCors(builder =>
+app.UseCors(policyBuilder =>
 {
-    builder.AllowAnyOrigin();
-    builder.AllowAnyHeader();
-    builder.AllowAnyMethod();
+    policyBuilder.WithOrigins("https://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
 });
 await app.UseOcelot();
 

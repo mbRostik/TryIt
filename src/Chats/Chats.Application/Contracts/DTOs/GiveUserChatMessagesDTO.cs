@@ -8,6 +8,7 @@ namespace Chats.Application.Contracts.DTOs
 {
     public class GiveUserChatMessagesDTO
     {
+        public int? ChatId { get; set; }
         public string SenderId { get; set; }
 
         public string Content { get; set; }

@@ -43,7 +43,7 @@ namespace Chats.WebApi.Controllers
         [HttpPost("SendMessage")]
         public async Task<IActionResult> SendMessage([FromBody] SendMessageDTO request)
         {
-            if (request.Data == null && request.MessageContent == null)
+            if (request.MessageContent == null)
             {
                 return BadRequest("There is no information to be send");
             }

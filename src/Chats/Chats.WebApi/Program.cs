@@ -8,6 +8,7 @@ using MessageBus.Messages.IdentityServerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,8 +36,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Authority = "https://localhost:7174";
 
         options.Audience = "Chats.WebApi";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
 
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/SendMessage")))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            },
+        };
     });
+builder.Services.AddCors();
 
 builder.Services
     .AddSignalR(options =>
@@ -75,14 +98,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(builder =>
+{
+    builder.WithOrigins("https://localhost:5173") 
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials(); 
+});
 app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseRouting(); 
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapHub<ChatHub>("/SendMessage");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<grpcUserChats_Service>();
@@ -95,6 +125,6 @@ app.UseEndpoints(endpoints =>
     });
 });
 
-app.MapHub<ChatHub>("/Сhat");
+
 
 app.Run();

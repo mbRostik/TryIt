@@ -28,18 +28,16 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task SendMessage(SendMessageDTO message)
         {
+
             var senderId = Context.UserIdentifier;
-            if(message.ChatId == null || message.ChatId==0)
-            {
-                var ChatId = await mediator.Send(new CreateMessageCommand(message, senderId));
-                await JoinChat(ChatId);
-                await Clients.Group(ChatId.ToString()).SendAsync("ReceiveMessage", senderId, message.MessageContent, message.Data);
-            }
-            else
-            {
-                var ChatId = await mediator.Send(new CreateMessageCommand(message, senderId));
-                await Clients.Group(ChatId.ToString()).SendAsync("ReceiveMessage", senderId, message.MessageContent, message.Data);
-            }
+            await mediator.Send(new CreateMessageCommand(message, senderId));
+            GiveUserChatMessagesDTO mess = new GiveUserChatMessagesDTO();
+            mess.Content = message.MessageContent;
+            mess.SenderId = senderId;
+            mess.Date= DateTime.UtcNow;
+            mess.ChatId = message.ChatId;
+            await Clients.Group(message.ChatId.ToString()).SendAsync("ReceiveMessage", mess);
+            
         }
 
     }

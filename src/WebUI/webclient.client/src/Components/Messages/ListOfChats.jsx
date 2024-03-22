@@ -19,9 +19,9 @@ const ListOfChats = () => {
         setIsAuthorizedState,
         setUserState,
         setUserDataState, chats, activeChatId,
-        setActiveChatId, unknownsmbData, setunknownsmbDataState } = useAuth();   
+        setActiveChatId, unknownsmbData, setunknownsmbDataState, hubConnection, setChatsState } = useAuth();   
     const navigate = useNavigate();
-
+    
     const handleImageClick = (contactId) => {
         navigate(`/Someones_Profile/${contactId}`);
     };

@@ -10,8 +10,6 @@ namespace Chats.Application.Contracts.DTOs
     {
         public string ReceiverId { get; set; }
         public string? MessageContent { get; set; }
-        public byte[]? Data { get; set; }
-
         public int? ChatId { get; set; }
     }
 }

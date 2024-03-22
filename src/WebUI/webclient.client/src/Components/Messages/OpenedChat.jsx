@@ -18,7 +18,8 @@ function OpenedChat({ chatId }) {
         setIsAuthorizedState,
         setUserState,
         setUserDataState, chats, activeChatId,
-        setActiveChatId, unknownsmbData, setunknownsmbDataState } = useAuth();
+        setActiveChatId, unknownsmbData, setunknownsmbDataState, hubConnection } = useAuth();
+        const [messageContent, setMessageContent] = useState(""); 
 
     const foundChat = chats.find(chat => chat.chatId === chatId);
     const [messages, setMessages] = useState(null);
@@ -56,8 +57,8 @@ function OpenedChat({ chatId }) {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         async function checkAuth() {
-            if (foundChat) {
-                await fetchMessages(user.access_token);
+            if (!loading && foundChat) {
+                fetchMessages(user.access_token);
             }
             setLoadingState(false);
         }
@@ -66,6 +67,40 @@ function OpenedChat({ chatId }) {
             checkAuth();
         }
     }, [loading, isAuthorized, user, chatId, unknownsmbData]);
+    useEffect(() => {
+        if (hubConnection) {
+
+            const receiveMessage = (message) => {
+
+                setMessages(prevMessages => [...prevMessages, message]);
+            };
+
+            hubConnection.on("ReceiveMessage", receiveMessage);
+
+            return () => {
+                hubConnection.off("ReceiveMessage", receiveMessage);
+            };
+        }
+    }, [hubConnection]);
+    const sendMessage = async () => {
+        if (hubConnection && messageContent.trim()) { 
+            try {
+                await hubConnection.invoke("SendMessage", { MessageContent: messageContent, ChatId: chatId });
+                setMessageContent(""); 
+            } catch (error) {
+                console.error('Error while sending a message:', error);
+            }
+        }
+    };
+
+    const handleMessageChange = (event) => {
+        setMessageContent(event.target.value);
+    };
+
+    const handleSendMessage = (event) => {
+        event.preventDefault(); 
+        sendMessage();
+    };
     return (
         <div className="openedChat">
 
@@ -103,10 +138,17 @@ function OpenedChat({ chatId }) {
                             ) : (
                                 <div>There is any messages</div>
                             )}
-                            <div className="SendMessageForm">
-                                <textarea className="SendMessageInput" placeholder="Type your message here..."></textarea>
-                                <button className="SendMessageButton">Send</button>
-                            </div>
+                        <div className="SendMessageForm">
+                            <form onSubmit={handleSendMessage}>
+                                <textarea
+                                    className="SendMessageInput"
+                                    placeholder="Type your message here..."
+                                    value={messageContent}
+                                    onChange={handleMessageChange}
+                                />
+                                <button className="SendMessageButton" type="submit">Send</button>
+                            </form>
+                        </div>
                         </div>
                     </div>
                 ) : unknownsmbData ?
