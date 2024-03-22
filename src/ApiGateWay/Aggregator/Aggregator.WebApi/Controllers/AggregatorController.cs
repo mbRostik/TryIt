@@ -41,6 +41,7 @@ namespace Aggregator.WebApi.Controllers
                 return null;
             }
             var result = await ChatService.GetUserChats(userId, accessToken);
+            
             return result;
         }
     }

@@ -13,13 +13,15 @@ import config from '../../config.json';
 import { useAuth } from '../AuthProvider';
 
 const Someones_Profile = () => {
+    const navigate = useNavigate();
 
     const [smbData, setsmbData] = useState(null);
     const { ProfileId } = useParams();
     const { user, userData, loading, isAuthorized, setLoadingState,
         setIsAuthorizedState,
         setUserState,
-        setUserDataState } = useAuth();
+        setUserDataState, chats, activeChatId,
+        setActiveChatId, openedChat, unknownsmbData, setunknownsmbDataState } = useAuth();   
     async function fetchsmbData(accessToken) {
         try {
             const response = await fetch(`${config.apiBaseUrl}/SomeonesProfile`, {
@@ -68,9 +70,19 @@ const Someones_Profile = () => {
     }, [loading, isAuthorized, user]);
    
     
-    async function OpenChat() {
+    const OpenChat = async () => {
         const accessToken = user.access_token;
         setLoadingState(true);
+
+        const existingChat = chats.find(chat => chat.contactId === ProfileId);
+
+        if (existingChat) {
+            setActiveChatId(existingChat.chatId); 
+            navigate(`/Chats`); 
+            setLoadingState(false);
+            return;
+        }
+
         try {
             const response = await fetch(`${config.apiBaseUrl}/GetChatByUserId`, {
                 method: 'POST',
@@ -82,29 +94,23 @@ const Someones_Profile = () => {
             });
 
             if (!response.ok) {
-                setLoadingState(false);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
             const data = await response.json();
-            console.log(data);
             if (data) {
-                window.location.href = `/OpenedChat/${data}`;
+                setActiveChatId(data); 
+                setunknownsmbDataState(smbData);
+                navigate(`/Chats`); 
             } else {
-                console.error('The is no id');
-                setLoadingState(false);
-
+                console.error('No chatId returned from the server');
             }
-
-            return;
         } catch (error) {
+            console.error('Error while creating or fetching the chat', error);
+        } finally {
             setLoadingState(false);
-            console.error('Error while sending the request to the UserService ', error);
-            setLoadingState(false);
-            return null;
         }
-       
-    }
+    };
+
 
     return (
 

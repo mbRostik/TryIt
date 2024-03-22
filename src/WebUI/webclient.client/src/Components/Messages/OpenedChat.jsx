@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import userManager from '../../AuthFiles/authConfig';
 import { isAuthenticated } from '../../Functions/CheckAuthorization';
 import { NavLink } from 'react-router-dom';
@@ -10,88 +10,116 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json';
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../AuthProvider';
+import '../Styles/OpenedChat.css'
 
-const OpenedChat = () => {
-    const [isAuthorized, setIsAuthorized] = useState(null);
-    const [user, setUser] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [loadingOverlay, setLoadingOverlay] = useState(false);
-    const [chatMessages, setChatMessages] = useState(null);
-    const [receiver, setReceiver] = useState(null);
-    const { id } = useParams();
+function OpenedChat({ chatId }) {
+    const { user, userData, loading, isAuthorized, setLoadingState,
+        setIsAuthorizedState,
+        setUserState,
+        setUserDataState, chats, activeChatId,
+        setActiveChatId, unknownsmbData, setunknownsmbDataState } = useAuth();
 
-    async function fetchUserData(accessToken) {
+    const foundChat = chats.find(chat => chat.chatId === chatId);
+    const [messages, setMessages] = useState(null);
+    const navigate = useNavigate();
+
+    async function fetchMessages(accessToken) {
         try {
-            const response = await fetch(`${config.apiBaseUrl}/user`, {
+            const ChatId = foundChat.chatId;
+            const response = await fetch(`${config.apiBaseUrl}/GetChatMessages`, {
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                }
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ChatId })
+
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-
-
-            return await response.json();
+            const responseJs = await response.json();
+            setMessages(responseJs);
         } catch (error) {
-            setLoading(false);
             console.error('Error while sending the request to the UserService ', error);
             return null;
         }
     }
 
+    const handleImageClick = (contactId) => {
+        navigate(`/Someones_Profile/${foundChat.contactId}`);
+    };
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        const checkAuth = async () => {
-
-            const authStatus = await isAuthenticated();
-            setIsAuthorized(authStatus)
-            if (authStatus) {
-                userManager.getUser().then(user => {
-                    setUser(user);
-                    if (user) {
-                        fetchUserData(user.access_token).then(data => {
-                            setUserData(data);
-                        });
-
-                    }
-                });
-
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        async function checkAuth() {
+            if (foundChat) {
+                await fetchMessages(user.access_token);
             }
-            setLoading(false);
-        };
+            setLoadingState(false);
+        }
 
-        checkAuth();
-    }, []);
-
+        if (!loading) {
+            checkAuth();
+        }
+    }, [loading, isAuthorized, user, chatId, unknownsmbData]);
     return (
+        <div className="openedChat">
 
-        <div>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-            {loadingOverlay ? <div className={`overlay ${loadingOverlay ? 'visible' : ''}`}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <ThreeDots color="#00BFFF" height={80} width={80} />
-                </div>
+            
+                {foundChat ? (
+                    <div className="Messages">
+                        <div>
+                            {messages ? (
+                                messages.map((message, index) => (
+                                    <div key={index} className="Message">
+                                        <div className="Messagecontactimage">
+                                            {message.senderId === foundChat.contactId ? (
+                                                <img
+                                                    src={foundChat.contactPhoto ? `data:image/jpeg;base64,${foundChat.contactPhoto}` : "../../public/NoPhoto.jpg"}
+                                                    alt="Contact"
+                                                    onClick={(e) => { e.stopPropagation(); handleImageClick(foundChat.contactId); }}
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"}
+                                                    alt="User"
+                                                />
+                                            )}
+                                        </div>
+                                        <div className="MessageBody">
+                                            <div className="MessageContent">{message.content}</div>
+                                            <div className="MessageDate">{new Date(message.date).toLocaleString()}</div>
+                                        </div>
+                                        <div ref={messagesEndRef} />
+                                    </div>
 
 
+
+                                ))
+                            ) : (
+                                <div>There is any messages</div>
+                            )}
+                            <div className="SendMessageForm">
+                                <textarea className="SendMessageInput" placeholder="Type your message here..."></textarea>
+                                <button className="SendMessageButton">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                ) : unknownsmbData ?
+                    (
+                        <div>jkdfbdgb
+
+                        </div>
+
+                    ) : (<div>((((</div>)}
             </div>
-                : isAuthorized === false ? (
-                    <div>UnAuthorized</div>
-                ) : userData === null ? (
-                    <div>
-                        <div>There is any chats(</div>
-                    </div>
 
-                ) : (
-                    <div className="profile">
-                       kjsbfhdg
-                    </div>
-                )}
-        </div>
+
     );
-};
+}
 
 export default OpenedChat;

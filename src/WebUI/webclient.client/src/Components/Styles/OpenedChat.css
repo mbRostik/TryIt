@@ -1,0 +1,86 @@
+﻿.openedChat {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    max-height: 580px;
+}
+.WhoKnows{
+    max-height:1000px;
+}
+.Messages {
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: calc(100% - 80px);
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.Message {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-end;
+    background-color: transparent;
+}
+
+.MessageBody {
+    background-color: slategrey;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.Messagecontactimage img, .Messageuserimage img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid grey;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+
+.MessageContent {
+    font-size: 0.9em;
+    color: white;
+    word-wrap: break-word;
+}
+
+.MessageDate {
+    color: #bbb;
+    font-size: 0.7em;
+    align-self: flex-end;
+    margin-top: 10px;
+}
+
+.SendMessageForm {
+    padding: 15px;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.SendMessageInput {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none;
+}
+
+.SendMessageButton {
+    padding: 10px 20px;
+    background-color: #5b9bd5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .SendMessageButton:hover {
+        background-color: #4a8cc7;
+    }

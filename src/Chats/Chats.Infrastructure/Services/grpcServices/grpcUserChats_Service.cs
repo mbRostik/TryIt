@@ -43,20 +43,24 @@ namespace Chats.Infrastructure.Services.grpcServices
                 }
                 foreach (var item in result)
                 {
-                    Timestamp lastActivityTimestamp = null;
-                    if (item.LastActivity.HasValue)
+                    if(item.LastMessage!=null && item.LastMessageSenderId!=null && item.LastActivity != null)
                     {
-                        lastActivityTimestamp = Timestamp.FromDateTime(item.LastActivity.Value.ToUniversalTime());
+                        Timestamp lastActivityTimestamp = null;
+                        if (item.LastActivity.HasValue)
+                        {
+                            lastActivityTimestamp = Timestamp.FromDateTime(item.LastActivity.Value.ToUniversalTime());
+                        }
+                        var chat = new GiveUserChats
+                        {
+                            Chatid = item.ChatId,
+                            ContactId = item.ContactId,
+                            LastActivity = lastActivityTimestamp,
+                            LastMessage = item.LastMessage,
+                            LastMessageSenderId = item.LastMessageSenderId
+                        };
+                        response.Chats.Add(chat);
                     }
-                    var chat = new GiveUserChats
-                    {
-                        Chatid = item.ChatId,
-                        ContactId = item.ContactId,
-                        LastActivity = lastActivityTimestamp,
-                        LastMessage = item.LastMessage,
-                        LastMessageSenderId = item.LastMessageSenderId
-                    };
-                    response.Chats.Add(chat);
+                   
                 }
 
                 return response;

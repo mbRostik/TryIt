@@ -88,6 +88,18 @@
         }
       ],
       "DownstreamPathTemplate": "/Aggregator/GetUserChats"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetChatMessages",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7234
+        }
+      ],
+      "DownstreamPathTemplate": "/Chat/GetChatMessages"
     }
   ],
 

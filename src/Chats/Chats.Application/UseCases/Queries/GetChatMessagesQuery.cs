@@ -1,4 +1,5 @@
-﻿using Chats.Domain.Entities;
+﻿using Chats.Application.Contracts.DTOs;
+using Chats.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace Chats.Application.UseCases.Queries
 {
-    public record GetChatMessagesQuery(int ChatId, string UserId) : IRequest<IEnumerable<Message>>;
+    public record GetChatMessagesQuery(int ChatId, string UserId) : IRequest<IEnumerable<GiveUserChatMessagesDTO>>;
 }

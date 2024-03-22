@@ -27,7 +27,7 @@ namespace Chats.WebApi.Controllers
         }
 
         [HttpPost("GetChatMessages")]
-        public async Task<ActionResult<List<Message>>> GetChatMessages([FromBody] GetChatMessagesDTO request)
+        public async Task<ActionResult<List<GiveUserChatMessagesDTO>>> GetChatMessages([FromBody] GetChatMessagesDTO request)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -59,8 +59,6 @@ namespace Chats.WebApi.Controllers
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var result = await mediator.Send(new GetChatIdQuery(userId, request.ProfileId));
-
-            Console.WriteLine(result + "  ID WHICH WOULD BE RETUNED");
             return Ok(result);
         }
 

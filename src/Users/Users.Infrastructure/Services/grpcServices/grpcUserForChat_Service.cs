@@ -53,6 +53,9 @@ namespace Users.Infrastructure.Services.grpcServices
                         NickName = user.NickName,
                         Photo = Google.Protobuf.ByteString.CopyFrom(new byte[] { })
                     };
+                    if (user.Photo != null)
+                        tempuser.Photo = Google.Protobuf.ByteString.CopyFrom(user.Photo);
+
                     response.Users.Add(tempuser);
                 }
                 return response;

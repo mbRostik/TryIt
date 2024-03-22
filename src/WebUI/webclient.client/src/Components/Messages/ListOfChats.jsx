@@ -11,58 +11,27 @@ import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json';
 import { useAuth } from '../AuthProvider';
 import '../Styles/ChatsList.css'
+import OpenedChat from './OpenedChat'; 
 
 const ListOfChats = () => {
 
     const { user, userData, loading, isAuthorized, setLoadingState,
         setIsAuthorizedState,
         setUserState,
-        setUserDataState } = useAuth();
-    const [chats, setChats] = useState(null);
-    async function fetchChatData(accessToken) {
-        try {
-            
-            const response_chats = await fetch(`${config.apiBaseUrl}/GetUserChats`, {
-                method: 'Get',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+        setUserDataState, chats, activeChatId,
+        setActiveChatId, unknownsmbData, setunknownsmbDataState } = useAuth();   
+    const navigate = useNavigate();
 
-            if (response_chats.ok) {
-                const chatsData = await response_chats.json();
-                setChats(chatsData);
-            } else {
-                console.error('Error while receiving chats:', response_chats.statusText);
-            }
-        } catch (error) {
-            console.error('Error while sending the request to the UserService ', error);
-            return null;
-        }
-    }
-
-
-
-    useEffect(() => {
-        const checkAuth = async () => {
-
-            if (isAuthorized) {
-                if (user) {
-                    fetchChatData(user.access_token);
-                    }
-                }
-            setLoadingState(false);
-        };
-
-        if (!loading) {
-            checkAuth();
-        }
-    }, [loading, isAuthorized, user]);
-
+    const handleImageClick = (contactId) => {
+        navigate(`/Someones_Profile/${contactId}`);
+    };
+    const handleInfoClick = (chatId) => {
+        setActiveChatId(chatId);
+        setunknownsmbDataState(null);
+    };
     return (
 
-        <div>
+        <div className = "MessagePage">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             {loading ? <div className={`overlay ${loading ? 'visible' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -77,30 +46,45 @@ const ListOfChats = () => {
                     </div>
 
                     ) : (
-                        <div>
-                            <h2>Your chats</h2>
-                            <br></br>
-                            {chats.map((chat, index) => (
-                                <div key={index} className="contact">
-                                    
-                                    <div >
-                                        <img className="contactimage"
-                                            src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "../../public/NoPhoto.jpg"}
-                                            alt="Contact"
-                                        />
-                                    </div>
-                                    <div className="info">
-                                        <div>{chat.contactNickName}</div>
-                                        <div>{chat.sender === user.id ? "You: " : ""}{chat.lastMessage || 'No message'}</div>
-                                        <div>{chat.lastActivity ? new Date(chat.lastActivity).toLocaleString() : 'N/A'}</div>
-                                           
-                                    </div>
-                                       
-                                       
-                                </div>
-                            ))}
+                                <div className="chatContainer">
+                                    <div className="LeftSide">
+                                        {chats.map((chat, index) => (
+                                            <div key={index}
+                                                className={`contact ${chat.chatId === activeChatId ? "active" : ""}`} 
+                                                onClick={() => handleInfoClick(chat.chatId)}>
 
-                        </div>
+                                                <div >
+                                                    <img className="contactimage"
+                                                        src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "../../public/NoPhoto.jpg"}
+                                                        alt="Contact"
+                                                        onClick={(e) => { e.stopPropagation(); handleImageClick(chat.contactId); }} 
+                                                    />
+                                                </div>
+
+                                                <div className="info">
+                                                    <div className="info_up">
+                                                        <div>{chat.contactNickName}</div>
+                                                        <div>{chat.lastActivity ? new Date(chat.lastActivity).toLocaleString() : 'N/A'}</div>
+                                                    </div>
+                                                    <div>
+                                                        {chat.lastMessageSender !== chat.contactId ? "You: " : ""}
+                                                        {chat.lastMessage && chat.lastMessage.length > 18
+                                                            ? chat.lastMessage.substring(0, 18) + '...'
+                                                            : chat.lastMessage || 'No message'}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        ))}
+
+                                    </div>
+
+                                    <div className="RightSide">
+                                        {activeChatId && <OpenedChat chatId={activeChatId} />}
+                                    </div>
+                                </div>
+                                
+
                 )}
         </div>
     );

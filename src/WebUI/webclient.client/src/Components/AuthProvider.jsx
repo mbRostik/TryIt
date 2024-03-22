@@ -14,7 +14,9 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true); 
     const [isAuthorized, setIsAuthorized] = React.useState(false);
-
+    const [unknownsmbData, setunknownsmbData] = useState(null);
+    const [chats, setChats] = React.useState(null);
+    const [activeChatId, setActiveChatId] = useState(null);
     const setLoadingState = (isLoading) => {
         setLoading(isLoading);
     };
@@ -31,6 +33,12 @@ export const AuthProvider = ({ children }) => {
         setUserData(newUserData);
     };
 
+    const setunknownsmbDataState = (smbData) => {
+        setunknownsmbData(smbData);
+    };
+
+
+
     async function fetchUserData(accessToken) {
         try {
             const response = await fetch(`${config.apiBaseUrl}/user`, {
@@ -42,7 +50,7 @@ export const AuthProvider = ({ children }) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
+            
             return await response.json();
         } catch (error) {
             console.error('Error while sending the request to the UserService', error);
@@ -50,6 +58,30 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    async function fetchChatData(accessToken) {
+        try {
+            const response_chats = await fetch(`${config.apiBaseUrl}/GetUserChats`, {
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(response_chats);
+            if (response_chats.ok) {
+                const chatsData = await response_chats.json();
+                setChats(chatsData);
+                console.log(chatsData);
+            } else {
+                console.error('Error while receiving chats:', response_chats.statusText);
+            }
+        } catch (error) {
+            console.error('Error while fentcing chats', error);
+
+            return null;
+        }
+        
+    }
     useEffect(() => {
         async function checkAuth() {
             setLoading(true);
@@ -57,10 +89,11 @@ export const AuthProvider = ({ children }) => {
 
             if (user) {
                 setUser(user);
-                fetchUserData(user.access_token).then(userData => {
+                fetchUserData(user.access_token).then(async (userData) => {
                     if (userData) {
                         setIsAuthorized(true);
                         setUserData(userData);
+                        await fetchChatData(user.access_token); 
                     } else {
                         setIsAuthorized(false);
                     }
@@ -76,6 +109,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
+
     const value = {
         user,
         userData,
@@ -84,7 +118,12 @@ export const AuthProvider = ({ children }) => {
         setLoadingState,
         setIsAuthorizedState,
         setUserState,
-        setUserDataState
+        setUserDataState,
+        chats,
+        activeChatId,
+        setActiveChatId,
+        unknownsmbData,
+        setunknownsmbDataState
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
