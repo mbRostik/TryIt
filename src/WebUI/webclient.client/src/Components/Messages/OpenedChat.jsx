@@ -69,10 +69,11 @@ function OpenedChat({ chatId }) {
     }, [loading, isAuthorized, user, chatId, unknownsmbData]);
     useEffect(() => {
         if (hubConnection) {
-
+           
+           
             const receiveMessage = (message) => {
-
-                setMessages(prevMessages => [...prevMessages, message]);
+                if (message.chatId == chatId) { setMessages(prevMessages => [...prevMessages, message]); }
+                
             };
 
             hubConnection.on("ReceiveMessage", receiveMessage);
@@ -101,13 +102,26 @@ function OpenedChat({ chatId }) {
         event.preventDefault(); 
         sendMessage();
     };
+
+    const SendMessageButtonWithoutChat = async () => {
+        if (hubConnection && messageContent.trim()) {
+            try {
+                await hubConnection.invoke('CreateChat', { MessageContent: messageContent, ChatId: chatId })
+                    .catch(err => console.error("Error invoking CreateChat: ", err));
+            }
+            catch (error) {
+             console.error('Error while sending a message:', error);
+             }
+        }
+    };
+
     return (
         <div className="openedChat">
-
+        
             
-                {foundChat ? (
-                    <div className="Messages">
-                        <div>
+            {foundChat ? (
+                <div className="Messages">
+                    <div className="InsideMessages">
                             {messages ? (
                                 messages.map((message, index) => (
                                     <div key={index} className="Message">
@@ -153,8 +167,16 @@ function OpenedChat({ chatId }) {
                     </div>
                 ) : unknownsmbData ?
                     (
-                        <div>jkdfbdgb
-
+                            <div className="SendMessageForm">
+                                    <form onSubmit={SendMessageButtonWithoutChat}>
+                                    <textarea
+                                        className="SendMessageInput"
+                                        placeholder="Type your message here..."
+                                        value={messageContent}
+                                            onChange={handleMessageChange}
+                                    />
+                                    <button className="SendMessageButton" type="submit">Send</button>
+                                </form>
                         </div>
 
                     ) : (<div>((((</div>)}

@@ -173,6 +173,7 @@ const Profile = () => {
                 progress: undefined,
             });
             e.target.value = null;
+
             setLoadingState(false);
             return;
         }
@@ -188,7 +189,16 @@ const Profile = () => {
                 },
                 body: JSON.stringify({ avatar: "" })
             });
-
+            userData.photo = null;
+            toast.success('Profile photo was deleted successfully.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
         catch (err) {
             toast.error(err, {

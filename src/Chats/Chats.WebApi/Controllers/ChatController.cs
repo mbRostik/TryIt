@@ -61,7 +61,6 @@ namespace Chats.WebApi.Controllers
             var result = await mediator.Send(new GetChatIdQuery(userId, request.ProfileId));
             return Ok(result);
         }
-
         //[HttpGet("GetAllUserChats")]
         //public async Task<ActionResult<List<>> GetAllUserChats(){
         //    return null;

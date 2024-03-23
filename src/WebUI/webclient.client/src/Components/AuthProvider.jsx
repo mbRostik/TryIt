@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
             const subscribeToEvents = (conn) => {
                 const receiveMessage = (message) => {
-
+                    console.log(message);
                     setChatsState(prevChats => prevChats.map(chat => {
                         if (chat.chatId === message.chatId) {
                             return {
@@ -113,6 +113,13 @@ export const AuthProvider = ({ children }) => {
 
                 conn.on("ReceiveMessage", receiveMessage);
             };
+
+            const subscribeToNewChat = async (conn) => {
+                await fetchChatData(user.access_token);
+                conn.on("NotifyNewChat");
+
+            };
+
             connection.onclose(async () => {
                 setHubConnection(null);
 
@@ -124,7 +131,7 @@ export const AuthProvider = ({ children }) => {
                     .build();
 
                 subscribeToEvents(connection2);
-
+                subscribeToNewChat(connection2);
                 try {
                     await connection2.start();
                     setHubConnection(connection2);
@@ -134,6 +141,7 @@ export const AuthProvider = ({ children }) => {
             });
             connection.start()
                 .then(() => {
+                    subscribeToNewChat(connection);
                     subscribeToEvents(connection);
                     setHubConnection(connection);
                 })

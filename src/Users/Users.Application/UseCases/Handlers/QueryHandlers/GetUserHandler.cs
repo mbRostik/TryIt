@@ -29,12 +29,17 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
             try
             {
                 var dbUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == request.id);
+
                 int FollowerCount = await dbContext.Follows.CountAsync(u => u.UserId == request.id);
                 int FollowsCount = await dbContext.Follows.CountAsync(u => u.FollowerId == request.id);
                 UserProfileDTO userInfo = mapper.Map<UserProfileDTO>(dbUser);
 
-                userInfo.FollowersCount = FollowerCount;
-                userInfo.FollowsCount = FollowsCount;
+                if(FollowerCount!=null && FollowsCount != null)
+                {
+                    userInfo.FollowersCount = FollowerCount;
+                    userInfo.FollowsCount = FollowsCount;
+                }
+                
                 return userInfo;
             }
             catch (Exception ex)

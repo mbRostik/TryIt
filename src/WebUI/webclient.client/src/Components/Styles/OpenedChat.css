@@ -1,13 +1,26 @@
-﻿.openedChat {
+﻿::-webkit-scrollbar {
+    display: none;
+}
+body {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+}
+.openedChat {
+    max-width: 100%;
+    min-width: 100%;
+    min-height:100%;
     margin-top: 30px;
     display: flex;
     flex-direction: column;
-    max-height: 580px;
+    max-height: 60%;
 }
-.WhoKnows{
-    max-height:1000px;
+.InsideMessages{
+    min-width:50%;
+    max-width:50%;
 }
 .Messages {
+    width: 100%;
+    min-width: 100%;
     overflow-y: auto;
     flex-grow: 1;
     max-height: calc(100% - 80px);
@@ -16,6 +29,9 @@
 }
 
 .Message {
+    max-width: 100%;
+    width: 100%;
+    min-width: 100%;
     display: flex;
     margin-bottom: 15px;
     align-items: flex-end;
@@ -23,6 +39,8 @@
 }
 
 .MessageBody {
+    max-width:100%;
+
     background-color: slategrey;
     padding: 10px;
     border-radius: 10px;
@@ -42,7 +60,10 @@
 }
 
 
-.MessageContent {
+.MessageContent {grtoawrgtiuaywrtaortagwtoa
+    overflow-wrap: break-word;
+    max-width: 100%;
+    width: 100%;
     font-size: 0.9em;
     color: white;
     word-wrap: break-word;
@@ -56,11 +77,14 @@
 }
 
 .SendMessageForm {
+    min-width:1000px;
+    width:100%;
     padding: 15px;
     position: sticky;
     bottom: 0;
     z-index: 100;
     backdrop-filter: blur(10px);
+
 }
 
 .SendMessageInput {

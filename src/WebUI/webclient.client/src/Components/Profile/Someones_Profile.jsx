@@ -72,10 +72,11 @@ const Someones_Profile = () => {
     
     const OpenChat = async () => {
         const accessToken = user.access_token;
+        let existingChat = null;
         setLoadingState(true);
-
-        const existingChat = chats.find(chat => chat.contactId === ProfileId);
-
+        if (chats !== null) {
+            existingChat = chats.find(chat => chat.contactId === ProfileId);
+        }
         if (existingChat) {
             setActiveChatId(existingChat.chatId); 
             navigate(`/Chats`); 
@@ -92,11 +93,11 @@ const Someones_Profile = () => {
                 },
                 body: JSON.stringify({ ProfileId })
             });
-
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
+            console.log(data);
             if (data) {
                 setActiveChatId(data); 
                 setunknownsmbDataState(smbData);
