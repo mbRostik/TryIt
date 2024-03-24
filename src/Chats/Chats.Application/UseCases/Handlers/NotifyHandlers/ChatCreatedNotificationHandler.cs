@@ -13,13 +13,15 @@ namespace Chats.Application.UseCases.Handlers.NotifyHandlers
     public class ChatCreatedNotificationHandler : INotificationHandler<ChatCreatedNotification>
     {
         private readonly IMediator mediator;
+        private readonly Serilog.ILogger logger;
 
         private readonly ChatDbContext dbContext;
 
-        public ChatCreatedNotificationHandler(ChatDbContext dbContext, IMediator mediator)
+        public ChatCreatedNotificationHandler(ChatDbContext dbContext, IMediator mediator, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
+            this.logger = logger;
         }
 
 
@@ -28,13 +30,15 @@ namespace Chats.Application.UseCases.Handlers.NotifyHandlers
             try
             {
                 await dbContext.ChatParticipants.AddRangeAsync(
-                new ChatParticipant { ChatId = request.ChatId, UserId = request.FirstUser },
-                new ChatParticipant { ChatId = request.ChatId, UserId = request.SecondUser });
+                    new ChatParticipant { ChatId = request.ChatId, UserId = request.FirstUser },
+                    new ChatParticipant { ChatId = request.ChatId, UserId = request.SecondUser });
                 await dbContext.SaveChangesAsync();
+
+                logger.Information($"Successfully added chat participants for ChatId: {request.ChatId} with Users: {request.FirstUser}, {request.SecondUser}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                logger.Error(ex, $"Failed to add chat participants for ChatId: {request.ChatId} with Users: {request.FirstUser}, {request.SecondUser}");
             }
 
         }

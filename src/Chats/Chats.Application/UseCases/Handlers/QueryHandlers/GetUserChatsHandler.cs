@@ -16,19 +16,24 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly ChatDbContext dbContext;
+        private readonly Serilog.ILogger logger;
 
-        public GetUserChatsHandler(ChatDbContext dbContext)
+        public GetUserChatsHandler(ChatDbContext dbContext, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<GiveUserChatsDTO>> Handle(GetUserChatsQuery request, CancellationToken cancellationToken)
         {
+            logger.Information("Handling GetUserChatsQuery for UserId {UserId}", request.id);
             try
             {
-                var members = await dbContext.ChatParticipants.Where(a => a.UserId == request.id).ToListAsync();
+                var members = await dbContext.ChatParticipants.AsNoTracking().Where(a => a.UserId == request.id).ToListAsync();
                 if(!members.Any())
                 {
+                    logger.Warning("No chat participants found for UserId {UserId}", request.id);
+
                     return null;
                 }
 
@@ -71,11 +76,13 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
 
                     result.Add(temp);
                 }
+                logger.Information("Successfully retrieved {Count} chats for UserId {UserId}", chats.Count, request.id);
+
                 return result;
             }
             catch (Exception ex) 
             {
-                Console.WriteLine(ex.ToString());
+                logger.Error(ex, "An error occurred while handling GetUserChatsQuery for UserId {UserId}", request.id);
                 return null;
             }
         }

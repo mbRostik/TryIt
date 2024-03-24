@@ -94,9 +94,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aggregator.WebApi", "src\Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chats.Infrastructure", "src\Chats\Chats.Infrastructure\Chats.Infrastructure.csproj", "{A283D3E3-B424-4DCD-A57C-61835691B699}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Application", "src\ApiGateWay\Aggregator\Aggregator.Application\Aggregator.Application.csproj", "{BC810915-BDC2-43C2-8D7C-C00CB7F7F5E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aggregator.Application", "src\ApiGateWay\Aggregator\Aggregator.Application\Aggregator.Application.csproj", "{BC810915-BDC2-43C2-8D7C-C00CB7F7F5E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Infrastructure", "src\ApiGateWay\Aggregator\Aggregator.Infrastructure\Aggregator.Infrastructure.csproj", "{E4C95F7E-F9C1-440C-BBF6-53AC936DEA2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aggregator.Infrastructure", "src\ApiGateWay\Aggregator\Aggregator.Infrastructure\Aggregator.Infrastructure.csproj", "{E4C95F7E-F9C1-440C-BBF6-53AC936DEA2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

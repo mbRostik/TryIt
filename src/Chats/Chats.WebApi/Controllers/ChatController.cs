@@ -1,4 +1,5 @@
-﻿using Chats.Application.Contracts.DTOs;
+﻿
+using Chats.Application.Contracts.DTOs;
 using Chats.Application.UseCases.Queries;
 using Chats.Domain.Entities;
 using MediatR;
@@ -14,29 +15,35 @@ namespace Chats.WebApi.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IMediator mediator;
-
-        public ChatController(IMediator mediator)
+        private readonly Serilog.ILogger logger;
+        public ChatController(IMediator mediator, Serilog.ILogger logger)
         {
+           
             this.mediator = mediator;
-        }
-
-        [HttpGet("GetUser'sChats")]
-        public async Task<ActionResult<List<Chat>>> GetChats()
-        {
-            return Ok();
+            this.logger = logger;
         }
 
         [HttpPost("GetChatMessages")]
         public async Task<ActionResult<List<GiveUserChatMessagesDTO>>> GetChatMessages([FromBody] GetChatMessagesDTO request)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
             if (request.ChatId == null)
             {
+                logger.Warning($"GetChatMessages called with null ChatId by user {userId}");
+
                 return Ok(null);
             }
-            var result = await mediator.Send(new GetChatMessagesQuery(request.ChatId, userId));
-            return Ok(result);
+            try
+            {
+                var result = await mediator.Send(new GetChatMessagesQuery(request.ChatId, userId));
+                logger.Information($"GetChatMessages successfully retrieved messages for chat {request.ChatId} and user {userId}");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Error retrieving messages for chat {request.ChatId} and user {userId}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
 
@@ -45,25 +52,35 @@ namespace Chats.WebApi.Controllers
         {
             if (request.MessageContent == null)
             {
+                logger.Warning("SendMessage called with null MessageContent");
                 return BadRequest("There is no information to be send");
             }
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            logger.Information($"SendMessage initiated by user {userId}");
+
 
             return Ok();
         }
 
         [HttpPost("GetChatId")]
-        //If there is no chat - chat will be created
-        //Потрібно зробити повне поверення чату з повідомленнями
         public async Task<ActionResult<int>> GetChatId([FromBody] GetChatIdDTO request)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var result = await mediator.Send(new GetChatIdQuery(userId, request.ProfileId));
-            return Ok(result);
+
+            logger.Information($"GetChatId initiated by user {userId} for profile {request.ProfileId}");
+
+            try
+            {
+                var result = await mediator.Send(new GetChatIdQuery(userId, request.ProfileId));
+                logger.Information($"GetChatId successfully retrieved ChatId {result} for user {userId} and profile {request.ProfileId}");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Error retrieving ChatId for user {userId} and profile {request.ProfileId}");
+                return StatusCode(500, "Internal server error");
+            }
         }
-        //[HttpGet("GetAllUserChats")]
-        //public async Task<ActionResult<List<>> GetAllUserChats(){
-        //    return null;
-        //}
     }
 }

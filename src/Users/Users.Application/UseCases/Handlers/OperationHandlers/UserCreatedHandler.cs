@@ -13,30 +13,34 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
     public class UserCreatedHandler : IRequestHandler<CreateUserCommand, User>
     {
         private readonly IMediator mediator;
+        public readonly Serilog.ILogger logger;
 
         private readonly UserDbContext dbContext;
 
-        public UserCreatedHandler(UserDbContext dbContext, IMediator mediator)
+        public UserCreatedHandler(UserDbContext dbContext, IMediator mediator, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
+            this.logger = logger;
         }
 
         public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var model = await dbContext.Users.AddAsync(request.model);
+                logger.Information("Creating new user with details: {UserDetails}", request.model);
 
-                await dbContext.SaveChangesAsync();
+                var model = await dbContext.Users.AddAsync(request.model, cancellationToken);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                logger.Information("Successfully created user with ID: {UserId}", model.Entity.Id);
 
                 return model.Entity;
             }
-
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                return null;
+                logger.Error(ex, "Error occurred while creating user. Details: {UserDetails}", request.model);
+                throw; 
             }
         }
     }

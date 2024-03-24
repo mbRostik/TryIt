@@ -3,11 +3,13 @@ using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Security.Claims;
 using Users.Application.Contracts.DTOs;
 using Users.Application.UseCases.Commands;
 using Users.Application.UseCases.Queries;
 using Users.Domain.Entities;
+using static MassTransit.ValidationResultExtensions;
 
 namespace Users.WebApi.Controllers
 {
@@ -18,24 +20,34 @@ namespace Users.WebApi.Controllers
     {
         private readonly IMediator mediator;
 
-        public UserController(IMediator mediator)
+        public readonly Serilog.ILogger logger;
+        public UserController(IMediator mediator, Serilog.ILogger logger)
         {
             this.mediator = mediator;
+            this.logger = logger;
         }
 
-        [HttpGet("GetUser'sProfile")]
+        [HttpGet("GetUsersProfile")]
         public async Task<ActionResult<UserProfileDTO>> GetUser()
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
+            logger.Information("GetUser method called.");
+
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                logger.Warning("GetUser called but userId is null or empty.");
+                return NotFound("User ID not found.");
+            }
 
             var result = await mediator.Send(new GetUserQuery(userId));
 
             if (result == null)
-                return Ok("There is no information");
+            {
+                logger.Warning("User with ID {UserId} not found.", userId);
+                return NotFound("There is no information for the given user ID.");
+            }
+
+            logger.Information("User with ID {UserId} retrieved successfully.", userId);
             return Ok(result);
 
 
@@ -44,49 +56,94 @@ namespace Users.WebApi.Controllers
         [HttpPost("ChangeUserSettings")]
         public async Task<ActionResult> ChangeUserSettings([FromBody] ChangeProfileInformationDTO model)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
+            try
             {
-                return Unauthorized();
-            }
-            model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await mediator.Send(new ChangeUserInformationCommand(model));
-            return Ok();
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    logger.Information("ChangeUserSettings was called but no user ID was found in the claims.");
+                    return Unauthorized("User ID not found.");
+                }
+
+                logger.Information("Starting ChangeUserSettings for user {UserId}.", userId);
+
+                model.Id = userId;
+                await mediator.Send(new ChangeUserInformationCommand(model));
+
+                logger.Information("Successfully changed settings for user {UserId}.", userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error changing settings for user {UserId}.", model.Id);
+                return StatusCode(500, "An error occurred while changing user settings.");
+            }
 
         }
 
         [HttpPost("UploadProfilePhoto")]
         public async Task<ActionResult<UserProfileDTO>> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
         {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                logger.Information("UploadProfilePhoto called but user ID is missing.");
+                return Unauthorized("User ID is required.");
+            }
+
             try
             {
-                model.Id = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                logger.Information("Attempting to upload profile photo for user {UserId}.", userId);
+
+                model.Id = userId;
                 await mediator.Send(new ChangeUserAvatarCommand(model));
 
+                logger.Information("Profile photo updated successfully for user {UserId}. Fetching updated user profile.", userId);
+
                 var result = await mediator.Send(new GetUserQuery(model.Id));
+
+                if (result == null)
+                {
+                    logger.Warning("Failed to fetch updated profile for user {UserId} after uploading photo.", userId);
+                    return NotFound("User profile not found.");
+                }
+
+                logger.Information("Successfully retrieved updated profile for user {UserId} after photo upload.", userId);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest("Smth went wrong");
+                logger.Error(ex, "An error occurred while uploading profile photo for user {UserId}.", userId);
+                return BadRequest("Something went wrong.");
             }
         }
 
         [HttpPost("GetSomeonesProfile")]
         public async Task<ActionResult<UserProfileDTO>> GetSomeonesProfile([FromBody] SomeonesProfileDTO request)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
+            try
             {
-                return Unauthorized();
+
+                logger.Information("Fetching user data for ProfileId {ProfileId}.", request.ProfileId);
+
+                var result = await mediator.Send(new GetUserQuery(request.ProfileId));
+
+                if (result == null)
+                {
+                    logger.Warning("No information found for ProfileId {ProfileId}.", request.ProfileId);
+                    return Ok("There is no information");
+                }
+
+                logger.Information("Successfully retrieved user data for ProfileId {ProfileId}.", request.ProfileId);
+                return Ok(result);
             }
-
-            var result = await mediator.Send(new GetUserQuery(request.ProfileId));
-
-            if (result == null)
-                return Ok("There is no information");
-            return Ok(result);
-
-
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while fetching user data for ProfileId {ProfileId}.", request.ProfileId);
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
     }
 }

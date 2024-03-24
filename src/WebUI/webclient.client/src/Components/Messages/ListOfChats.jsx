@@ -26,6 +26,7 @@ const ListOfChats = () => {
         navigate(`/Someones_Profile/${contactId}`);
     };
     const handleInfoClick = (chatId) => {
+        console.log("Activating " + chatId);
         setActiveChatId(chatId);
         setunknownsmbDataState(null);
     };
@@ -40,15 +41,16 @@ const ListOfChats = () => {
             </div>
                 : isAuthorized === false ? (
                     <div>UnAuthorized</div>
-                ) : userData === null || chats===null ? (
+                ) : userData === null || chats === null && activeChatId==null ? (
                     <div>
-                        <div>There is any chats(</div>
+                        <div>There is nothing(</div>
                     </div>
 
                     ) : (
                                 <div className="chatContainer">
-                                    <div className="LeftSide">
-                                        {chats.map((chat, index) => (
+                                <div className="LeftSide">
+                                    
+                                    {chats && Array.isArray(chats) && chats.map((chat, index) => (
                                             <div key={index}
                                                 className={`contact ${chat.chatId === activeChatId ? "active" : ""}`} 
                                                 onClick={() => handleInfoClick(chat.chatId)}>

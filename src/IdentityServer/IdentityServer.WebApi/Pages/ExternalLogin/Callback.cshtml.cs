@@ -6,6 +6,8 @@ using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using IdentityModel;
+using MassTransit;
+using MessageBus.Messages.IdentityServerService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,18 +25,22 @@ public class Callback : PageModel
     private readonly IIdentityServerInteractionService _interaction;
     private readonly ILogger<Callback> _logger;
     private readonly IEventService _events;
+    private readonly IPublishEndpoint _publisher;
+
 
     public Callback(
         IIdentityServerInteractionService interaction,
         IEventService events,
         ILogger<Callback> logger,
         UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        SignInManager<IdentityUser> signInManager,
+        IPublishEndpoint publisher)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _interaction = interaction;
         _logger = logger;
+        _publisher = publisher;
         _events = events;
     }
         
@@ -75,6 +81,13 @@ public class Callback : PageModel
             // in this sample we don't show how that would be done, as our sample implementation
             // simply auto-provisions new external user
             user = await AutoProvisionUserAsync(provider, providerUserId, externalUser.Claims);
+            IdentityUserCreatedEvent creationEvent = new IdentityUserCreatedEvent
+            {
+                UserId = user.Id,
+                UserEmail = user.Email,
+                UserName = user.UserName
+            };
+            await _publisher.Publish(creationEvent);
         }
 
         // this allows us to collect any additional claims or properties
@@ -90,7 +103,7 @@ public class Callback : PageModel
         // delete temporary cookie used during external authentication
         await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
-        // retrieve return URL
+        // retrieve return URL AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
 
         // check if external login is in the context of an OIDC request
@@ -129,7 +142,7 @@ public class Callback : PageModel
         {
             user.Email = email;
         }
-            
+        user.EmailConfirmed = true;
         // create a list of claims that we want to transfer into our store
         var filtered = new List<Claim>();
 
@@ -138,6 +151,7 @@ public class Callback : PageModel
                    claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         if (name != null)
         {
+            user.UserName = name;
             filtered.Add(new Claim(JwtClaimTypes.Name, name));
         }
         else

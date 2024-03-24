@@ -7,6 +7,7 @@ using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +46,7 @@ public class Index : PageModel
         _identityProviderStore = identityProviderStore;
         _events = events;
     }
-
+     
     public async Task<IActionResult> OnGet(string? returnUrl)
     {
 

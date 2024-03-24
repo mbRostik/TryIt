@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
             return await response.json();
         } catch (error) {
-            console.error('Error while sending the request to the UserService', error);
+            console.log('Error while sending the request to the UserService');
             return null;
         }
     }
@@ -53,13 +53,11 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             if (response_chats.ok) {
-                const chatsData = await response_chats.json();
-                setChats(chatsData);
-            } else {
-                console.error('Error while receiving chats:', response_chats.statusText);
-            }
+                setChats(await response_chats.json());
+                console.log("Fetching chats");
+            } 
         } catch (error) {
-            console.error('Error while fetching chats', error);
+            console.log('There is no chats');
         }
     }
 
@@ -74,12 +72,14 @@ export const AuthProvider = ({ children }) => {
                     setIsAuthorized(true);
                     setUserData(userData);
                     await fetchChatData(user.access_token);
+
                 } else {
                     setIsAuthorized(false);
                 }
             } else {
                 setIsAuthorized(false);
             }
+
             setLoading(false);
         };
 
@@ -97,7 +97,6 @@ export const AuthProvider = ({ children }) => {
 
             const subscribeToEvents = (conn) => {
                 const receiveMessage = (message) => {
-                    console.log(message);
                     setChatsState(prevChats => prevChats.map(chat => {
                         if (chat.chatId === message.chatId) {
                             return {
@@ -130,26 +129,32 @@ export const AuthProvider = ({ children }) => {
                     .configureLogging(signalR.LogLevel.None)
                     .build();
 
-                subscribeToEvents(connection2);
-                subscribeToNewChat(connection2);
+               
                 try {
                     await connection2.start();
                     setHubConnection(connection2);
+                    subscribeToEvents(connection2);
+                    subscribeToNewChat(connection2);
                 } catch (err) {
-                    console.log('');
+                    console.log();
                 }
             });
-            connection.start()
-                .then(() => {
-                    subscribeToNewChat(connection);
-                    subscribeToEvents(connection);
-                    setHubConnection(connection);
-                })
-                .catch(err => console.error('SignalR Connection Error:', err));
+            try {
+                connection.start()
+                    .then(() => {
+                        if (chats) {
+                            subscribeToEvents(connection);
+                            }
+                        subscribeToNewChat(connection);
+                        setHubConnection(connection);
+                    })
+                    .catch(err => console.log());
+            }
+            catch (err) {
+                console.log();
 
-            return () => {
-                connection.off("ReceiveMessage");
-            };
+            }
+            
         }
     }, [user, hubConnection, setHubConnection, setChatsState, chats]);
 
@@ -157,7 +162,7 @@ export const AuthProvider = ({ children }) => {
         if (hubConnection && chats) {
             chats.forEach(chat => {
                 hubConnection.invoke("JoinChat", chat.chatId)
-                    .catch(err => console.error(`Could not join chat ${chat.chatId}:`, err));
+                    .catch(err => console.log(`Could not join chat ${chat.chatId}:`, err));
             });
         }
     }, [hubConnection, chats]);

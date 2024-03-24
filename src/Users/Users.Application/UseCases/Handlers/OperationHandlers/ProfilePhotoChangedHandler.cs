@@ -21,28 +21,51 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
 
         private readonly UserDbContext dbContext;
         private readonly IMapper mapper;
+        public readonly Serilog.ILogger logger;
 
-        public ProfilePhotoChangedHandler(UserDbContext dbContext, IMediator mediator, IMapperService mapperService)
+        public ProfilePhotoChangedHandler(UserDbContext dbContext, IMediator mediator, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
             mapperService.Mapper_ChangeUserProfileToUserDTO(ref mapper);
+            this.logger = logger;
         }
 
         public async Task<UserProfileDTO> Handle(ChangeUserAvatarCommand request, CancellationToken cancellationToken)
         {
-
-            var user = await dbContext.Users.FindAsync(request.model.Id);
-            if (user != null)
+            try
             {
-                user.Photo = Convert.FromBase64String(request.model.Avatar);
-                await dbContext.SaveChangesAsync();
+                logger.Information("Attempting to change avatar for user ID {UserId}", request.model.Id);
 
-                var result = await mediator.Send(new GetUserQuery(request.model.Id));
+                var user = await dbContext.Users.FindAsync(new object[] { request.model.Id }, cancellationToken);
+                if (user != null)
+                {
+                    user.Photo = Convert.FromBase64String(request.model.Avatar);
+                    await dbContext.SaveChangesAsync(cancellationToken);
 
-                return result;
+                    logger.Information("Avatar changed successfully for user ID {UserId}. Fetching updated user profile.", request.model.Id);
+
+                    var result = await mediator.Send(new GetUserQuery(request.model.Id), cancellationToken);
+
+                    if (result == null)
+                    {
+                        logger.Warning("Updated user profile for user ID {UserId} not found after changing avatar.", request.model.Id);
+                        return null; 
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    logger.Warning("User with ID {UserId} not found. Cannot change avatar.", request.model.Id);
+                    return null;
+                }
             }
-            return null;
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while changing avatar for user ID {UserId}", request.model.Id);
+                throw; 
+            }
         }
     }
 }

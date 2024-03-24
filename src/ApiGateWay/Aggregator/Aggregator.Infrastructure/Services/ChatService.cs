@@ -12,13 +12,15 @@ namespace Aggregator.Infrastructure.Services
 {
     public class ChatService:IChatService
     {
+        private readonly Serilog.ILogger logger;
         private grpcGetUserForChatService UsergrpcService { get; set; }
         private grpcGetUserChatsService ChatgrpcService { get; set; }
 
-        public ChatService(grpcGetUserChatsService ChatgrpcService, grpcGetUserForChatService UsergrpcService)
+        public ChatService(grpcGetUserChatsService ChatgrpcService, grpcGetUserForChatService UsergrpcService, Serilog.ILogger logger)
         {
             this.ChatgrpcService = ChatgrpcService;
             this.UsergrpcService = UsergrpcService;
+            this.logger = logger;
         }
 
 
@@ -26,10 +28,14 @@ namespace Aggregator.Infrastructure.Services
         {
             try
             {
+                logger.Information("Starting to retrieve user chats for UserId: {UserId}", userId);
+
                 var chats = await ChatgrpcService.GetUserChatsAsync(userId, accessToken);
 
                 if (chats.Chats.Count == 1 && chats.Chats[0].Chatid == 0)
                 {
+                    logger.Warning("No chats found for UserId: {UserId}", userId);
+
                     return null;
                 }
 
@@ -51,6 +57,8 @@ namespace Aggregator.Infrastructure.Services
 
                 for (int i = 0; i != chats.Chats.Count(); i++)
                 {
+                    //Чи потрібно тут написати подвійний мапер?
+
                     GiveUserChatsDTO temp = new GiveUserChatsDTO();
                     temp.ChatId = chats.Chats[i].Chatid;
                     temp.lastActivity = null;
@@ -66,11 +74,13 @@ namespace Aggregator.Infrastructure.Services
 
                     result.Add(temp);
                 }
+                logger.Information("Successfully retrieved user chats for UserId: {UserId}", userId);
+
                 return result;
             }
            catch(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                logger.Error(ex, "Error retrieving user chats for UserId: {UserId}", userId);
                 return null;
             }
         }

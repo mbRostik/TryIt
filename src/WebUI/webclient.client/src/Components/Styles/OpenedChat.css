@@ -38,9 +38,8 @@ body {
     background-color: transparent;
 }
 
-.MessageBody {
-    max-width:100%;
-
+.MessageBodyContact {
+    max-width: 100%;
     background-color: slategrey;
     padding: 10px;
     border-radius: 10px;
@@ -49,7 +48,17 @@ body {
     flex-direction: column;
 }
 
-.Messagecontactimage img, .Messageuserimage img {
+.MessageBody {
+    max-width: 100%;
+    background-color: dimgrey;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.Messagecontactimage img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
@@ -57,10 +66,14 @@ body {
     border: 1px solid grey;
     cursor: pointer;
     margin-right: 15px;
+    transition: border-radius 0.1s ease, filter 0.1s ease;
 }
+    .Messagecontactimage img:hover {
+        filter: brightness(75%);
+        border-radius: 35%;
+    }
 
-
-.MessageContent {grtoawrgtiuaywrtaortagwtoa
+.MessageContent {
     overflow-wrap: break-word;
     max-width: 100%;
     width: 100%;
@@ -77,14 +90,12 @@ body {
 }
 
 .SendMessageForm {
-    min-width:1000px;
-    width:100%;
+    min-width: 1000px;
+    max-width: 1000px;
     padding: 15px;
     position: sticky;
     bottom: 0;
     z-index: 100;
-    backdrop-filter: blur(10px);
-
 }
 
 .SendMessageInput {

@@ -18,20 +18,25 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
 
         private readonly UserDbContext dbContext;
         private readonly IMapper mapper;
-        public GetUserHandler(UserDbContext dbContext, IMapperService mapperService)
+        public readonly Serilog.ILogger logger;
+
+        public GetUserHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             mapperService.Mapper_UserToUserProfileDTO(ref mapper);
+            this.logger = logger;
         }
 
         public async Task<UserProfileDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var dbUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == request.id);
+                logger.Information("Starting to handle GetUserQuery for user ID {UserId}", request.id);
 
-                int FollowerCount = await dbContext.Follows.CountAsync(u => u.UserId == request.id);
-                int FollowsCount = await dbContext.Follows.CountAsync(u => u.FollowerId == request.id);
+                var dbUser = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == request.id);
+
+                int FollowerCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.UserId == request.id);
+                int FollowsCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.FollowerId == request.id);
                 UserProfileDTO userInfo = mapper.Map<UserProfileDTO>(dbUser);
 
                 if(FollowerCount!=null && FollowsCount != null)
@@ -39,11 +44,13 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
                     userInfo.FollowersCount = FollowerCount;
                     userInfo.FollowsCount = FollowsCount;
                 }
-                
+                logger.Information("Successfully handled GetUserQuery for user ID {UserId}.}", request.id);
+
                 return userInfo;
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "An error occurred while handling GetUserQuery for user ID {UserId}", request.id);
                 return null;
             }
             

@@ -70,7 +70,6 @@ namespace IdentityServer.WebApi.Pages.ConfirmEmail
                 return Page();
             }
 
-            //Тут робимо всі дії що при Login, після чого нас перекине на Consent ну і далі на реакт веб-додаток
             await BuildModelAsync(returnUrl);
 
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);

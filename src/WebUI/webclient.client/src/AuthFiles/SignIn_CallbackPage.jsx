@@ -9,7 +9,7 @@ const SignIn_CallbackPage = () => {
 
             window.location.href = '/';
         }).catch(error => {
-            console.error(error);
+            console.log();
         });
     }, []);
 

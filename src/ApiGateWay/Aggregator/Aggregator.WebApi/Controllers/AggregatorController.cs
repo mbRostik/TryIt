@@ -3,6 +3,7 @@ using Aggregator.Application.Contracts.Interfaces;
 using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Security.Claims;
 namespace Aggregator.WebApi.Controllers
 {
@@ -11,38 +12,50 @@ namespace Aggregator.WebApi.Controllers
     [Authorize]
     public class AggregatorController : ControllerBase
     {
-        /////////////////////////////////////////////////
-        //
-        //
-        // РОБИЛОСЬ ПІЗНОЇ НОЧІ. ПОТІМ КОД ПОЗАМІТАЮ XD
-        //
-        /////////////////////////////////////////////////
         private IChatService ChatService { get; set; }
-        public AggregatorController(IChatService ChatService)
+
+        private readonly Serilog.ILogger logger;
+        public AggregatorController(IChatService ChatService, Serilog.ILogger logger)
         {
             this.ChatService = ChatService;
+            this.logger = logger;
         }
 
         [HttpGet("GetUserChats")]
         public async Task<ActionResult<List<GiveUserChatsDTO>>> GetUserChats()
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            string accessToken = null;
-            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+            try
             {
-                var headerValue = authorizationHeader.FirstOrDefault();
-                if (headerValue?.StartsWith("Bearer ") == true)
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                logger.Information("Attempting to get user chats for UserId: {UserId}", userId);
+
+                string accessToken = null;
+                if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
                 {
-                    accessToken = headerValue.Substring("Bearer ".Length).Trim();
+                    var headerValue = authorizationHeader.FirstOrDefault();
+                    if (headerValue?.StartsWith("Bearer ") == true)
+                    {
+                        accessToken = headerValue.Substring("Bearer ".Length).Trim();
+                        logger.Information("Extracted access token for UserId: {UserId}", userId);
+                    }
                 }
+
+                if (userId == null || accessToken == null)
+                {
+                    logger.Warning("Failed to retrieve user chats for UserId: {UserId} due to missing userId or accessToken", userId);
+                    return BadRequest("Missing user identity or access token");
+                }
+
+                var result = await ChatService.GetUserChats(userId, accessToken);
+                logger.Information("Successfully retrieved user chats for UserId: {UserId}", userId);
+
+                return result;
             }
-            if(userId==null || accessToken == null)
+            catch (Exception ex)
             {
-                return null;
+                logger.Error(ex, "Error retrieving user chats for UserId: {UserId}", HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                return StatusCode(500, "Internal server error");
             }
-            var result = await ChatService.GetUserChats(userId, accessToken);
-            
-            return result;
         }
     }
 }

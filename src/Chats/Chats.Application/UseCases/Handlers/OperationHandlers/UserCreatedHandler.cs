@@ -15,11 +15,13 @@ namespace Chats.Application.UseCases.Handlers.OperationHandlers
         private readonly IMediator mediator;
 
         private readonly ChatDbContext dbContext;
+        private readonly Serilog.ILogger logger;
 
-        public UserCreatedHandler(ChatDbContext dbContext, IMediator mediator)
+        public UserCreatedHandler(ChatDbContext dbContext, IMediator mediator, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
+            this.logger = logger;
         }
 
         public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -27,15 +29,14 @@ namespace Chats.Application.UseCases.Handlers.OperationHandlers
             try
             {
                 var model = await dbContext.Users.AddAsync(request.model);
-
                 await dbContext.SaveChangesAsync();
 
+                logger.Information($"User {model.Entity.Id} created successfully");
                 return model.Entity;
             }
-
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                logger.Error(ex, $"Error creating user");
                 return null;
             }
         }

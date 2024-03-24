@@ -4,6 +4,8 @@ using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Consumers;
 using Users.Application.UseCases.Queries;
@@ -12,21 +14,37 @@ using Users.Infrastructure.Services;
 using Users.Infrastructure.Services.grpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
+string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
 builder.Services.AddGrpc();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IMapperService, MapperService>();
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(context.Configuration["ElasticConfiguration:Uri"]))
+        {
+            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
+            AutoRegisterTemplate = true,
+            NumberOfReplicas = 1,
+            NumberOfShards = 2
+        })
+        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+        .ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddDbContext<UserDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IMapperService, MapperService>();
 
-builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
@@ -63,7 +81,9 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://localhost:7174";
+        var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
+
+        options.Authority = jwtBearerSettings["Authority"];
 
         options.Audience = "Users.WebApi";
 
@@ -71,7 +91,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

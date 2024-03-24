@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Userforchat;
 using Users.Application.Contracts.DTOs;
 using Users.Application.Contracts.Interfaces;
 using Users.Domain.Entities;
@@ -57,6 +58,18 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.NickName, opt => opt.MapFrom(src => src.NickName))
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo));
+            });
+            mapper = configuration.CreateMapper();
+        }
+
+        public void Mapper_UserChatProfileToGiveUserForChat(ref IMapper mapper)
+        {
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserChatProfileDTO, GiveUserForChat>()
+                    .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.NickName, opt => opt.MapFrom(src => src.NickName))
+                    .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => Google.Protobuf.ByteString.CopyFrom(src.Photo ?? new byte[] { })));
             });
             mapper = configuration.CreateMapper();
         }

@@ -1,4 +1,4 @@
-using Duende.IdentityServer.EntityFramework.DbContexts;
+﻿using Duende.IdentityServer.EntityFramework.DbContexts;
 using IdentityServer.Infrastructure.Data;
 using IdentityServer.WebApi;
 using MassTransit;
@@ -7,12 +7,37 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.DataProtection;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using Microsoft.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly.GetName().Name;
 var defaultConnString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
 builder.Services.AddRazorPages();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
+
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(context.Configuration["ElasticConfiguration:Uri"]))
+        {
+            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
+            AutoRegisterTemplate = true,
+            NumberOfReplicas = 1,
+            NumberOfShards = 2
+        })
+        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+        .ReadFrom.Configuration(context.Configuration);
+});
+
 builder.Services.AddDbContext<IdentityServerDbContext>(options =>
 {
     options.UseSqlServer(defaultConnString);
@@ -21,10 +46,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.Sign
     .AddEntityFrameworkStores<IdentityServerDbContext>()
      .AddDefaultTokenProviders();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllersWithViews();
+
 
 builder.Services.AddDataProtection()
     .SetApplicationName("IdentityServer.WebApi")
@@ -51,8 +73,6 @@ builder.Services.AddIdentityServer(options =>
     })
     .AddAspNetIdentity<IdentityUser>()
     .AddDeveloperSigningCredential();
-builder.Services.AddAuthentication();
-
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((cxt, cfg) =>
@@ -66,7 +86,17 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.SignInScheme = Duende.IdentityServer.IdentityServerConstants.ExternalCookieAuthenticationScheme;
 
+        var googleAuth = builder.Configuration.GetSection("Authentication:Google");
+
+        options.ClientId = googleAuth["ClientId"];
+        options.ClientSecret = googleAuth["ClientSecret"];
+
+    });
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

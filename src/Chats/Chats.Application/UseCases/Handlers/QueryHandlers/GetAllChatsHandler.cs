@@ -2,6 +2,7 @@
 using Chats.Domain.Entities;
 using Chats.Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,37 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly ChatDbContext dbContext;
+        private readonly Serilog.ILogger logger;
 
-        public GetAllChatsHandler(ChatDbContext dbContext)
+        public GetAllChatsHandler(ChatDbContext dbContext, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<Chat>> Handle(GetAllChatsQuery request, CancellationToken cancellationToken)
         {
-            var result = dbContext.Chats.ToList();
-            return result;
+            try
+            {
+                logger.Information("Fetching all chats");
+                var result = dbContext.Chats.ToList();
+
+                if (result.Any())
+                {
+                    logger.Information($"Retrieved {result.Count} chats successfully");
+                }
+                else
+                {
+                    logger.Information("No chats found");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error retrieving all chats");
+                throw; 
+            }
         }
 
 
