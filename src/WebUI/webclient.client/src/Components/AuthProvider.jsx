@@ -21,6 +21,8 @@ export const AuthProvider = ({ children }) => {
     const [unknownsmbData, setunknownsmbData] = useState(null);
     const [chats, setChats] = useState(null);
     const [activeChatId, setActiveChatId] = useState(null);
+    const [chatReady, setChatReady] = useState(false);
+
 
     const setLoadingState = (isLoading) => setLoading(isLoading);
     const setIsAuthorizedState = (isAuth) => setIsAuthorized(isAuth);
@@ -72,7 +74,7 @@ export const AuthProvider = ({ children }) => {
                     setIsAuthorized(true);
                     setUserData(userData);
                     await fetchChatData(user.access_token);
-
+                    setChatReady(true);
                 } else {
                     setIsAuthorized(false);
                 }
@@ -87,76 +89,95 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (user && !hubConnection) {
+        if (user && !hubConnection && chatReady) {
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl(`https://localhost:7234/SendMessage`, {
                     accessTokenFactory: () => user.access_token
                 })
+                .withAutomaticReconnect()
                 .configureLogging(signalR.LogLevel.None)
                 .build();
 
+
             const subscribeToEvents = (conn) => {
+                console.log("ReceiveMessage connected");
                 const receiveMessage = (message) => {
-                    setChatsState(prevChats => prevChats.map(chat => {
-                        if (chat.chatId === message.chatId) {
-                            return {
-                                ...chat,
-                                lastActivity: message.date,
-                                lastMessage: message.content,
-                                lastMessageSender: message.senderId
-                            };
+                    if (chats) {
+                        setChatsState(prevChats => prevChats.map(chat => {
+                            if (chat.chatId === message.chatId) {
+                                return {
+                                    ...chat,
+                                    lastActivity: message.date,
+                                    lastMessage: message.content,
+                                    lastMessageSender: message.senderId
+                                };
+                            }
+                            return chat;
                         }
-                        return chat;
-                    }));
+                        ));
+                    }
                 };
 
                 conn.on("ReceiveMessage", receiveMessage);
             };
 
-            const subscribeToNewChat = async (conn) => {
-                await fetchChatData(user.access_token);
-                conn.on("NotifyNewChat");
+            const subscribeToNewChat = (conn) => {
+                console.log("Subscribing to NotifyNewChat");
 
+                conn.on("NotifyNewChat", async () => {
+                    console.log("New chat notification received, fetching chat data...");
+                    try {
+                        await fetchChatData(user.access_token);
+                        console.log("Chat data fetched successfully.");
+                    } catch (error) {
+                        console.error("Failed to fetch chat data:", error);
+                    }
+                });
             };
 
-            connection.onclose(async () => {
-                setHubConnection(null);
-
-                const connection2 = new signalR.HubConnectionBuilder()
-                    .withUrl(`https://localhost:7234/SendMessage`, {
-                        accessTokenFactory: () => user.access_token
-                    })
-                    .configureLogging(signalR.LogLevel.None)
-                    .build();
-
-               
+            const startConnection = (conn) => {
                 try {
-                    await connection2.start();
-                    setHubConnection(connection2);
-                    subscribeToEvents(connection2);
-                    subscribeToNewChat(connection2);
-                } catch (err) {
-                    console.log();
-                }
-            });
-            try {
-                connection.start()
-                    .then(() => {
-                        if (chats) {
-                            subscribeToEvents(connection);
-                            }
-                        subscribeToNewChat(connection);
+
+                     conn.start().then(() => {
+                         connectSubscriptions(conn);
                         setHubConnection(connection);
                     })
-                    .catch(err => console.log());
-            }
-            catch (err) {
-                console.log();
+                        .catch(err => console.log(err));
 
-            }
-            
+                    console.log("SignalR connection established.");
+                } catch (err) {
+                    console.error("SignalR Connection failed: ", err);
+                    setTimeout(() => startConnection(conn), 5000); 
+                }
+            };
+
+            const connectSubscriptions = (conn) => {
+                 subscribeToEvents(conn);
+                
+                subscribeToNewChat(conn);
+            };
+            startConnection(connection);
+
+            connection.onclose(async () => {
+                console.log('Connection closed');
+
+            });
+          
+            connection.onreconnecting(error => {
+                setHubConnection(null);
+                console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
+                console.log(`Connection lost due to error "${error}". Reconnecting.`);
+            });
+
+            connection.onreconnected(connectionId => {
+                console.assert(connection.state === signalR.HubConnectionState.Connected);
+                console.log(`Connection reestablished. Connected with connectionId "${connectionId}".`);
+                console.log(`Connection state: ${connection.state === signalR.HubConnectionState.Connected ? 'Connected' : connection.state}`);
+                connectSubscriptions(connection);
+                setHubConnection(connection);
+            });
         }
-    }, [user, hubConnection, setHubConnection, setChatsState, chats]);
+    }, [user, hubConnection, setHubConnection, setChatsState, chats, chatReady]);
 
     useEffect(() => {
         if (hubConnection && chats) {

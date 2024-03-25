@@ -37,7 +37,7 @@ namespace Chats.Infrastructure.Services.grpcServices
                     logger.Warning($"GetUserChats returned null for UserId: {request.UserId}");
                     var chat = new GiveUserChats
                     {
-                        Chatid = 0,
+                        ChatId = 0,
                         ContactId = "",
                         LastActivity = null,
                         LastMessage = ""
@@ -56,7 +56,7 @@ namespace Chats.Infrastructure.Services.grpcServices
                         }
                         var chat = new GiveUserChats
                         {
-                            Chatid = item.ChatId,
+                            ChatId = item.ChatId,
                             ContactId = item.ContactId,
                             LastActivity = lastActivityTimestamp,
                             LastMessage = item.LastMessage,
@@ -74,7 +74,7 @@ namespace Chats.Infrastructure.Services.grpcServices
                 logger.Error(ex, $"Error processing GetUserChats for UserId: {request.UserId}");
                 var chat = new GiveUserChats
                 {
-                    Chatid = 0,
+                    ChatId = 0,
                     ContactId = "",
                     LastActivity = null,
                     LastMessage = ""

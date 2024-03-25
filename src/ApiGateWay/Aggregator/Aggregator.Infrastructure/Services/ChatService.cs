@@ -13,13 +13,13 @@ namespace Aggregator.Infrastructure.Services
     public class ChatService:IChatService
     {
         private readonly Serilog.ILogger logger;
-        private grpcGetUserForChatService UsergrpcService { get; set; }
-        private grpcGetUserChatsService ChatgrpcService { get; set; }
+        private GrpcGetUserForChatService _userGrpcService { get; set; }
+        private GrpcGetUserChatsService _chatGrpcService { get; set; }
 
-        public ChatService(grpcGetUserChatsService ChatgrpcService, grpcGetUserForChatService UsergrpcService, Serilog.ILogger logger)
+        public ChatService(GrpcGetUserChatsService chatgrpcService, GrpcGetUserForChatService usergrpcService, Serilog.ILogger logger)
         {
-            this.ChatgrpcService = ChatgrpcService;
-            this.UsergrpcService = UsergrpcService;
+            this._chatGrpcService = chatgrpcService;
+            this._userGrpcService = usergrpcService;
             this.logger = logger;
         }
 
@@ -30,9 +30,9 @@ namespace Aggregator.Infrastructure.Services
             {
                 logger.Information("Starting to retrieve user chats for UserId: {UserId}", userId);
 
-                var chats = await ChatgrpcService.GetUserChatsAsync(userId, accessToken);
+                var chats = await _chatGrpcService.GetUserChatsAsync(userId, accessToken);
 
-                if (chats.Chats.Count == 1 && chats.Chats[0].Chatid == 0)
+                if (chats.Chats.Count == 1 && chats.Chats[0].ChatId == 0)
                 {
                     logger.Warning("No chats found for UserId: {UserId}", userId);
 
@@ -45,7 +45,7 @@ namespace Aggregator.Infrastructure.Services
                     chatsIds.Add(item.ContactId);
                 }
 
-                var contacts = await UsergrpcService.GetUserChatsAsync(chatsIds, accessToken);
+                var contacts = await _userGrpcService.GetUserChatsAsync(chatsIds, accessToken);
 
 
                 if (contacts.Users.Count() != chats.Chats.Count())
@@ -60,14 +60,14 @@ namespace Aggregator.Infrastructure.Services
                     //Чи потрібно тут написати подвійний мапер?
 
                     GiveUserChatsDTO temp = new GiveUserChatsDTO();
-                    temp.ChatId = chats.Chats[i].Chatid;
-                    temp.lastActivity = null;
+                    temp.ChatId = chats.Chats[i].ChatId;
+                    temp.LastActivity = null;
                     if (chats.Chats[i].LastActivity != null)
                     {
-                        temp.lastActivity = chats.Chats[i].LastActivity.ToDateTime();
+                        temp.LastActivity = chats.Chats[i].LastActivity.ToDateTime();
                     }
-                    temp.lastMessage = chats.Chats[i].LastMessage;
-                    temp.lastMessageSender = chats.Chats[i].LastMessageSenderId;
+                    temp.LastMessage = chats.Chats[i].LastMessage;
+                    temp.LastMessageSender = chats.Chats[i].LastMessageSenderId;
                     temp.ContactId = contacts.Users[i].UserId;
                     temp.ContactNickName = contacts.Users[i].NickName;
                     temp.ContactPhoto = contacts.Users[i].Photo.ToByteArray();

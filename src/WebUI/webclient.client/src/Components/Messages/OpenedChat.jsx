@@ -80,6 +80,7 @@ function OpenedChat({ chatId }) {
 
             const receiveMessage = (message) => {
                 console.log("Received");
+
                 console.log(message.chatId + " Current: " + chatId);
                 if (message.chatId == chatId) { setMessages(prevMessages => [...prevMessages, message]); }
                 

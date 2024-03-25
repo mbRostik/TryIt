@@ -12,11 +12,11 @@ namespace Aggregator.Application.Contracts.DTOs
 
         public string ContactId { get; set; }
 
-        public DateTime? lastActivity { get; set; }
+        public DateTime? LastActivity { get; set; }
 
-        public string lastMessage { get; set; } = "";
+        public string LastMessage { get; set; } = "";
 
-        public string lastMessageSender { get; set; } = "";
+        public string LastMessageSender { get; set; } = "";
 
         public string ContactNickName { get; set; }
 

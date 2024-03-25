@@ -1,4 +1,5 @@
 using Aggregator.Application.Contracts.Interfaces;
+using Aggregator.Infrastructure.Policies;
 using Aggregator.Infrastructure.Services;
 using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,9 +13,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<grpcGetUserChatsService>();
-builder.Services.AddScoped<grpcGetUserForChatService>();
+builder.Services.AddScoped<GrpcGetUserChatsService>();
+builder.Services.AddScoped<GrpcGetUserForChatService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<GrpcPolly>();
 
 builder.Host.UseSerilog((context, configuration) =>
 {

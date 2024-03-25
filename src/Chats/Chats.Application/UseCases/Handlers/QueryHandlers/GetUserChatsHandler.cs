@@ -29,15 +29,18 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
             logger.Information("Handling GetUserChatsQuery for UserId {UserId}", request.id);
             try
             {
-                var members = await dbContext.ChatParticipants.AsNoTracking().Where(a => a.UserId == request.id).ToListAsync();
-                if(!members.Any())
+                var chatIds = await dbContext.ChatParticipants
+                 .AsNoTracking()
+                 .Where(a => a.UserId == request.id)
+                 .Select(m => m.ChatId)
+                 .Distinct()
+                 .ToListAsync();
+
+                if (!chatIds.Any())
                 {
                     logger.Warning("No chat participants found for UserId {UserId}", request.id);
-
                     return null;
                 }
-
-                var chatIds = members.Select(m => m.ChatId).Distinct().ToList();
 
 
                 var filteredChatParticipants = await dbContext.ChatParticipants

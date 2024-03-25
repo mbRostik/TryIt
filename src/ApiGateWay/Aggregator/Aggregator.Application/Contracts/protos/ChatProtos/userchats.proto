@@ -4,7 +4,7 @@ package userchats;
 import "google/protobuf/timestamp.proto";
 
 message GiveUserChats {
-  int32 chatid = 1;
+  int32 chatId = 1;
   string contactId = 2;
   google.protobuf.Timestamp lastActivity = 3;
   string lastMessage = 4;
