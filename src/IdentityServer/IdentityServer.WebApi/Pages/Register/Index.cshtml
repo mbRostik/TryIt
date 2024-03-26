@@ -1,17 +1,19 @@
 @page
 @model IdentityServerHost.Pages.Register.RegisterModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <div class="register-page">
     <div class="lead">
-        <h1>Register</h1>
-        <p>Create your account</p>
+        <h1>@Localizer["Register"]</h1>
+        <p>@Localizer["Create your account"]</p>
     </div>
 
     <partial name="_ValidationSummary" />
 
     <div class="card">
         <div class="card-header">
-            <h2>Create Account</h2>
+            <h2>@Localizer["Create Account"]</h2>
         </div>
         <div class="card-body">
             <form asp-page="/Register/Index">
@@ -33,12 +35,12 @@
                     <label asp-for="Input.ConfirmPassword"></label>
                     <input type="password" class="form-control" placeholder="Confirm Password" asp-for="Input.ConfirmPassword" autocomplete="new-password">
                 </div>
-                <button type="submit" class="btn btn-secondary">Registration </button>
+                <button type="submit" class="btn btn-secondary">@Localizer["Registration"] </button>
 
-                <a href="/" class="btn btn-secondary">Cancel</a>
+                <a href="/" class="btn btn-secondary">@Localizer["Cancel"]</a>
             </form>
             
         </div>
-        <a class="btn btn-primary" asp-page="/Account/Login/Index">LogIn</a>
+        <a class="btn btn-primary" asp-page="/Account/Login/Index">@Localizer["LogIn"]</a>
     </div>
 </div>

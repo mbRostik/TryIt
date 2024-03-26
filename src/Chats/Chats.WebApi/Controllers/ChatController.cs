@@ -1,6 +1,7 @@
 ﻿
 using Chats.Application.Contracts.DTOs;
 using Chats.Application.UseCases.Queries;
+using Chats.Application.Validators;
 using Chats.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +27,16 @@ namespace Chats.WebApi.Controllers
         [HttpPost("GetChatMessages")]
         public async Task<ActionResult<List<GiveUserChatMessagesDTO>>> GetChatMessages([FromBody] GetChatMessagesDTO request)
         {
+
+            var validator = new GetChatMessagesDTOValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+
+
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (request.ChatId == null)
             {
@@ -66,6 +77,16 @@ namespace Chats.WebApi.Controllers
         [HttpPost("GetChatId")]
         public async Task<ActionResult<int>> GetChatId([FromBody] GetChatIdDTO request)
         {
+            var validator = new GetChatIdDTOValidator(); 
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+        
+
+
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             logger.Information($"GetChatId initiated by user {userId} for profile {request.ProfileId}");

@@ -1,6 +1,7 @@
-@using Duende.IdentityServer.Extensions
+﻿@using Duende.IdentityServer.Extensions
+@using Microsoft.AspNetCore.Http.Extensions
 @{
-    #nullable enable
+#nullable enable
     string? name = null;
     if (!true.Equals(ViewData["signed-out"]))
     {
@@ -13,21 +14,28 @@
 
         <a href="~/" class="navbar-brand">
             <img src="~/duende-logo.svg" class="icon-banner">
-            Duende IdentityServer
+            TryIt
         </a>
+        <div class="ml-auto">
+            <div class="ml-auto">
+                <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="uk-UA" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">Українська</a>
+                <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="en-US" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">English</a>
+            </div>
 
+        </div>
         @if (!string.IsNullOrWhiteSpace(name))
         {
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
-                    
+
                     <div class="dropdown-menu">
                         <a class="dropdown-item" asp-page="/Account/Logout/Index">Logout</a>
                     </div>
-              </li>
+                </li>
             </ul>
         }
-    
+
+        
     </nav>
 </div>

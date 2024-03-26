@@ -1,10 +1,12 @@
 ﻿using Chats.Application.Contracts.DTOs;
 using Chats.Application.UseCases.Commands;
 using Chats.Application.UseCases.Queries;
+using Chats.Application.Validators;
 using Chats.Domain.Entities;
 using Chats.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chats.WebApi.ChatHubSpace
 {
@@ -40,6 +42,7 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task SendMessage(SendMessageDTO message)
         {
+
             try
             {
                 logger.Information("Sending message from user {SenderId} to chat {ChatId}", Context.UserIdentifier, message.ChatId);

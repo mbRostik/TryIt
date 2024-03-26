@@ -1,10 +1,11 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
 @model IdentityServerHost.Pages.Login.Index
+@inject IViewLocalizer Localizer
 
 <div class="login-page">
     <div class="lead">
-        <h1>Login</h1>
-        <p>Choose how to login</p>
+        <h2>@Localizer["Choose how to login"]</h2>
     </div>
 
     <partial name="_ValidationSummary" />
@@ -16,7 +17,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Local Account</h2>
+                        <h2>@Localizer["Local Account"]</h2>
                     </div>
 
                     <div class="card-body">
@@ -38,20 +39,20 @@
                                     <div class="form-check">
                                         <input class="form-check-input" asp-for="Input.RememberLogin">
                                         <label class="form-check-label" asp-for="Input.RememberLogin">
-                                            Remember My Login
+                                            @Localizer["Remember"]
                                         </label>
                                     </div>
                                 </div>
                             }
-                            
-                            <button class="btn btn-primary" name="Input.Button" value="login">Login</button>
-                            <button class="btn btn-secondary" name="Input.Button" value="cancel">Cancel</button>
+
+                            <button class="btn btn-primary" name="Input.Button" value="login">@Localizer["Login"]</button>
+                            <button class="btn btn-secondary" name="Input.Button" value="cancel">@Localizer["Cancel"]</button>
                         </form>
                     </div>
                     <div class="card-footer">
 
-                        <p>Don't have an account yet?</p>
-                        <a class="btn btn-link" asp-page="/Register/Index" asp-route-returnUrl="@Model.Input.ReturnUrl">Register here</a>
+                        <p>@Localizer["Don't have an account yet?"]</p>
+                        <a class="btn btn-link" asp-page="/Register/Index" asp-route-returnUrl="@Model.Input.ReturnUrl">@Localizer["Register here"]</a>
                     </div>
                 </div>
             </div>
@@ -62,7 +63,7 @@
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>External Account</h2>
+                        <h2>@Localizer["External Account"]</h2>
                     </div>
                     <div class="card-body">
                         <ul class="list-inline">

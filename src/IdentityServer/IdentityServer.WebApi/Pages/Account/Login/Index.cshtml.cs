@@ -6,12 +6,14 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using IdentityServer.WebApi.Pages.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace IdentityServerHost.Pages.Login;
 
@@ -19,6 +21,7 @@ namespace IdentityServerHost.Pages.Login;
 [AllowAnonymous]
 public class Index : PageModel
 {
+    private readonly IStringLocalizer<Index> _localizer;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IIdentityServerInteractionService _interaction;
@@ -37,7 +40,8 @@ public class Index : PageModel
         IIdentityProviderStore identityProviderStore,
         IEventService events,
         UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        SignInManager<IdentityUser> signInManager,
+        IStringLocalizer<Index> localizer)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -45,11 +49,10 @@ public class Index : PageModel
         _schemeProvider = schemeProvider;
         _identityProviderStore = identityProviderStore;
         _events = events;
+        _localizer = localizer;
     }
-     
     public async Task<IActionResult> OnGet(string? returnUrl)
     {
-
         if (User.Identity.IsAuthenticated)
         {
             return LocalRedirect("~/");

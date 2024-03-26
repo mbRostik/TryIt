@@ -96,11 +96,9 @@ public class RegisterModel : PageModel
 
                 if (result.Succeeded)
                 {
-                    //Створюємо Юзера та токен підтвердження
                     var CreatedUser = await _userManager.FindByEmailAsync(user.Email);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                    //силка для підтверження де міститься айді користувача, токен та returnUrl яку ми достали з LoginPage, коли натиснули Зареєструватись
 
                     var returnUrlQuery = !string.IsNullOrEmpty(ReturnUrl) ? $"&returnUrl={Uri.EscapeDataString(ReturnUrl)}" : string.Empty;
                     var baseUrl = _configuration.GetValue<string>("Links:BaseUrl");

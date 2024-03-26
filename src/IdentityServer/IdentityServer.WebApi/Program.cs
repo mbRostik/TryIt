@@ -10,18 +10,43 @@ using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly.GetName().Name;
 var defaultConnString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
-builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
+builder.Services.AddRazorPages().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+builder.Services.AddControllersWithViews().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("uk-UA"),
+    };
+
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedUICultures = supportedCultures;
+    options.SupportedCultures = supportedCultures;
+
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider()
+    {
+        CookieName = CookieRequestCultureProvider.DefaultCookieName
+    });
+});
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.Enrich.FromLogContext()
@@ -99,6 +124,7 @@ builder.Services.AddAuthentication()
     });
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -108,6 +134,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseRequestLocalization();
 app.UseIdentityServer();
 app.UseAuthorization();
 app.MapRazorPages().RequireAuthorization();

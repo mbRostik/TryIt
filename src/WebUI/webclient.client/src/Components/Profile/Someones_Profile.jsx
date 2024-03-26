@@ -94,7 +94,19 @@ const Someones_Profile = () => {
                 body: JSON.stringify({ ProfileId })
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                if (response.status === 400) {
+                    const errorData = await response.json(); 
+                    console.error('Validation errors:', errorData);
+                    
+                    if (Array.isArray(errorData)) {
+                        errorData.forEach(err => {
+                            console.error(err.error); 
+                        });
+                    }
+                    throw new Error('Validation failed');
+                } else {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
             }
             const data = await response.json();
             console.log(data);

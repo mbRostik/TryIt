@@ -15,6 +15,9 @@ using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using FluentValidation.AspNetCore;
+using Chats.Application.Validators;
+
 
 var builder = WebApplication.CreateBuilder(args);
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
@@ -26,6 +29,7 @@ builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddGrpc();
 builder.Services.AddScoped<IMapperService, MapperService>();
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<GetChatIdDTOValidator>());
 
 
 builder.Host.UseSerilog((context, configuration) =>

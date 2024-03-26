@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Users.Application.Contracts.DTOs;
 using Users.Application.UseCases.Commands;
 using Users.Application.UseCases.Queries;
+using Users.Application.Validators;
 using Users.Domain.Entities;
 using static MassTransit.ValidationResultExtensions;
 
@@ -56,6 +57,13 @@ namespace Users.WebApi.Controllers
         [HttpPost("ChangeUserSettings")]
         public async Task<ActionResult> ChangeUserSettings([FromBody] ChangeProfileInformationDTO model)
         {
+            var validator = new ChangeProfileInformationDTOValidator();
+            var validationResult = validator.Validate(model);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
             try
             {
                 var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -85,6 +93,14 @@ namespace Users.WebApi.Controllers
         [HttpPost("UploadProfilePhoto")]
         public async Task<ActionResult<UserProfileDTO>> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
         {
+            var validator = new ProfilePhotoDTOValidator();
+            var validationResult = validator.Validate(model);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
@@ -123,6 +139,14 @@ namespace Users.WebApi.Controllers
         [HttpPost("GetSomeonesProfile")]
         public async Task<ActionResult<UserProfileDTO>> GetSomeonesProfile([FromBody] SomeonesProfileDTO request)
         {
+            var validator = new SomeonesProfileDTOValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+
             try
             {
 

@@ -112,16 +112,38 @@ const Profile = () => {
                             });
 
                             if (!response.ok) {
-                                toast.error('Smth went wrong.', {
-                                    position: "top-right",
-                                    autoClose: 5000,
-                                    hideProgressBar: false,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                });
-                                throw new Error(`Error from server: ${response.status} ${response.statusText}`);
+                                if (response.status === 400) {
+                                    const errorData = await response.json();
+                                    const errors = errorData.errors;
+
+                                    for (const key in errors) {
+                                        if (errors.hasOwnProperty(key)) {
+                                            const errorMessages = errors[key];
+                                            errorMessages.forEach(message => {
+                                                toast.error(`${key}: ${message}`, {
+                                                    position: "top-right",
+                                                    autoClose: 5000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                });
+                                            });
+                                        }
+                                    }
+                                } else {
+                                    toast.error(`HTTP error! Status: ${response.status}`, {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                    });
+                                }
+                                throw new Error(`HTTP error! Status: ${response.status}`);
                             }
 
                             else {

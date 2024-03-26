@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using FluentValidation.AspNetCore;
+using MassTransit;
 using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,6 +10,7 @@ using Serilog.Sinks.Elasticsearch;
 using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Consumers;
 using Users.Application.UseCases.Queries;
+using Users.Application.Validators;
 using Users.Infrastructure.Data;
 using Users.Infrastructure.Services;
 using Users.Infrastructure.Services.grpcServices;
@@ -23,6 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMapperService, MapperService>();
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChangeProfileInformationDTOValidator>());
+
 
 builder.Host.UseSerilog((context, configuration) =>
 {

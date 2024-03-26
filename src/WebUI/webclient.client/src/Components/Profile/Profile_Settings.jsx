@@ -57,23 +57,66 @@ const Profile_Settings = () => {
         setLoadingState(true);
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
-            const response = await fetch(await fetch(`${config.apiBaseUrl}/userUpdate`, {
+            const response = await fetch(`${config.apiBaseUrl}/userUpdate`, { 
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(userData)
-            }));
+            });
 
             if (!response.ok) {
+                if (response.status === 400) {
+                    const errorData = await response.json(); 
+                    const errors = errorData.errors; 
+
+                    for (const key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            const errorMessages = errors[key];
+                            errorMessages.forEach(message => {
+                                toast.error(`${key}: ${message}`, { 
+                                    position: "top-right",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                });
+                            });
+                        }
+                    }
+                } else {
+                    toast.error(`HTTP error! Status: ${response.status}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
                 throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                console.log("Data saved successfully!");
+                navigate('/profile');
             }
 
             console.log("Data saved successfully!");
-            navigate('/profile'); 
+            navigate('/profile');
         } catch (error) {
             console.error('Error while saving the user data', error);
+            toast.error('Error while saving the user data.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         } finally {
             setLoadingState(false);
         }
