@@ -173,7 +173,7 @@ export const AuthProvider = ({ children }) => {
                 console.assert(connection.state === signalR.HubConnectionState.Connected);
                 console.log(`Connection reestablished. Connected with connectionId "${connectionId}".`);
                 console.log(`Connection state: ${connection.state === signalR.HubConnectionState.Connected ? 'Connected' : connection.state}`);
-                connectSubscriptions(connection);
+               /* connectSubscriptions(connection);*/
                 setHubConnection(connection);
             });
         }

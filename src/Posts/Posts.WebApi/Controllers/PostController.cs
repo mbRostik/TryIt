@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Posts.Application.Contracts.DTOs;
 using Posts.Application.UseCases.Commands;
 using Posts.Application.UseCases.Queries;
 using Posts.Domain.Entities;
+using System.Security.Claims;
 
 namespace Posts.WebApi.Controllers
 {
@@ -13,37 +15,39 @@ namespace Posts.WebApi.Controllers
     public class PostController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly Serilog.ILogger logger;
 
-        public PostController(IMediator mediator)
+        public PostController(IMediator mediator, Serilog.ILogger logger)
         {
             this.mediator = mediator;
+            this.logger = logger;
         }
 
-        [HttpGet("GetAllPosts")]
-        public async Task<ActionResult<List<Post>>> GetItems()
+        [HttpGet("GetUserPosts")]
+        public async Task<ActionResult<List<GiveProfilePostsDTO>>> GetUserPosts()
         {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            var result = await mediator.Send(new GetAllPostsQuery());
+            var result = await mediator.Send(new GetUserPostsQuery(userId));
+
             return Ok(result);
         }
 
-
-        [HttpPut("CreateTemporaryPost")]
-        public async Task<ActionResult<Post>> PutPost()
+        [HttpPost("CreatePost")]
+        public async Task<ActionResult<Post>> CreatePost([FromBody] CreatePostDTO model)
         {
-            Post temp = new Post
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            model.UserId = userId;
+
+            var result = await mediator.Send(new CreatePostCommand(model));
+            if (result != null)
             {
-                Title = "Temp",
-                Content = "Nema",
-                UserId = "1",
-                Date = DateTime.Now
-            };
-
-            var result = await mediator.Send(new CreatePostCommand(temp));
-           
-            return Ok(result);
-
+                return Ok(result);
+            }
+            return BadRequest("There was a problem while creating the post");
         }
+
 
     }
 }

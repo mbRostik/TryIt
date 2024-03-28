@@ -7,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Posts.Application.UseCases.Commands
+namespace Posts.Application.UseCases.Queries
 {
-    public record CreatePostCommand(CreatePostDTO model) : IRequest<Post>;
+    public record GetUserPostsQuery(string id) : IRequest<List<GiveProfilePostsDTO>>;
+
 }

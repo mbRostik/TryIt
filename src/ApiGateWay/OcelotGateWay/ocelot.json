@@ -111,13 +111,33 @@
           "Port": 7234
         }
       ],
-      "DownstreamPathTemplate": "/SendMessage"
+      "DownstreamPathTemplate": "/ChatHub"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/CreatePost",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7028
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/CreatePost"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetUserPosts",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7028
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/GetUserPosts"
     }
   ],
-
-
-
-
 
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5000",

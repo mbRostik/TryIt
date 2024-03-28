@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.61.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.61.0" />
     <PackageReference Include="MassTransit" Version="8.1.3" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.3" />
     <PackageReference Include="MediatR" Version="12.2.0" />
@@ -18,6 +20,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -25,6 +30,7 @@
     <ProjectReference Include="..\Posts.Application\Posts.Application.csproj" />
     <ProjectReference Include="..\Posts.Domain\Posts.Domain.csproj" />
     <ProjectReference Include="..\Posts.Infrastructure.Data\Posts.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Posts.Infrastructure\Posts.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

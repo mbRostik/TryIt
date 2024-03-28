@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json'; 
 import { useAuth } from '../AuthProvider';
+import MyPosts from '../Profile/Posts/MyPosts';
 
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -300,7 +301,7 @@ const Profile = () => {
                                                 <h2>Following: {userData.followsCount}</h2>
                                             </div>
                              </div>
-                            
+                                        <MyPosts />
                         </>
                     )}
                 </div>

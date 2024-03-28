@@ -3,15 +3,41 @@ using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Posts.Application.Contracts.Interfaces;
 using Posts.Application.UseCases.Consumers;
 using Posts.Application.UseCases.Queries;
 using Posts.Infrastructure.Data;
+using Posts.Infrastructure.Services;
 using RabbitMQ.Client;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); ;
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
+
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<IMapperService, MapperService>();
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .WriteTo.Console()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(context.Configuration["ElasticConfiguration:Uri"]))
+        {
+            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}",
+            AutoRegisterTemplate = true,
+            NumberOfReplicas = 1,
+            NumberOfShards = 2
+        })
+        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+        .ReadFrom.Configuration(context.Configuration);
+});
+
 
 builder.Services.AddDbContext<PostDbContext>(options =>
 {
@@ -49,7 +75,9 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://localhost:7174";
+        var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
+
+        options.Authority = jwtBearerSettings["Authority"];
 
         options.Audience = "Posts.WebApi";
 
