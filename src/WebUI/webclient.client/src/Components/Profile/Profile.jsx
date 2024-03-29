@@ -282,21 +282,26 @@ const Profile = () => {
 
 
 
+                                                <div className="RightSideProfile">
 
-                                                <div className="Profile_Information">
-                                                    <div className="profile-info">
-                                                        <h2>Name: {userData.name}</h2>
-                                                        <h3>NickName: {userData.nickName}</h3>
-                                                        <p>Bio: {userData.bio}</p>
-                                                        <p>Date of Birth: {new Date(userData.dateOfBirth).toLocaleDateString()}</p>
+                                                    <div className="RightSideFromAvatar">
+                                                        <div className="Profile_Information">
+                                                            <div className="profile-info">
+                                                                <h2>{userData.nickName}</h2>
+
+                                                                <h3>{userData.name}</h3>
+                                                                <p>{userData.bio}</p>
+                                                                <p>Birth: {new Date(userData.dateOfBirth).toLocaleDateString()}</p>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
-                                                    <NavLink to="/Profile_Settings" className="ProfileButton" >Settings</NavLink>
-                                                    <button onClick={onLogout} className="ProfileButton">Logout</button>
-                                                </div>
-                                                
+
+                                                    </div>
+                                              
                                             </div>
 
-                                            <div className="Second_UpProfile">
+                                            <div className="FF_Count">
                                                 <h2>Followers: {userData.followersCount}</h2>
                                                 <h2>Following: {userData.followsCount}</h2>
                                             </div>

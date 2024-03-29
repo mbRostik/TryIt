@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -12,56 +12,169 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-.container {
-    padding-top: 80px;
+.All_container {
+    color: #2C2C2C;
+    height: 100vh;
     width: 100%;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding-bottom: 15px;
+    display: flex;
 }
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.Main_container {
+    max-width: 1605px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.Centre_Div{
+    display:flex;
+}
+.LeftSide {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #F7F7F7;
+    max-width: 315px;
+    width: 315px;
+    height: 100vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.Centre_Div{
+    display:flex;
+    justify-content:space-between;
+    margin: 40px 100px 0px 100px;
+}
+.Centre {
+    width:70%;
+}
+.Up_Bar {
+    background-color: #EFEFEF;
+    width: 100%;
+    max-height: 110px;
+    height: 110px;
+    border-bottom: 1px solid black;
+}
+body {
+    background-color: #EFEFEF;
+    margin: 0;
+    height: 100vh;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.RightSide {
+    position: fixed;
+    top: 2;
+    right:100px;
+    max-width: 100%;
+    display: flex;
+    justify-content: end;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.RightSideTitle {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-size: 20px;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+    margin-bottom: 12px;
+    color: #717171;
+}
+.RightSideComponent {
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-size: 16px;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+    margin-left: 150px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.RightSideChat {
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 20px 8px 20px;
+    border-radius:10px;
+}
+
+
+.contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    max-width: 100%;
+    margin-bottom: 20px;
+    transition: filter 0.2s ease;
+}
+
+    .contact:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        filter: brightness(88%);
+    }
+
+    .contact.active {
+        background-color: #f0f0f0;
+        border-left: 10px solid darkgrey;
+        filter: brightness(90%);
+    }
+
+.Right_contactimage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid orange;
+    transition: filter 0.1s ease;
+}
+
+    .Right_contactimage:hover {
+        cursor: pointer;
+        border-radius: 40%;
+    }
+
+.Right_info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.Right_info > div {
+    font-size: 13px;
+    color: black;
+}
+
+    .Right_info > div:first-child {
+        font-weight: bold;
+        color: black;
+    }
+
+    .Right_info > div:nth-child(2) {
+        color: black;
+    }
+
+    .Right_info > div:last-child {
+        color: black;
+        font-size: 13px;
+        max-width: 70%;
+    }
+
+
+.Right_info_up {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
 }

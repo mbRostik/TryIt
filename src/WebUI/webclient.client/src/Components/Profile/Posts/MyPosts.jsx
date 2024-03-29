@@ -4,7 +4,7 @@ import { isAuthenticated } from '../../../Functions/CheckAuthorization';
 import { NavLink } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../Styles/Profile.css'
+import '../../Styles/MyPosts.css'
 import axios from '../../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +22,8 @@ const MyPosts = () => {
     const [files, setFiles] = useState([]);
     const [fileNames, setFileNames] = useState([]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     const [isHovered, setIsHovered] = useState(false);
     const { user, userData, loading, isAuthorized, setLoadingState,
@@ -37,21 +39,6 @@ const MyPosts = () => {
         setFileNames(prevNames => [...prevNames, ...newFileNames]);
     };
 
-    function FilePreview({ file }) {
-        const isImage = file.type.startsWith('image/');
-
-        if (isImage) {
-            const src = URL.createObjectURL(file);
-            return <img src={src} alt={file.name} style={{ width: 100, height: 100 }} onLoad={() => URL.revokeObjectURL(src)} />;
-        } else {
-            return (
-                <div>
-                    <span>📄</span> {file.name}
-                </div>
-            );
-        }
-    }
-
     async function fetchPostsData(accessToken) {
         try {
             const response_posts = await fetch(`${config.apiBaseUrl}/GetUserPosts`, {
@@ -61,17 +48,44 @@ const MyPosts = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            const response = await response_posts.json();
+            let response = await response_posts.json();
 
             if (response_posts.ok && response.$values) {
-                setPosts(response.$values);
+                console.log("Response from server:", response);
+                response = processFiles(response.$values);
+                setPosts(response);
                 console.log("Fetching posts");
             }
         } catch (error) {
-            console.log('There is no posts');
+            console.log('There is no posts', error);
         }
     }
+    function processFiles(posts) {
+        const objectStore = {};
 
+        posts.forEach(post => {
+            if (post.files && post.files.$values) {
+                post.files.$values.forEach(file => {
+                    if (file.$id) {
+                        objectStore[file.$id] = file;
+                    }
+                });
+            }
+        });
+
+        posts.forEach(post => {
+            if (post.files && post.files.$values) {
+                post.files.$values = post.files.$values.map(file => {
+                    if (file.$ref) {
+                        return objectStore[file.$ref];
+                    }
+                    return file; 
+                });
+            }
+        });
+
+        return posts; 
+    }
 
     useEffect(() => {
         setLoadingState(true);
@@ -80,9 +94,16 @@ const MyPosts = () => {
         }
         asyncFetchingChats();
         setLoadingState(false);
-        console.log(posts);
 
     }, [user]);
+
+    const toggleModal = () => {
+        setTitle('');
+        setContent('');
+        setFiles([]);
+        setFileNames([]);
+        setIsModalOpen(!isModalOpen);
+    };
 
 
     const handleSubmit = async (event) => {
@@ -106,7 +127,6 @@ const MyPosts = () => {
             files: filesBase64,
 
         };
-        console.log(model);
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
             const response = await fetch(`${config.apiBaseUrl}/CreatePost`, {
@@ -170,7 +190,7 @@ const MyPosts = () => {
                 setContent('');
                 setFiles([]);
                 setFileNames([]);
-
+                toggleModal();
 
             }
 
@@ -188,7 +208,39 @@ const MyPosts = () => {
         }
 
 
+    }; 
+
+    const onLogout = async () => {
+        await userManager.signoutRedirect();
+        navigate('/');
     };
+
+    function FilePreview({ file }) {
+        console.log("KJGJGJWJFDGJWGFJGWKJF");
+        console.log(file);
+        try {
+            const fileSrc = file.file.startsWith('data:image') ? file.file : `data:image/jpeg;base64,${file.file}`;
+
+            if (/^data:image\/[a-zA-Z]+;base64,/.test(fileSrc)) {
+                return (
+                    <div>
+                        <img src={fileSrc} alt={file.name} className="PostPhoto" />
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="Post_Files">
+                        <p>📄 {file.name}</p>
+                    </div>
+                );
+            }
+        }
+
+        catch (ex) {
+            return(<div></div>)
+        }
+       
+    }
 
     return (
         <div>
@@ -201,72 +253,81 @@ const MyPosts = () => {
             ) : isAuthorized === false ? (
                 <div>UnAuthorized</div>
             ) : (
-                <div>
-                    <form onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="title">Title:</label>
-                            <input
-                                id="title"
-                                type="text"
-                                value={title}
-                                onChange={e => setTitle(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="content">Content:</label>
-                            <textarea
-                                id="content"
-                                value={content}
-                                onChange={e => setContent(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="files">Files:</label>
-                            <input
-                                id="files"
-                                type="file"
-                                onChange={handleFileChange}
-                                multiple
-                            />
-                            <div className="selected-files">
-                                {files.map((file, index) => (
-                                    <div key={index} className="file-preview">
-                                        <FilePreview file={file} />
-                                    </div>
-                                ))}
+                            <div className="Buttons">
+                                <NavLink to="/Profile_Settings" className="button outline" >Settings</NavLink>
+                                <button className="button solid" onClick={toggleModal}>Create Post</button>
+                                <button onClick={onLogout} className="button outline">LogOut</button>
                             </div>
-                        </div>
-                        <button type="submit">Create Post</button>
-                    </form>
+                           
+
+                            <div className={isModalOpen ? "modal display-block" : "modal display-none"}>
+                                <div className="modal-main">
+                                    <div className="form-container">
+                                        <form onSubmit={handleSubmit}>
+                                            <button onClick={toggleModal} className="close-modal-button">✖</button>
+
+                                            <h2>Post Creation</h2>
+
+                                            <div>
+                                                <label htmlFor="title">Title</label>
+                                                <input
+                                                    id="title"
+                                                    type="text"
+                                                    value={title}
+                                                    onChange={e => setTitle(e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="content">Description</label>
+                                                <textarea
+                                                    id="content"
+                                                    value={content}
+                                                    onChange={e => setContent(e.target.value)}
+                                                    required
+                                                    rows="10"  
+                                                    cols="50"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="files">Files</label>
+                                                <input
+                                                    id="files"
+                                                    type="file"
+                                                    onChange={handleFileChange}
+                                                    className="custom-file-input"
+                                                    multiple
+                                                />
+                                                <div className="selected-files">
+                                                    {files.map((file, index) => (
+                                                        <div key={index} className="file-preview">
+                                                            {file.name}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <button type="submit">Publish</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
                             <div className="posts">
                                 {posts && posts.length > 0 ? (
+                                    console.log(posts),
                                     posts.map((post, index) => (
-                                        <div key={index}>
-                                            <h2>{post.title}</h2>
-                                            <p>{post.content}</p>
+                                        <div key={index} className="post">
+                                            <div className="Post_Title">{post.title}</div>
+                                            <div className="Post_Description">{post.content}</div>
                                             {post.files && post.files.$values && post.files.$values.map((file, fileIndex) => (
-                                                <div key={fileIndex} className="file-preview">
-                                                    {typeof file.file === 'string' && file.file.startsWith("/9j/") ? (
-                                                        <div>
-                                                            <img src={`data:image/jpeg;base64,${file.file}`} alt={file.name} style={{ width: 100, height: 100 }} />
-                                                            <p>{file.name}</p>
-                                                        </div>
-                                                    ) : (
-                                                        <div>
-                                                            <p>📄 {file.name}</p>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                <FilePreview key={fileIndex} file={file} />
                                             ))}
                                         </div>
                                     ))
-                                ) : posts !== null ? (
-                                    <div>
-                                        <div>There are no posts yet.</div>
-                                    </div>
-                                ) : null}
+                                ) : (
+                                    <div>No posts to display.</div>
+                                )}
                             </div>
                 </div>
             )}

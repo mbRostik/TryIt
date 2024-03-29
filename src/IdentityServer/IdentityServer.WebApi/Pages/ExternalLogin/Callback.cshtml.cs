@@ -151,7 +151,7 @@ public class Callback : PageModel
                    claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
         if (name != null)
         {
-            user.UserName = name;
+            user.UserName = name.ToString();
             filtered.Add(new Claim(JwtClaimTypes.Name, name));
         }
         else

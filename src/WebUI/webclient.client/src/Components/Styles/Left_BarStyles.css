@@ -1,0 +1,111 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+.inter-font {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+}
+
+.LeftBar_Up {
+    display: flex;
+    margin-top: 27px;
+    margin-left: 15px;
+}
+.LeftBar_Centre{
+    display:flex;
+    flex-direction:column;
+}
+
+
+.LeftBar_Centre_Component,
+.LeftBar_Centre_Component.active {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    margin-left: 27px;
+    transition: color 0.2s;
+}
+
+    .LeftBar_Centre_Component:hover,
+    .LeftBar_Centre_Component.active:hover {
+        color: dimgray;
+    }
+.LeftBar_Centre_Component {
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    margin-left: 27px;
+}
+    .LeftBar_Centre_Component:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .LeftBar_Centre_Component.active {
+        position: relative;
+    }
+
+        .LeftBar_Centre_Component.active::after {
+            content: '';
+            position: absolute;
+            right: 0; 
+            top: 0;
+            bottom: 0;
+            width: 4px; 
+            background-color: orange; 
+        }
+
+
+.LeftBar_Down {
+    display: flex;
+    flex-direction: column;
+}
+
+.LeftBar_Down_Component {
+    margin-bottom: 31px;
+    display: flex;
+    align-items: center;
+    margin-left: 27px;
+}
+
+    .LeftBar_Down_Component:last-child {
+        margin-bottom: 30px;
+    }
+.Left_SideIcon{
+    max-height:28px;
+    margin-right:25px;
+}
+.Left_SideLogo {
+    height: 55px;
+    margin-right: 47px;
+}
+
+.signout-button {
+    margin-right:25px;
+    margin-left:25px;
+    margin-bottom:25px;
+    text-align:center;
+    padding: 17px 73px 17px 73px;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "slnt";
+    background-color: #2C2C2C;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .signout-button:hover {
+        background-color: #555; 
+    }
+
+
