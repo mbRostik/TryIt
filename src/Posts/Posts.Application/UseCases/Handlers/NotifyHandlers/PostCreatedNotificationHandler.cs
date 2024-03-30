@@ -13,19 +13,35 @@ namespace Posts.Application.UseCases.Handlers.NotifyHandlers
     public class PostCreatedNotificationHandler : INotificationHandler<PostCreatedNotification>
     {
         private readonly IPublishEndpoint _publisher;
+        private readonly Serilog.ILogger logger;
 
         public PostCreatedNotificationHandler(
-           IPublishEndpoint publisher)
+           IPublishEndpoint publisher, Serilog.ILogger logger)
         {
             _publisher = publisher;
+            this.logger = logger;
         }
 
         public async Task Handle(PostCreatedNotification notification, CancellationToken cancellationToken)
         {
-            PostCreatedEvent productCreatedEvent = new PostCreatedEvent();
-            productCreatedEvent.PostId=notification.item.Id;
-            Console.WriteLine("Publishing PostCreatedEvent PostId: " + productCreatedEvent.PostId);
-            await _publisher.Publish(productCreatedEvent);
+            logger.Information("Handling PostCreatedNotification for PostId: {PostId}", notification.item.Id);
+
+            try
+            {
+                PostCreatedEvent postCreatedEvent = new PostCreatedEvent
+                {
+                    PostId = notification.item.Id
+                };
+
+                logger.Information("Publishing PostCreatedEvent PostId: {PostId}", postCreatedEvent.PostId);
+                await _publisher.Publish(postCreatedEvent);
+
+                logger.Information("PostCreatedEvent for PostId: {PostId} published successfully", postCreatedEvent.PostId);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error handling PostCreatedNotification for PostId: {PostId}", notification.item.Id);
+            }
         }
     }
 }

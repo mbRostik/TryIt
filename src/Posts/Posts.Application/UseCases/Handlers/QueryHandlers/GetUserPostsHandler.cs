@@ -19,46 +19,49 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
 
         private readonly PostDbContext _dbContext;
         private readonly IMapperService _mapper;
+        private readonly Serilog.ILogger logger;
 
-        public GetUserPostsHandler(PostDbContext dbContext, IMapperService mapper)
+        public GetUserPostsHandler(PostDbContext dbContext, IMapperService mapper, Serilog.ILogger logger)
         {
             this._dbContext = dbContext;
             _mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task<List<GiveProfilePostsDTO>> Handle(GetUserPostsQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var postsWithFiles = _dbContext.Posts
+                logger.Information("Handling GetUserPostsQuery for UserId: {UserId}", request.id);
+
+                var result = _dbContext.Posts
                     .AsNoTracking()
                     .Where(x => x.UserId == request.id)
                     .Select(p => new GiveProfilePostsDTO
                     {
                         Title = p.Title,
                         Content = p.Content,
-                        Date=p.Date,
+                        Date = p.Date,
                         Files = p.Files.Select(f => new GiveFileDTO
                         {
                             Id = f.Id,
                             Name = f.Name,
-                            file = f.file, 
+                            file = f.file,
                             Date = f.Date,
                             PostId = f.PostId
                         }).ToList()
                     })
                     .ToList();
 
-                var mapper = _mapper.InitializeAutomapper_Post_To_GiveProfilePostDTO();
-                List<GiveProfilePostsDTO> result = postsWithFiles.Select(post => mapper.Map<GiveProfilePostsDTO>(post)).ToList();
+                logger.Information("Successfully handled GetUserPostsQuery for UserId: {UserId}. Found {Count} posts.", request.id, result.Count);
 
                 return result;
             }
-            
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                return null;
+                logger.Error(ex, "Error handling GetUserPostsQuery for UserId: {UserId}", request.id);
+                throw;
             }
         }
 

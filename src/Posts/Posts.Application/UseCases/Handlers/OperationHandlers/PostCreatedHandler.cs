@@ -19,29 +19,30 @@ namespace Posts.Application.UseCases.Handlers.Creation
 
         private readonly PostDbContext dbContext;
         private readonly IMapperService _mapper;
+        private readonly Serilog.ILogger logger;
 
-        public PostCreatedHandler(PostDbContext dbContext, IMediator mediator, IMapperService mapper)
+        public PostCreatedHandler(PostDbContext dbContext, IMediator mediator, IMapperService mapper, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
             this._mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task<bool> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-
             using var transaction = await dbContext.Database.BeginTransactionAsync();
             var mapper = _mapper.InitializeAutomapper_CreatePostDTO_To_Post();
 
             try
             {
                 Post temp = mapper.Map<Post>(request.model);
-
                 var model = await dbContext.Posts.AddAsync(temp);
                 await dbContext.SaveChangesAsync();
 
                 await transaction.CommitAsync();
 
+                logger.Information("Post with ID {PostId} created successfully", model.Entity.Id);
                 await mediator.Publish(new PostCreatedNotification(model.Entity), cancellationToken);
 
                 return true;
@@ -49,8 +50,8 @@ namespace Posts.Application.UseCases.Handlers.Creation
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                Console.WriteLine(ex.ToString());
-                return false; 
+                logger.Error(ex, "Error creating post. {ErrorMessage}", ex.Message);
+                return false;
             }
         }
     }

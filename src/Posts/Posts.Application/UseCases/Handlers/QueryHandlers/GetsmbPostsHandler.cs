@@ -17,18 +17,22 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
 
         private readonly PostDbContext _dbContext;
         private readonly IMapperService _mapper;
+        private readonly Serilog.ILogger logger;
 
-        public GetsmbPostsHandler(PostDbContext dbContext, IMapperService mapper)
+        public GetsmbPostsHandler(PostDbContext dbContext, IMapperService mapper, Serilog.ILogger logger)
         {
             this._dbContext = dbContext;
             _mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task<List<GiveProfilePostsDTO>> Handle(GetsmbPostsQuery request, CancellationToken cancellationToken)
         {
+            logger.Information("Handling GetsmbPostsQuery for UserId: {UserId}", request.id);
+
             try
             {
-                var postsWithFiles = _dbContext.Posts
+                var result = _dbContext.Posts
                     .AsNoTracking()
                     .Where(x => x.UserId == request.id)
                     .Select(p => new GiveProfilePostsDTO
@@ -47,16 +51,15 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
                     })
                     .ToList();
 
-                var mapper = _mapper.InitializeAutomapper_Post_To_GiveProfilePostDTO();
-                List<GiveProfilePostsDTO> result = postsWithFiles.Select(post => mapper.Map<GiveProfilePostsDTO>(post)).ToList();
+                logger.Information("Successfully handled GetsmbPostsQuery for UserId: {UserId}, returning {Count} posts", request.id, result.Count);
 
                 return result;
             }
 
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                return null;
+                logger.Error(ex, "Error handling GetsmbPostsQuery for UserId: {UserId}", request.id);
+                throw; 
             }
         }
 

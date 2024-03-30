@@ -14,14 +14,17 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly PostDbContext dbContext;
+        private readonly Serilog.ILogger logger;
 
-        public GetAllPostsHandler(PostDbContext dbContext)
+        public GetAllPostsHandler(PostDbContext dbContext, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<Post>> Handle(GetAllPostsQuery request, CancellationToken cancellationToken)
         {
+            logger.Information("Handling GetAllPostsQuery");
             var result = dbContext.Posts.ToList();
             return result;
         }
