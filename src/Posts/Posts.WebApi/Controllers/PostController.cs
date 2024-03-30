@@ -34,20 +34,30 @@ namespace Posts.WebApi.Controllers
         }
 
         [HttpPost("CreatePost")]
-        public async Task<ActionResult<Post>> CreatePost([FromBody] CreatePostDTO model)
+        public async Task<ActionResult> CreatePost([FromBody] CreatePostDTO model)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             model.UserId = userId;
 
             var result = await mediator.Send(new CreatePostCommand(model));
-            if (result != null)
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest("There was a problem while creating the post");
+        }
+
+        [HttpPost("GetsmbPosts")]
+        public async Task<ActionResult<List<GiveProfilePostsDTO>>> GetsmbPosts([FromBody] GetSmbPosts model)
+        {
+            var result = await mediator.Send(new GetsmbPostsQuery(model.ProfileId));
+            if (result.Any())
             {
                 return Ok(result);
             }
             return BadRequest("There was a problem while creating the post");
         }
-
 
     }
 }

@@ -35,9 +35,6 @@ const ListOfChats = () => {
         <div className = "MessagePage">
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             {loading ? <div className={`overlay ${loading ? 'visible' : ''}`}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <ThreeDots color="#00BFFF" height={80} width={80} />
-                </div>
             </div>
                 : isAuthorized === false ? (
                     <div>UnAuthorized</div>
@@ -47,33 +44,33 @@ const ListOfChats = () => {
                     </div>
 
                     ) : (
-                                <div className="chatContainer">
-                                <div className="LeftSide">
+                                <div className="Chat_Container">
+                                  <div className="Chat_LeftSide">
                                     
                                     {chats && Array.isArray(chats) && chats.map((chat, index) => (
                                             <div key={index}
-                                                className={`contact ${chat.chatId === activeChatId ? "active" : ""}`} 
+                                            className={`Chat_contact ${chat.chatId === activeChatId ? "active" : ""}`} 
                                                 onClick={() => handleInfoClick(chat.chatId)}>
 
                                                 <div >
-                                                    <img className="contactimage"
+                                                <img className="Chat_contactimage"
                                                         src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "../../public/NoPhoto.jpg"}
                                                         alt="Contact"
                                                         onClick={(e) => { e.stopPropagation(); handleImageClick(chat.contactId); }} 
                                                     />
                                                 </div>
 
-                                                <div className="info">
-                                                    <div className="info_up">
-                                                        <div>{chat.contactNickName}</div>
-                                                        <div>{chat.lastActivity ? new Date(chat.lastActivity).toLocaleString() : 'N/A'}</div>
-                                                    </div>
+                                            <div className="Chat_info">
+                                                <div className="Chat_info_up">
+                                                        <div>{chat.contactNickName}</div>                                                    </div>
                                                     <div>
                                                         {chat.lastMessageSender !== chat.contactId ? "You: " : ""}
-                                                        {chat.lastMessage && chat.lastMessage.length > 18
-                                                            ? chat.lastMessage.substring(0, 18) + '...'
+                                                        {chat.lastMessage && chat.lastMessage.length > 15
+                                                            ? chat.lastMessage.substring(0, 15) + '...'
                                                             : chat.lastMessage || 'No message'}
-                                                    </div>
+                                                </div>
+                                                <div className="LastActivityChat">{chat.lastActivity ? new Date(chat.lastActivity).toLocaleString() : 'N/A'}</div>
+
                                                 </div>
 
                                             </div>
@@ -81,7 +78,7 @@ const ListOfChats = () => {
 
                                     </div>
 
-                                    <div className="RightSide">
+                                    <div className="Chat_RightSide">
                                         {activeChatId && <OpenedChat chatId={activeChatId} />}
                                     </div>
                                 </div>

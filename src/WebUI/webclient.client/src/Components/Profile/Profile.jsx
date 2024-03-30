@@ -249,7 +249,6 @@ const Profile = () => {
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             {loading ? <div className={`overlay ${loading ? 'visible' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <ThreeDots color="#00BFFF" height={80} width={80} />
                 </div>
                 
 

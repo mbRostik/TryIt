@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Posts.Application.Contracts.DTOs;
 using Posts.Application.Contracts.Interfaces;
 using Posts.Application.UseCases.Queries;
-using Posts.Domain.Entities;
 using Posts.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -14,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace Posts.Application.UseCases.Handlers.QueryHandlers
 {
-    public class GetUserPostsHandler : IRequestHandler<GetUserPostsQuery, List<GiveProfilePostsDTO>>
+    internal class GetsmbPostsHandler : IRequestHandler<GetsmbPostsQuery, List<GiveProfilePostsDTO>>
     {
 
         private readonly PostDbContext _dbContext;
         private readonly IMapperService _mapper;
 
-        public GetUserPostsHandler(PostDbContext dbContext, IMapperService mapper)
+        public GetsmbPostsHandler(PostDbContext dbContext, IMapperService mapper)
         {
             this._dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task<List<GiveProfilePostsDTO>> Handle(GetUserPostsQuery request, CancellationToken cancellationToken)
+        public async Task<List<GiveProfilePostsDTO>> Handle(GetsmbPostsQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -37,12 +35,12 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
                     {
                         Title = p.Title,
                         Content = p.Content,
-                        Date=p.Date,
+                        Date = p.Date,
                         Files = p.Files.Select(f => new GiveFileDTO
                         {
                             Id = f.Id,
                             Name = f.Name,
-                            file = f.file, 
+                            file = f.file,
                             Date = f.Date,
                             PostId = f.PostId
                         }).ToList()
@@ -54,8 +52,8 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
 
                 return result;
             }
-            
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return null;

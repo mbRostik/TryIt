@@ -1,1 +1,71 @@
-﻿
+﻿.Settings_Form {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .Settings_Form label {
+        display: block;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .Settings_Form input[type="text"],
+    .Settings_Form input[type="email"],
+    .Settings_Form input[type="tel"],
+    .Settings_Form input[type="date"],
+    .Settings_Form textarea,
+    .Settings_Form select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .Settings_Form textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    .Settings_Form .PrivateAccount,
+    .Settings_Form .Sex {
+        margin-bottom: 20px;
+    }
+
+    .Settings_Form {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: lightgrey;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+        .Settings_Form .ProfileSettingsButton:hover {
+            background-color: #0056b3;
+        }
+
+    .Settings_Form .DateOfBirth input {
+        width: auto;
+    }
+
+    .Settings_Form div {
+        margin-bottom: 15px;
+    }
+
+    
+    .Settings_Form input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+    }

@@ -13,7 +13,9 @@ namespace Posts.Application.Contracts.DTOs
 
         public string Content { get; set; }
 
-        public List<PFile> files { get; set; }
+        public DateTime Date { get; set; }
+
+        public List<GiveFileDTO> Files { get; set; }
 
     }
 }

@@ -136,6 +136,18 @@
         }
       ],
       "DownstreamPathTemplate": "/Post/GetUserPosts"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetsmbPosts",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7028
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/GetsmbPosts"
     }
   ],
 

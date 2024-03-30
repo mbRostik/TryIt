@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Posts.Application.UseCases.Handlers.Creation
 {
-    public class PostCreatedHandler : IRequestHandler<CreatePostCommand, Post>
+    public class PostCreatedHandler : IRequestHandler<CreatePostCommand, bool>
     {
         private readonly IMediator mediator;
 
@@ -27,7 +27,7 @@ namespace Posts.Application.UseCases.Handlers.Creation
             this._mapper = mapper;
         }
 
-        public async Task<Post> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
 
             using var transaction = await dbContext.Database.BeginTransactionAsync();
@@ -44,13 +44,13 @@ namespace Posts.Application.UseCases.Handlers.Creation
 
                 await mediator.Publish(new PostCreatedNotification(model.Entity), cancellationToken);
 
-                return model.Entity;
+                return true;
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 Console.WriteLine(ex.ToString());
-                return null; 
+                return false; 
             }
         }
     }

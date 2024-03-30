@@ -15,8 +15,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); ;
+builder.Services.AddControllers();
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
 builder.Services.AddAutoMapper(typeof(Program));

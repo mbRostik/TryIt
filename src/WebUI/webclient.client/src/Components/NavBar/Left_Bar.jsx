@@ -32,8 +32,8 @@ const NavBar = () => {
                     to="/Profile"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/search.png" alt="Home" />
-                    <div className="inter-font">SEARCH</div>
+                    <img className="Left_SideIcon" src="../../public/profile.png" alt="Home" />
+                    <div className="inter-font">PROFILE</div>
                 </NavLink>
 
                 <NavLink

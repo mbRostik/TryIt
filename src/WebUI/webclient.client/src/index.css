@@ -47,7 +47,7 @@
     margin: 40px 100px 0px 100px;
 }
 .Centre {
-    width:70%;
+    width: 80%;
 }
 .Up_Bar {
     background-color: #EFEFEF;
@@ -66,7 +66,7 @@ body {
 .RightSide {
     position: fixed;
     top: 2;
-    right:100px;
+    right:50px;
     max-width: 100%;
     display: flex;
     justify-content: end;

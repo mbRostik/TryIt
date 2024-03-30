@@ -1,1 +1,92 @@
-﻿
+﻿.Chat_Container {
+    max-width: 100%;
+    width: 100%;
+    max-height: 80vh;
+    height: 80vh;
+    display:flex;
+}
+.Chat_LeftSide{
+    max-width:100%;
+    height:100%;
+    max-height:100%;
+}
+
+.Chat_RightSide{
+    width:100%;
+    max-width:100%;
+}
+
+.Chat_contact {
+    width:250px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: lightgrey;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    max-width: 100%;
+    margin-bottom: 20px;
+    transition: filter 0.2s ease;
+}
+
+    .Chat_contact:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        filter: brightness(88%);
+    }
+
+    .Chat_contact.active {
+        background-color: #f0f0f0;
+        border-left: 10px solid darkgrey;
+        filter: brightness(90%);
+    }
+
+.Chat_contactimage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid orange;
+    transition: filter 0.1s ease;
+}
+
+    .Chat_contactimage:hover {
+        cursor: pointer;
+        border-radius: 40%;
+    }
+
+.Chat_info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .Chat_info > div {
+        font-size: 13px;
+        color: black;
+    }
+
+        .Chat_info > div:first-child {
+            font-weight: bold;
+            color: black;
+        }
+
+        .Chat_info > div:nth-child(2) {
+            color: black;
+        }
+
+        .Chat_info > div:last-child {
+            color: black;
+            font-size: 12px;
+            max-width: 70%;
+        }
+
+
+.Chat_info_up {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}

@@ -17,7 +17,7 @@ namespace Posts.Infrastructure.Services
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Post, GiveProfilePostsDTO>()
-                     .ForMember(dest => dest.files, act => act.MapFrom(src => src.Files.ToList()))
+                     //.ForMember(dest => dest.files, act => act.MapFrom(src => src.Files.ToList()))
                      .ForMember(dest => dest.Title, act => act.MapFrom(src => src.Title))
                      .ForMember(dest => dest.Content, act => act.MapFrom(src => src.Content));
             });

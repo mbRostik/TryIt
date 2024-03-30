@@ -83,7 +83,12 @@ function OpenedChat({ chatId }) {
             return null;
         }
     }
-
+    function handleKeyDown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault(); 
+            handleSendMessage(e);
+        }
+    }
     const handleImageClick = (contactId) => {
         navigate(`/Someones_Profile/${contactId}`);
     };
@@ -131,6 +136,7 @@ function OpenedChat({ chatId }) {
                 await hubConnection.invoke("SendMessage", { MessageContent: messageContent, ChatId: activeChatId });
                 setMessageContent(""); 
             } catch (error) {
+
                 console.error('Error while sending a message:', error);
             }
         }
@@ -144,6 +150,7 @@ function OpenedChat({ chatId }) {
         event.preventDefault(); 
         sendMessage();
     };
+    const InsideMessagesRef = useRef(null);
 
     const SendMessageButtonWithoutChat = async () => {
         if (hubConnection && messageContent.trim()) {
@@ -162,7 +169,7 @@ function OpenedChat({ chatId }) {
             {foundChat ? (
                 <>
                     <div className="Messages">
-                        <div className="InsideMessages">
+                        <div className="InsideMessages" >
                             {messages && messages.length > 0 ? (
                                 messages.map((message, index) => (
 
@@ -199,6 +206,7 @@ function OpenedChat({ chatId }) {
                                 placeholder="Type your message here..."
                                 value={messageContent}
                                 onChange={handleMessageChange}
+                                onKeyDown={handleKeyDown}
                             />
                             <button className="SendMessageButton" type="submit">Send</button>
                         </form>
@@ -212,6 +220,7 @@ function OpenedChat({ chatId }) {
                                 placeholder="Type your message here..."
                                 value={messageContent}
                                 onChange={handleMessageChange}
+                                onKeyDown={handleKeyDown}
                             />
                             <button className="SendMessageButton" type="submit">Send</button>
                         </form>

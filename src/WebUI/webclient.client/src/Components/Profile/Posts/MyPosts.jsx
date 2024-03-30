@@ -49,42 +49,13 @@ const MyPosts = () => {
                 }
             });
             let response = await response_posts.json();
-
-            if (response_posts.ok && response.$values) {
-                console.log("Response from server:", response);
-                response = processFiles(response.$values);
+            if (response_posts.ok) {
                 setPosts(response);
                 console.log("Fetching posts");
             }
         } catch (error) {
             console.log('There is no posts', error);
         }
-    }
-    function processFiles(posts) {
-        const objectStore = {};
-
-        posts.forEach(post => {
-            if (post.files && post.files.$values) {
-                post.files.$values.forEach(file => {
-                    if (file.$id) {
-                        objectStore[file.$id] = file;
-                    }
-                });
-            }
-        });
-
-        posts.forEach(post => {
-            if (post.files && post.files.$values) {
-                post.files.$values = post.files.$values.map(file => {
-                    if (file.$ref) {
-                        return objectStore[file.$ref];
-                    }
-                    return file; 
-                });
-            }
-        });
-
-        return posts; 
     }
 
     useEffect(() => {
@@ -107,6 +78,7 @@ const MyPosts = () => {
 
 
     const handleSubmit = async (event) => {
+
         event.preventDefault();
 
         const filesBase64 = await Promise.all(
@@ -127,6 +99,7 @@ const MyPosts = () => {
             files: filesBase64,
 
         };
+
         try {
             const accessToken = await userManager.getUser().then(user => user.access_token);
             const response = await fetch(`${config.apiBaseUrl}/CreatePost`, {
@@ -139,11 +112,13 @@ const MyPosts = () => {
             });
 
             if (!response.ok) {
+
                 if (response.status === 400) {
                     const errorData = await response.json();
                     const errors = errorData.errors;
 
                     for (const key in errors) {
+
                         if (errors.hasOwnProperty(key)) {
                             const errorMessages = errors[key];
                             errorMessages.forEach(message => {
@@ -160,6 +135,7 @@ const MyPosts = () => {
                         }
                     }
                 } else {
+
                     toast.error(`HTTP error! Status: ${response.status}`, {
                         position: "top-right",
                         autoClose: 5000,
@@ -174,6 +150,7 @@ const MyPosts = () => {
             }
 
             else {
+
                 await fetchPostsData(user.access_token);
 
                 toast.success('Post created.', {
@@ -195,6 +172,8 @@ const MyPosts = () => {
             }
 
         } catch (err) {
+            console.log(err.message);
+
             toast.error(`Error occurred: ${err.message}`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -215,31 +194,40 @@ const MyPosts = () => {
         navigate('/');
     };
 
+    function formatDate(isoString) {
+        const date = new Date(isoString);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function isImage(fileName) {
+        return /\.(jpg|jpeg|png|gif)$/i.test(fileName);
+    }
+
     function FilePreview({ file }) {
-        console.log("KJGJGJWJFDGJWGFJGWKJF");
-        console.log(file);
-        try {
-            const fileSrc = file.file.startsWith('data:image') ? file.file : `data:image/jpeg;base64,${file.file}`;
+        const isFileImage = isImage(file.name);
 
-            if (/^data:image\/[a-zA-Z]+;base64,/.test(fileSrc)) {
-                return (
-                    <div>
-                        <img src={fileSrc} alt={file.name} className="PostPhoto" />
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="Post_Files">
-                        <p>📄 {file.name}</p>
-                    </div>
-                );
-            }
+        if (isFileImage) {
+            const fileSrc = `data:image/jpeg;base64,${file.file}`;
+            return (
+                <div className="image-container">
+                    <img src={fileSrc} alt={file.name} className="PostPhoto" />
+                </div>
+            );
+        } else {
+            const fileHref = `data:application/octet-stream;base64,${file.file}`;
+            return (
+                <div className="Post_Files">
+                    📄 {file.name}
+                    <a href={fileHref} download={file.name} className="download-button">Download</a>
+                </div>
+            );
         }
-
-        catch (ex) {
-            return(<div></div>)
-        }
-       
     }
 
     return (
@@ -291,14 +279,17 @@ const MyPosts = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label htmlFor="files">Files</label>
                                                 <input
                                                     id="files"
                                                     type="file"
                                                     onChange={handleFileChange}
                                                     className="custom-file-input"
                                                     multiple
+                                                    style={{ display: 'none' }}
                                                 />
+                                                <label htmlFor="files" className="upload-button">
+                                                    Upload Files
+                                                </label>
                                                 <div className="selected-files">
                                                     {files.map((file, index) => (
                                                         <div key={index} className="file-preview">
@@ -315,12 +306,14 @@ const MyPosts = () => {
                             </div>
                             <div className="posts">
                                 {posts && posts.length > 0 ? (
-                                    console.log(posts),
                                     posts.map((post, index) => (
                                         <div key={index} className="post">
-                                            <div className="Post_Title">{post.title}</div>
+                                            <div className="Post_Title_Info">
+                                                <div className="Post_Title">{post.title}</div>
+                                                <div className="Post_Title_Date">{formatDate(post.date)}</div>
+                                            </div>
                                             <div className="Post_Description">{post.content}</div>
-                                            {post.files && post.files.$values && post.files.$values.map((file, fileIndex) => (
+                                            {post.files && post.files.map((file, fileIndex) => (
                                                 <FilePreview key={fileIndex} file={file} />
                                             ))}
                                         </div>

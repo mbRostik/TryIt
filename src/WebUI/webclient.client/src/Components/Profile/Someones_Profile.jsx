@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../../config.json'; 
 import { useAuth } from '../AuthProvider';
+import SmbPosts from '../Profile/Posts/SmbPosts';
 
 const Someones_Profile = () => {
     const navigate = useNavigate();
@@ -166,10 +167,11 @@ const Someones_Profile = () => {
                                                 <h2>Following: {smbData.followsCount}</h2>
                                             </div>
                                             <div>
-                                                <button className="delete-button" onClick={OpenChat}>Write</button>
+                                                <button className="button" onClick={OpenChat}>Write</button>
 
                                             </div>
-                                </div>
+                                        </div>
+                                        <SmbPosts ProfileId={ProfileId} />
                             </>
                         )}
                     </div>
