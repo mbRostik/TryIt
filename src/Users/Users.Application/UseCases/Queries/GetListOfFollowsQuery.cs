@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Users.Application.Contracts.DTOs;
+using Users.Domain.Entities;
 
 namespace Users.Application.UseCases.Queries
 {
-    public record GetUserQuery(string id) : IRequest<UserProfileDTO>;
+    public record GetListOfFollowsQuery(string userId) : IRequest<List<Follow>>;
 
 }

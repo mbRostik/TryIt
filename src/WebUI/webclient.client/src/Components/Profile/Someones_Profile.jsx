@@ -125,14 +125,54 @@ const Someones_Profile = () => {
         }
     };
 
+    const Follow = async () => {
+        const accessToken = user.access_token;
+        setLoadingState(true);
+ 
+        try {
+            const response = await fetch(`${config.apiBaseUrl}/Follow`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ProfileId })
+            });
+            if (!response.ok) {
+                if (response.status === 400) {
+                    const errorData = await response.json();
+                    console.error('Validation errors:', errorData);
 
+                    if (Array.isArray(errorData)) {
+                        errorData.forEach(err => {
+                            console.error(err.error);
+                        });
+                    }
+                    throw new Error('Validation failed');
+                } else {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+            }
+
+            const data = await response.json();
+            if (data) {
+                setsmbData(data);
+            } else {
+                console.error('No chatId returned from the server');
+            }
+        } catch (error) {
+            console.error('Error while creating or fetching the chat', error);
+        } finally {
+            setLoadingState(false);
+        }
+    };
     return (
 
         <div>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             {loading ? <div className={`overlay ${loading ? 'visible' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <ThreeDots color="#00BFFF" height={80} width={80} />
+                   
                 </div>
 
 
@@ -168,8 +208,9 @@ const Someones_Profile = () => {
                                             </div>
                                             <div>
                                                 <button className="button" onClick={OpenChat}>Write</button>
-
-                                            </div>
+                                                <button className="button" onClick={Follow}>
+                                                    {smbData.isFollowedByUser ? "UnFollow" : "Follow"}
+                                                </button>                                            </div>
                                         </div>
                                         <SmbPosts ProfileId={ProfileId} />
                             </>

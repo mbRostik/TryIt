@@ -19,7 +19,7 @@ const NavBar = () => {
         
         <div className="NavBarMain">
 
-            {loading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }} ><ThreeDots color="#00BFFF" height={80} width={80} /></div>
+            {loading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }} ><ThreeDots color="orange" height={80} width={80} /></div>
                 : isAuthorized === false ? (
                     <div className="NavBarMenuUnAuth">
                         <div><button onClick={onLogin} className="NavBarButton_Login">Login</button></div>

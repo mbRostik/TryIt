@@ -79,7 +79,13 @@ namespace Users.Infrastructure.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
@@ -219,6 +225,17 @@ namespace Users.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Users.Domain.Entities.Post", b =>
+                {
+                    b.HasOne("Users.Domain.Entities.User", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Users.Domain.Entities.SavedPost", b =>
                 {
                     b.HasOne("Users.Domain.Entities.Post", "Post")
@@ -268,6 +285,8 @@ namespace Users.Infrastructure.Data.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Follows");
+
+                    b.Navigation("Posts");
 
                     b.Navigation("SavedPosts");
                 });

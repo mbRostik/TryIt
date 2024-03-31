@@ -9,6 +9,7 @@ namespace Posts.Application.Contracts.DTOs
 {
     public class GiveProfilePostsDTO
     {
+        public int Id { get; set; }
         public string Title { get; set; }
 
         public string Content { get; set; }

@@ -45,7 +45,7 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
 
                     logger.Information("Avatar changed successfully for user ID {UserId}. Fetching updated user profile.", request.model.Id);
 
-                    var result = await mediator.Send(new GetUserQuery(request.model.Id), cancellationToken);
+                    var result = await mediator.Send(new GetUserProfileQuery(request.model.Id), cancellationToken);
 
                     if (result == null)
                     {

@@ -40,7 +40,7 @@ namespace Users.WebApi.Controllers
                 return NotFound("User ID not found.");
             }
 
-            var result = await mediator.Send(new GetUserQuery(userId));
+            var result = await mediator.Send(new GetUserProfileQuery(userId));
 
             if (result == null)
             {
@@ -118,7 +118,7 @@ namespace Users.WebApi.Controllers
 
                 logger.Information("Profile photo updated successfully for user {UserId}. Fetching updated user profile.", userId);
 
-                var result = await mediator.Send(new GetUserQuery(model.Id));
+                var result = await mediator.Send(new GetUserProfileQuery(model.Id));
 
                 if (result == null)
                 {
@@ -137,7 +137,7 @@ namespace Users.WebApi.Controllers
         }
 
         [HttpPost("GetSomeonesProfile")]
-        public async Task<ActionResult<UserProfileDTO>> GetSomeonesProfile([FromBody] SomeonesProfileDTO request)
+        public async Task<ActionResult<GiveSmbProfileDTO>> GetSomeonesProfile([FromBody] SomeonesProfileDTO request)
         {
             var validator = new SomeonesProfileDTOValidator();
             var validationResult = validator.Validate(request);
@@ -152,7 +152,17 @@ namespace Users.WebApi.Controllers
 
                 logger.Information("Fetching user data for ProfileId {ProfileId}.", request.ProfileId);
 
-                var result = await mediator.Send(new GetUserQuery(request.ProfileId));
+
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    logger.Information("UploadProfilePhoto called but user ID is missing.");
+                    return Unauthorized("User ID is required.");
+                }
+
+
+                var result = await mediator.Send(new GetSmbProfileQuery(request.ProfileId, userId));
 
                 if (result == null)
                 {
@@ -166,6 +176,48 @@ namespace Users.WebApi.Controllers
             catch (Exception ex)
             {
                 logger.Error(ex, "An error occurred while fetching user data for ProfileId {ProfileId}.", request.ProfileId);
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("Follow")]
+        public async Task<ActionResult<UserProfileDTO>> Follow([FromBody] SomeonesProfileDTO request)
+        {
+            var validator = new SomeonesProfileDTOValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+
+            try
+            {
+
+                logger.Information("Follow/unfollow {ProfileId}.", request.ProfileId);
+
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    logger.Information("UploadProfilePhoto called but user ID is missing.");
+                    return Unauthorized("User ID is required.");
+                }
+
+                var result = await mediator.Send(new CreateFollowingCommand(userId, request.ProfileId));
+
+                if (result == null)
+                {
+                    logger.Warning("No information found for ProfileId {ProfileId}.", request.ProfileId);
+                    return Ok("There is no information");
+                }
+
+                logger.Information("Successfully started following {ProfileId}.", request.ProfileId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while trying to follow {ProfileId}.", request.ProfileId);
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }

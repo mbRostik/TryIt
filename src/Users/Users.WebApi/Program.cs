@@ -109,11 +109,17 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<grpcUserForChat_Service>();
+    endpoints.MapGrpcService<grpcUserForPost_Service>();
     endpoints.MapControllers();
 
     endpoints.MapGet("../Users.Application/Contracts/protos/userforchat.proto", async context =>
     {
         var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Users.Application/Contracts/protos/userforchat.proto");
+        await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
+    });
+    endpoints.MapGet("../Users.Application/Contracts/protos/userforpost.proto", async context =>
+    {
+        var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Users.Application/Contracts/protos/userforpost.proto");
         await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
     });
 });

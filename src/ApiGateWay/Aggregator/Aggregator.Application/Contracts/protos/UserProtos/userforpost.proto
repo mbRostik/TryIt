@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+package userforpost;
+
+message GiveUserForPost {
+  string userId =1;
+  string nickName = 2;
+  bytes photo = 3;
+}
+
+service UserForPostService {
+  rpc GetUserForPost(GetUserForPostRequest) returns (GetUserForPostResponse);
+}
+
+message GetUserForPostRequest {
+   string userId = 1;
+}
+
+message GetUserForPostResponse {
+  repeated GiveUserForPost users = 1;
+}

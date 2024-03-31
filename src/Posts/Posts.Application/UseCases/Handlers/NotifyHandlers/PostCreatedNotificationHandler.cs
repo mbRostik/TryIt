@@ -30,7 +30,9 @@ namespace Posts.Application.UseCases.Handlers.NotifyHandlers
             {
                 PostCreatedEvent postCreatedEvent = new PostCreatedEvent
                 {
-                    PostId = notification.item.Id
+                    PostId = notification.item.Id,
+                    CreatorId = notification.item.UserId
+
                 };
 
                 logger.Information("Publishing PostCreatedEvent PostId: {PostId}", postCreatedEvent.PostId);

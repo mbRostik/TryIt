@@ -8,7 +8,12 @@ import { ThreeDots } from 'react-loader-spinner';
 import { useAuth } from '../AuthProvider';
 
 const NavBar = () => {
-  
+    const navigate = useNavigate();
+
+    const onLogout = async () => {
+        await userManager.signoutRedirect();
+        navigate('/');
+    };
     return (
 
         <div className="LeftSide">
@@ -72,7 +77,7 @@ const NavBar = () => {
                     <img className="Left_SideIcon" src="../../public/help.png" alt="Home" />
                     <div className="inter-font">HELP</div>
                 </NavLink>
-                <button className="signout-button">
+                <button className="signout-button" onClick={onLogout}>
                      SIGN OUT
                 </button>
 

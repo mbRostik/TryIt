@@ -13,21 +13,21 @@ using Users.Infrastructure.Data;
 
 namespace Users.Application.UseCases.Handlers.QueryHandlers
 {
-    public class GetUserHandler : IRequestHandler<GetUserQuery, UserProfileDTO>
+    public class GetUserProfileHandler : IRequestHandler<GetUserProfileQuery, UserProfileDTO>
     {
 
         private readonly UserDbContext dbContext;
         private readonly IMapper mapper;
         public readonly Serilog.ILogger logger;
 
-        public GetUserHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
+        public GetUserProfileHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             mapperService.Mapper_UserToUserProfileDTO(ref mapper);
             this.logger = logger;
         }
 
-        public async Task<UserProfileDTO> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<UserProfileDTO> Handle(GetUserProfileQuery request, CancellationToken cancellationToken)
         {
             try
             {

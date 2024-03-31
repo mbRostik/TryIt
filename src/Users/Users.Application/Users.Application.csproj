@@ -23,6 +23,8 @@
 
 	<ItemGroup>
 		<Protobuf Include="Contracts\protos\userforchat.proto" GrpcService="Server" />
+		<Protobuf Include="Contracts\protos\userforpost.proto" GrpcService="Server" />
+
 	</ItemGroup>
 	
   <ItemGroup>

@@ -18,6 +18,11 @@ namespace Users.Infrastructure.Data.EntityTypeConfiguration
             builder.Property(x => x.Id)
                 .ValueGeneratedNever();
 
+            builder.HasOne(x=>x.User)
+                .WithMany(x=>x.Posts)
+                .HasForeignKey(x=>x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.HasMany(x=>x.SavedPosts)
                 .WithOne(x=>x.Post)
                 .HasForeignKey(x=>x.PostId)

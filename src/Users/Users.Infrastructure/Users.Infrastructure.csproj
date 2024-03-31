@@ -13,6 +13,8 @@
 
 	<ItemGroup>
 		<Protobuf Include="..\Users.Application\Contracts\protos\userforchat.proto" GrpcServices="Server" />
+		<Protobuf Include="..\Users.Application\Contracts\protos\userforpost.proto" GrpcServices="Server" />
+
 	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />

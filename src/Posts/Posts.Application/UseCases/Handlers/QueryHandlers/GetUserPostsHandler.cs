@@ -39,6 +39,7 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
                     .Where(x => x.UserId == request.id)
                     .Select(p => new GiveProfilePostsDTO
                     {
+                        Id = p.Id,
                         Title = p.Title,
                         Content = p.Content,
                         Date = p.Date,

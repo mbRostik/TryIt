@@ -9,5 +9,7 @@ namespace MessageBus.Messages.PostService
     public class PostCreatedEvent: IntegrationBaseEvent
     {
         public int PostId { get; set; }  
+
+        public string CreatorId { get; set; }
     }
 }

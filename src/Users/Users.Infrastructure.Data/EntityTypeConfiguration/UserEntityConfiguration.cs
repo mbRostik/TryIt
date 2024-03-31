@@ -31,6 +31,12 @@ namespace Users.Infrastructure.Data.EntityTypeConfiguration
                 .HasForeignKey(x => x.FollowerId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasMany(x => x.Posts)
+                .WithOne(m => m.User)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
             builder.HasMany(x => x.Follows)
                 .WithOne(m => m.User)
                 .HasForeignKey(x => x.UserId)
