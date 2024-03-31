@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+package userposts;
+import "google/protobuf/timestamp.proto";
+
+message GiveUserPosts {
+  int32 id = 1;
+  string title =2;
+  string content = 3;
+  repeated PFile files = 4;
+  google.protobuf.Timestamp date = 5;
+}
+
+message PFile{
+	string name=1;
+    bytes file = 2;
+	int32 postId = 3;
+
+}
+service UserPostsService {
+  rpc GetUserPosts(GetUserPostsRequest) returns (GetUserPostsResponse);
+}
+
+message GetUserPostsRequest {
+   string userId = 1;
+}
+
+message GetUserPostsResponse {
+  repeated GiveUserPosts posts = 1;
+}

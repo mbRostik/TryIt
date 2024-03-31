@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Userposts;
 namespace Posts.Infrastructure.Services.grpcServices
 {
-    internal class grpcUserPosts_Service : UserPostsService.UserPostsServiceBase
+    public class grpcUserPosts_Service : UserPostsService.UserPostsServiceBase
     {
         private readonly IMediator _mediator;
 

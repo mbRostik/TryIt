@@ -8,6 +8,7 @@ using Posts.Application.UseCases.Consumers;
 using Posts.Application.UseCases.Queries;
 using Posts.Infrastructure.Data;
 using Posts.Infrastructure.Services;
+using Posts.Infrastructure.Services.grpcServices;
 using RabbitMQ.Client;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
@@ -19,6 +20,8 @@ builder.Services.AddControllers();
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddGrpc();
+
 builder.Services.AddScoped<IMapperService, MapperService>();
 
 builder.Host.UseSerilog((context, configuration) =>
@@ -91,6 +94,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<grpcUserPosts_Service>();
+    endpoints.MapControllers();
 
+    endpoints.MapGet("../Users.Application/Contracts/protos/userforchat.proto", async context =>
+    {
+        var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Posts.Application/Contracts/protos/userposts.proto");
+        await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
+    });
+   
+});
 app.Run();

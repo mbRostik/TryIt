@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<GrpcGetUserChatsService>();
 builder.Services.AddScoped<GrpcGetUserForChatService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IPostService, PostService>();
+
 builder.Services.AddSingleton<GrpcPolly>();
 
 builder.Host.UseSerilog((context, configuration) =>
