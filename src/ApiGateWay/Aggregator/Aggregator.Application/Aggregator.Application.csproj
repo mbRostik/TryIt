@@ -24,9 +24,8 @@
   </ItemGroup>
 	<ItemGroup>
 		<Protobuf Include="Contracts\protos\ChatProtos\userchats.proto" GrpcServices="Client" />
-		<Protobuf Include="Contracts\protos\PostProtos\userposts.proto">
-		  <GrpcService>Server</GrpcService>
-		</Protobuf>
+		<Protobuf Include="Contracts\protos\PostProtos\userposts.proto" GrpcServices="Client" />
+
 		<Protobuf Include="Contracts\protos\UserProtos\userforchat.proto" GrpcServices="Client" />
 		<Protobuf Include="Contracts\protos\UserProtos\userforpost.proto" GrpcServices="Client" />
 
@@ -36,6 +35,9 @@
     <None Update="Contracts\protos\ChatProtos\userchats.proto">
       <GrpcServices>Client</GrpcServices>
     </None>
+	  <None Update="Contracts\protos\UserProtos\userforpost.proto">
+		  <GrpcServices>Client</GrpcServices>
+	  </None>
     <None Update="Contracts\protos\UserProtos\userforchat.proto">
       <GrpcServices>Client</GrpcServices>
     </None>

@@ -24,7 +24,7 @@
 		<Protobuf Include="..\Aggregator.Application\Contracts\protos\ChatProtos\userchats.proto" GrpcServices="Client" />
 		<Protobuf Include="..\Aggregator.Application\Contracts\protos\UserProtos\userforchat.proto" GrpcServices="Client" />
         <Protobuf Include="..\Aggregator.Application\Contracts\protos\PostProtos\userposts.proto" GrpcServices="Client" />
-		<Protobuf Include="..\Aggregator.Application\Contracts\protos\PostProtos\userforpost.proto" GrpcServices="Client" />
+		<Protobuf Include="..\Aggregator.Application\Contracts\protos\UserProtos\userforpost.proto" GrpcServices="Client" />
 
 	</ItemGroup>
 </Project>

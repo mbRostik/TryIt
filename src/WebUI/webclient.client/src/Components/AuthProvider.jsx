@@ -64,6 +64,12 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
+         userManager.events.addAccessTokenExpired(() => {
+            console.log('Token expired');
+            userManager.signinSilent().catch(error => {
+                console.log('Silent sign-in after token expiration failed', error);
+            });
+        });
         const checkAuth = async () => {
             setLoading(true);
             const user = await userManager.getUser();

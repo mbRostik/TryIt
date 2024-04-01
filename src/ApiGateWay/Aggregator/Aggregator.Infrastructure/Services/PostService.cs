@@ -31,15 +31,20 @@ namespace Aggregator.Infrastructure.Services
             {
                 var follows = await _userGrpcService.GetUserForPostAsync(accessToken, userId);
 
-                if (follows.Users.Count == 1 && follows.Users[0].UserId == "0" && follows.Users[0].NickName == "")
+                if ((follows.Users.Count == 1 && follows.Users[0].UserId == "0" && follows.Users[0].NickName == "") || !follows.Users.Any())
                 {
-                    logger.Warning("No follows found for UserId: {UserId}", userId);
-                    return new List<GiveFollowedPostsDTO>();
+                    logger.Information("No follows found for UserId: {UserId}", userId);
+                    return null;
                 }
+
 
                 var tasks = follows.Users.Select(async user =>
                 {
                     var postsResponse = await _postGrpcService.GetUserForPostAsync(user.UserId, accessToken);
+                    if (!postsResponse.Posts.Any())
+                    {
+                        return null;
+                    }
                     return postsResponse.Posts.Select(post => new GiveFollowedPostsDTO
                     {
                         NickName = user.NickName,

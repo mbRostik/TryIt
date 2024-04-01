@@ -1,10 +1,11 @@
-using Aggregator.Application.Contracts.Interfaces;
 using Aggregator.Infrastructure.Policies;
 using Aggregator.Infrastructure.Services;
 using Aggregator.WebApi.Services.ProtoServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using Aggregator.Application.Contracts.Interfaces;
+using Aggregator.Infrastructure.Services.ProtoServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<GrpcGetUserChatsService>();
 builder.Services.AddScoped<GrpcGetUserForChatService>();
+builder.Services.AddScoped<GrpcGetUserForPostsService>();
+builder.Services.AddScoped<GrpcGetUserPostsService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPostService, PostService>();
 

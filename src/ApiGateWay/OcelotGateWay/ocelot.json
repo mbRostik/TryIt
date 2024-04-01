@@ -102,6 +102,18 @@
       "DownstreamPathTemplate": "/Aggregator/GetUserChats"
     },
     {
+      "UpstreamPathTemplate": "/ocelot/GetFollowedPosts",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7192
+        }
+      ],
+      "DownstreamPathTemplate": "/Aggregator/GetFollowedPosts"
+    },
+    {
       "UpstreamPathTemplate": "/ocelot/GetChatMessages",
       "UpstreamHttpMethod": [ "Post" ],
       "DownstreamScheme": "https",

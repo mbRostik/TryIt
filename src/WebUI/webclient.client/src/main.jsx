@@ -73,8 +73,8 @@ function AppContainer() {
                                     Messages
 
                                 </div>
-                                <div>
-                                    {chats && Array.isArray(chats) ? <div>
+                                <div className="RightChats">
+                                    {chats && Array.isArray(chats) ? <div className="SeparateRightChat">
                                         {chats && Array.isArray(chats) && chats.map((chat, index) => (
                                             <div key={index}
                                                 className={`contact ${chat.chatId === activeChatId ? "active" : ""}`}
