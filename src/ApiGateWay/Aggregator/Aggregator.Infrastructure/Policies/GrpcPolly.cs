@@ -34,7 +34,7 @@ namespace Aggregator.Infrastructure.Policies
                 .Handle<RpcException>(ex => gRpcErrors.Contains(ex.StatusCode))
                 .RetryAsync(3, onRetry: (exception, retryCount, context) =>
                 {
-                    logger.Warning($"Immediate retry {retryCount} for {exception}");
+                    _logger.Warning($"Immediate retry {retryCount} for {exception}");
                 });
 
             LinearGrpcRetry = Policy
@@ -42,7 +42,7 @@ namespace Aggregator.Infrastructure.Policies
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(5),
                     onRetry: (exception, timespan, retryCount, context) =>
                     {
-                        logger.Warning($"Request failed with {exception}. Waiting {timespan} before next retry. Retry attempt {retryCount}");
+                        _logger.Warning($"Request failed with {exception}. Waiting {timespan} before next retry. Retry attempt {retryCount}");
                     });
 
             ExponentialGrpcRetry = Policy
@@ -50,7 +50,7 @@ namespace Aggregator.Infrastructure.Policies
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                     onRetry: (exception, timespan, retryCount, context) =>
                     {
-                        logger.Warning($"Request failed with {exception}. Waiting {timespan} before next retry. Retry attempt {retryCount}");
+                        _logger.Warning($"Request failed with {exception}. Waiting {timespan} before next retry. Retry attempt {retryCount}");
                     });
         }
     }

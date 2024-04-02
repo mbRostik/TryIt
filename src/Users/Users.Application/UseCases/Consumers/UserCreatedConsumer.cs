@@ -14,14 +14,18 @@ namespace Users.Application.UseCases.Consumers
     public class UserCreatedConsumer : IConsumer<IdentityUserCreatedEvent>
     {
         private readonly IMediator mediator;
-        public UserCreatedConsumer(IMediator _mediator)
+        public readonly Serilog.ILogger _logger;
+
+        public UserCreatedConsumer(IMediator _mediator, Serilog.ILogger logger)
         {
             mediator = _mediator;
-
+            _logger = logger;
         }
         public async Task Consume(ConsumeContext<IdentityUserCreatedEvent> context)
         {
-            User temp = new User 
+            _logger.Information($"Successfully consumed IdentityUserCreatedEvent");
+
+            User temp = new User
             { 
                 Id = context.Message.UserId, 
                 Email=context.Message.UserEmail, 

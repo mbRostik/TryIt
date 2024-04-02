@@ -15,15 +15,17 @@ namespace Users.Infrastructure.Services.grpcServices
     public class grpcUserForPost_Service : UserForPostService.UserForPostServiceBase
     {
         private readonly IMediator _mediator;
-        private readonly IMapper mapper;
+        public readonly Serilog.ILogger _logger;
 
-        public grpcUserForPost_Service(IMediator mediator, IMapperService mapperService)
+        public grpcUserForPost_Service(IMediator mediator, Serilog.ILogger logger)
         {
             _mediator = mediator;
-            mapperService.Mapper_UserChatProfileToGiveUserForChat(ref mapper);
+            _logger = logger;
         }
         public override async Task<GetUserForPostResponse> GetUserForPost(GetUserForPostRequest request, ServerCallContext context)
         {
+            _logger.Information($"Starting GetUserForPost with UserId: {request.UserId}");
+
             var response = new GetUserForPostResponse();
             try
             {
@@ -31,6 +33,8 @@ namespace Users.Infrastructure.Services.grpcServices
 
                 if (follows == null)
                 {
+                    _logger.Warning($"No followers found for UserId: {request.UserId}");
+
                     var tempuser = new GiveUserForPost
                     {
                         UserId = "0",
@@ -41,6 +45,7 @@ namespace Users.Infrastructure.Services.grpcServices
                     return response;
                 };
 
+                _logger.Information($"Found {follows.Count} followers for UserId: {request.UserId}");
 
                 foreach (var follow in follows)
                 {
@@ -53,11 +58,13 @@ namespace Users.Infrastructure.Services.grpcServices
                     };
                     response.Users.Add(temp);
                 }
+                _logger.Information($"Successfully processed GetUserForPost for UserId: {request.UserId}");
+
                 return response;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.Error(ex, $"Exception thrown in GetUserForPost for UserId: {request.UserId}");
                 var tempuser = new GiveUserForPost
                 {
                     UserId = "0",

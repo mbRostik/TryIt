@@ -16,7 +16,7 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
 {
     public class GetChatMessagesHandler : IRequestHandler<GetChatMessagesQuery, IEnumerable<GiveUserChatMessagesDTO>>
     {
-        private readonly IMapper mapper;
+        private readonly IMapperService _mapper;
 
         private readonly ChatDbContext dbContext;
         private readonly Serilog.ILogger logger;
@@ -25,7 +25,7 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
         {
             this.dbContext = dbContext;
             this.logger = logger;
-            mapperService.Mapper_Message_To_GiveUserChatMessagesDTO(ref mapper);
+            _mapper = mapperService;
 
         }
 
@@ -40,7 +40,7 @@ namespace Chats.Application.UseCases.Handlers.QueryHandlers
                 logger.Warning($"No chat participants found for ChatId { request.ChatId} and UserId {request.UserId}");
                 return null;
             }
-
+            var mapper = _mapper.Mapper_Message_To_GiveUserChatMessagesDTO();
             var messages = dbContext.Messages.Where(a => a.ChatId == request.ChatId);
             List<GiveUserChatMessagesDTO> result = new List<GiveUserChatMessagesDTO>();
 

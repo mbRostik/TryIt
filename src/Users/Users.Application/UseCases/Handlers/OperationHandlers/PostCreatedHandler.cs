@@ -15,31 +15,33 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
         private readonly IMediator mediator;
 
         private readonly UserDbContext dbContext;
+        public readonly Serilog.ILogger _logger;
 
-        public PostCreatedHandler(UserDbContext dbContext, IMediator mediator)
+
+        public PostCreatedHandler(UserDbContext dbContext, IMediator mediator, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
+            _logger = logger;
         }
 
         public async Task<Post> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-           
-             try
-            {
-                var model = await dbContext.Posts.AddAsync(request.model);
+            _logger.Information("Attempting to create a new post");
 
-                await dbContext.SaveChangesAsync();
+            try
+            {
+                var model = await dbContext.Posts.AddAsync(request.model, cancellationToken);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                _logger.Information("Post created successfully with ID {PostId}", model.Entity.Id);
 
                 return model.Entity;
             }
-
-
-
-
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.Error(ex, "Error occurred while creating a new post");
+
                 return null;
             }
         }

@@ -18,11 +18,11 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
         public readonly Serilog.ILogger logger;
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly IMapperService _mapper;
         public GetListUsersHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
-            mapperService.Mapper_UserToUserChatProfileDTO(ref mapper);
+            _mapper = mapperService;
             this.logger = logger;
         }
 
@@ -33,7 +33,7 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
                 logger.Information("Handling GetListUsersQuery for {Count} ids.", request.ids.Count);
 
                 var result = new List<UserChatProfileDTO>();
-
+                var mapper = _mapper.Mapper_UserToUserChatProfileDTO();
                 foreach (var id in request.ids)
                 {
                     var dbUser = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, cancellationToken);

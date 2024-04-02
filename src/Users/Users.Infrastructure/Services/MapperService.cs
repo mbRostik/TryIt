@@ -13,7 +13,7 @@ namespace Users.Infrastructure.Services
 {
     public class MapperService : IMapperService
     {
-        public void Mapper_ChangeUserProfileToUserDTO(ref IMapper mapper)
+        public IMapper Mapper_ChangeUserProfileToUserDTO()
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -30,10 +30,12 @@ namespace Users.Infrastructure.Services
                          sexStringToIdMapping.ContainsKey(src.SexId) ? sexStringToIdMapping[src.SexId] : 3))
                     .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
             });
-            mapper = configuration.CreateMapper();
+            var mapper = new Mapper(configuration);
+            return mapper;
+
         }
 
-        public void Mapper_UserToUserProfileDTO(ref IMapper mapper)
+        public IMapper Mapper_UserToUserProfileDTO()
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -47,10 +49,11 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.IsPrivate, opt => opt.MapFrom(src => src.IsPrivate))
                     .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
             });
-            mapper = configuration.CreateMapper();
+            var mapper = new Mapper(configuration);
+            return mapper;
         }
 
-        public void Mapper_UserToUserChatProfileDTO(ref IMapper mapper)
+        public IMapper Mapper_UserToUserChatProfileDTO()
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -59,10 +62,11 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo));
             });
-            mapper = configuration.CreateMapper();
+            var mapper = new Mapper(configuration);
+            return mapper;
         }
 
-        public void Mapper_UserChatProfileToGiveUserForChat(ref IMapper mapper)
+        public IMapper Mapper_UserChatProfileToGiveUserForChat()
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -71,7 +75,8 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.NickName, opt => opt.MapFrom(src => src.NickName))
                     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => Google.Protobuf.ByteString.CopyFrom(src.Photo ?? new byte[] { })));
             });
-            mapper = configuration.CreateMapper();
+            var mapper = new Mapper(configuration);
+            return mapper;
         }
 
 

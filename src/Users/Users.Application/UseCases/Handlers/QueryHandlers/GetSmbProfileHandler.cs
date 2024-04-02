@@ -17,20 +17,22 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly IMapperService _mapper;
         public readonly Serilog.ILogger logger;
         private readonly IMediator mediator;
 
         public GetSmbProfileHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger, IMediator mediator)
         {
             this.dbContext = dbContext;
-            mapperService.Mapper_UserToUserProfileDTO(ref mapper);
+            _mapper = mapperService;
             this.logger = logger;
             this.mediator = mediator;
         }
 
         public async Task<GiveSmbProfileDTO> Handle(GetSmbProfileQuery request, CancellationToken cancellationToken)
         {
+            var mapper = _mapper.Mapper_UserToUserProfileDTO();
+            
             try
             {
                 logger.Information("Starting to handle GetSmbProfileQuery for user ID {UserId}", request.ProfileId);

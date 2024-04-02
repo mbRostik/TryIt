@@ -17,13 +17,11 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
         public readonly Serilog.ILogger logger;
 
-        public GetUserByIdHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
+        public GetUserByIdHandler(UserDbContext dbContext,  Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
-            mapperService.Mapper_UserToUserProfileDTO(ref mapper);
             this.logger = logger;
         }
 

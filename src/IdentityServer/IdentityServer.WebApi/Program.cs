@@ -67,7 +67,7 @@ builder.Services.AddDbContext<IdentityServerDbContext>(options =>
 {
     options.UseSqlServer(defaultConnString);
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = true; options.User.AllowedUserNameCharacters += " "; })
     .AddEntityFrameworkStores<IdentityServerDbContext>()
      .AddDefaultTokenProviders();
 

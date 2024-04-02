@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Posts.Application.Contracts.DTOs;
+using Posts.Application.Contracts.Validators;
 using Posts.Application.UseCases.Commands;
 using Posts.Application.UseCases.Queries;
 using Posts.Domain.Entities;
@@ -45,6 +46,14 @@ namespace Posts.WebApi.Controllers
         [HttpPost("CreatePost")]
         public async Task<ActionResult> CreatePost([FromBody] CreatePostDTO model)
         {
+            var validator = new CreatePostDTOValidator();
+            var validationResult = validator.Validate(model);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
+            }
+
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             logger.Information("Starting CreatePost for UserId {UserId}", userId);
 

@@ -9,6 +9,6 @@ namespace Chats.Application.Contracts.Interfaces
 {
     public interface IMapperService
     {
-        void Mapper_Message_To_GiveUserChatMessagesDTO(ref IMapper mapper);
+        IMapper Mapper_Message_To_GiveUserChatMessagesDTO();
     }
 }

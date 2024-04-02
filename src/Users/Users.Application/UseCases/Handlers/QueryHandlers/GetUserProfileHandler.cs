@@ -17,13 +17,13 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
     {
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly IMapperService _mapper;
         public readonly Serilog.ILogger logger;
 
         public GetUserProfileHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
-            mapperService.Mapper_UserToUserProfileDTO(ref mapper);
+            _mapper = mapperService;
             this.logger = logger;
         }
 
@@ -31,6 +31,7 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
         {
             try
             {
+                var mapper = _mapper.Mapper_UserToUserProfileDTO();
                 logger.Information("Starting to handle GetUserQuery for user ID {UserId}", request.id);
 
                 var dbUser = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == request.id);

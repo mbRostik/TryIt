@@ -9,10 +9,10 @@ namespace Users.Application.Contracts.Interfaces
 {
     public interface IMapperService
     {
-        void Mapper_UserChatProfileToGiveUserForChat(ref IMapper mapper);
-        void Mapper_UserToUserProfileDTO(ref IMapper mapper);
-        void Mapper_ChangeUserProfileToUserDTO(ref IMapper mapper);
+        IMapper Mapper_UserChatProfileToGiveUserForChat();
+        IMapper Mapper_UserToUserProfileDTO();
+        IMapper Mapper_ChangeUserProfileToUserDTO();
 
-        void Mapper_UserToUserChatProfileDTO (ref IMapper mapper);
+        IMapper Mapper_UserToUserChatProfileDTO ();
     }
 }

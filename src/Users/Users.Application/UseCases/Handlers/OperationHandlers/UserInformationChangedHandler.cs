@@ -20,21 +20,39 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
         private readonly IMediator mediator;
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
+        private readonly IMapperService _mapper;
+        public readonly Serilog.ILogger _logger;
 
-        public UserInformationChangedHandler(UserDbContext dbContext, IMediator mediator, IMapperService mapperService)
+
+        public UserInformationChangedHandler(UserDbContext dbContext, IMediator mediator, IMapperService mapperService, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
-            mapperService.Mapper_ChangeUserProfileToUserDTO(ref mapper);
+            _mapper = mapperService;
+            _logger = logger;
         }
 
         public async Task Handle(ChangeUserInformationCommand request, CancellationToken cancellationToken)
         {
-            User userInfo = mapper.Map<User>(request.model);
-            dbContext.Users.Update(userInfo);
 
-            await dbContext.SaveChangesAsync();
+            _logger.Information("Attempting to change user information for UserId: {UserId}", request.model.Id);
+
+            try
+            {
+                var mapper = _mapper.Mapper_ChangeUserProfileToUserDTO();
+                User userInfo = mapper.Map<User>(request.model);
+
+                dbContext.Users.Update(userInfo);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                _logger.Information("User information successfully changed for UserId: {UserId}", userInfo.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error occurred while changing user information for UserId: {UserId}", request.model.Id);
+
+                throw;
+            }
         }
     }
 }

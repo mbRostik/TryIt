@@ -20,14 +20,12 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
         private readonly IMediator mediator;
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
         public readonly Serilog.ILogger logger;
 
-        public ProfilePhotoChangedHandler(UserDbContext dbContext, IMediator mediator, IMapperService mapperService, Serilog.ILogger logger)
+        public ProfilePhotoChangedHandler(UserDbContext dbContext, IMediator mediator,Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
             this.mediator = mediator;
-            mapperService.Mapper_ChangeUserProfileToUserDTO(ref mapper);
             this.logger = logger;
         }
 

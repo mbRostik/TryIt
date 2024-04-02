@@ -12,7 +12,7 @@ namespace Chats.Infrastructure.Services
 {
     public class MapperService : IMapperService
     {
-        public void Mapper_Message_To_GiveUserChatMessagesDTO(ref IMapper mapper)
+        public IMapper Mapper_Message_To_GiveUserChatMessagesDTO()
         {
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -21,7 +21,8 @@ namespace Chats.Infrastructure.Services
                     .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.SenderId))
                     .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date));
             });
-            mapper = configuration.CreateMapper();
+            var mapper = new Mapper(configuration);
+            return mapper;
         }
     }
 }

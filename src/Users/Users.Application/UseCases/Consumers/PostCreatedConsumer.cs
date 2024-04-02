@@ -14,13 +14,17 @@ namespace Users.Application.UseCases.Consumers
     public class PostCreatedConsumer : IConsumer<PostCreatedEvent>
     {
         private readonly IMediator mediator;
-        public PostCreatedConsumer(IMediator _mediator)
+        public readonly Serilog.ILogger _logger;
+
+        public PostCreatedConsumer(IMediator _mediator, Serilog.ILogger logger)
         {
             mediator = _mediator;
-
+            _logger = logger;
         }
         public async Task Consume(ConsumeContext<PostCreatedEvent> context)
         {
+            _logger.Information($"Successfully consumed PostCreatedEvent");
+
             Post temp = new Post { Id = context.Message.PostId };
             
             await mediator.Send(new CreatePostCommand(temp));

@@ -18,11 +18,9 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
         public readonly Serilog.ILogger logger;
 
         private readonly UserDbContext dbContext;
-        private readonly IMapper mapper;
-        public GetListOfFollowsHandler(UserDbContext dbContext, IMapperService mapperService, Serilog.ILogger logger)
+        public GetListOfFollowsHandler(UserDbContext dbContext, Serilog.ILogger logger)
         {
             this.dbContext = dbContext;
-            mapperService.Mapper_UserToUserChatProfileDTO(ref mapper);
             this.logger = logger;
         }
 

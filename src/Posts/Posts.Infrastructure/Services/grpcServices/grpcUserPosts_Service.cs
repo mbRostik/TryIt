@@ -15,21 +15,26 @@ namespace Posts.Infrastructure.Services.grpcServices
     public class grpcUserPosts_Service : UserPostsService.UserPostsServiceBase
     {
         private readonly IMediator _mediator;
+        private readonly Serilog.ILogger _logger;
 
-        public grpcUserPosts_Service(IMediator mediator)
+        public grpcUserPosts_Service(IMediator mediator, Serilog.ILogger logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
         public override async Task<GetUserPostsResponse> GetUserPosts(GetUserPostsRequest request, ServerCallContext context)
         {
             var response = new GetUserPostsResponse();
             try
             {
+                _logger.Information($"Processing GetUserPosts request for UserId: {request.UserId}");
 
                 var result = await _mediator.Send(new GetUserPostsQuery(request.UserId));
 
                 if (result == null)
                 {
+                    _logger.Warning($"No posts found for UserId: {request.UserId}");
+
                     var temppost = new GiveUserPosts
                     {
                         Id = 0,
@@ -65,11 +70,13 @@ namespace Posts.Infrastructure.Services.grpcServices
 
                     response.Posts.Add(tempuser);
                 }
+                _logger.Information($"Successfully processed GetUserPosts request for UserId: {request.UserId}");
+
                 return response;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.Error(ex, $"Error processing GetUserPosts request for UserId: {request.UserId}");
                 var temppost = new GiveUserPosts
                 {
                     Id = 0,
