@@ -13,6 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using MessageBus.Messages.Events.IdentityServerService;
+using RabbitMQ.Client;
+using IdentityServer.Application.UseCases.Consumers;
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly.GetName().Name;
@@ -100,6 +103,8 @@ builder.Services.AddIdentityServer(options =>
     .AddDeveloperSigningCredential();
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<UserCreation_Consumer>();
+
     x.UsingRabbitMq((cxt, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -107,8 +112,14 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
-        cfg.ConfigureEndpoints(cxt);
+
+        cfg.Publish<IUserCreate_SendEvent_From_IdentityServer>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.ReceiveEndpoint("users_UserProcessedConsumer_queue", e =>
+        {
+            e.ConfigureConsumer<UserCreation_Consumer> (cxt);
+        });
     });
+
 });
 
 builder.Services.AddAuthentication()
@@ -145,7 +156,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapDefaultControllerRoute();
 });
 
-//SeedData.EnsureSeedData(app);
+SeedData.EnsureSeedData(app);
 
 app.Run();
 

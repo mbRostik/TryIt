@@ -1,5 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using MassTransit;
+using MessageBus.Messages.Events.IdentityServerService;
 using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,7 +59,7 @@ builder.Services.AddMediatR(options =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PostCreatedConsumer>();
-    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -67,21 +68,21 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
+        cfg.Publish<IUserCreate_SendEvent_From_UserWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
-        cfg.Publish<PostCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
-        cfg.Publish<IdentityUserCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
-
+        
         cfg.ReceiveEndpoint("users_PostConsumer_queue", e =>
         {
             e.ConfigureConsumer<PostCreatedConsumer>(context);
         });
 
-        cfg.ReceiveEndpoint("users_UserConsumer_queue", e =>
+        cfg.ReceiveEndpoint("rabbitUserWebApiQueue", e =>
         {
-            e.ConfigureConsumer<UserCreatedConsumer>(context);
+            e.ConfigureConsumer<UserCreation_Consumer>(context);
         });
     });
 });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

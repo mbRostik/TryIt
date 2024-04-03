@@ -7,12 +7,15 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using IdentityModel;
 using MassTransit;
+using MessageBus.Messages.Events.IdentityServerService;
 using MessageBus.Messages.IdentityServerService;
+using MessageBus.Models.DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IdentityServerHost.Pages.ExternalLogin;
 
@@ -81,13 +84,14 @@ public class Callback : PageModel
             // in this sample we don't show how that would be done, as our sample implementation
             // simply auto-provisions new external user
             user = await AutoProvisionUserAsync(provider, providerUserId, externalUser.Claims);
-            IdentityUserCreatedEvent creationEvent = new IdentityUserCreatedEvent
+            UserCreationDTO creationEvent = new UserCreationDTO
             {
                 UserId = user.Id,
                 UserEmail = user.Email,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Status = MessageBus.Models.Statuses.UserCreationStatuses.IdentityServer_Created
             };
-            await _publisher.Publish(creationEvent);
+            await _publisher.Publish<IUserCreate_SendEvent_From_IdentityServer>(new { CorrelationId = Guid.NewGuid(), Data = creationEvent });
         }
 
         // this allows us to collect any additional claims or properties

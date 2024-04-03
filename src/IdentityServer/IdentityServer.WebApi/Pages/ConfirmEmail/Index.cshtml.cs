@@ -17,6 +17,8 @@ using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer;
+using MessageBus.Models.DTOs;
+using MessageBus.Messages.Events.IdentityServerService;
 
 namespace IdentityServer.WebApi.Pages.ConfirmEmail
 {
@@ -79,15 +81,14 @@ namespace IdentityServer.WebApi.Pages.ConfirmEmail
                 StatusMessage = "Error confirming your email.";
                 return Page();
             }
-            IdentityUserCreatedEvent creationEvent = new IdentityUserCreatedEvent
+            UserCreationDTO creationEvent = new UserCreationDTO
             {
                 UserId = user.Id,
                 UserEmail = user.Email,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Status = MessageBus.Models.Statuses.UserCreationStatuses.IdentityServer_Created
             };
-
-            await _publisher.Publish(creationEvent);
-
+            await _publisher.Publish<IUserCreate_SendEvent_From_IdentityServer>(new { CorrelationId = Guid.NewGuid(), Data = creationEvent });
 
             await _signInManager.SignInAsync(user, true);
 

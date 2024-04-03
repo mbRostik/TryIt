@@ -17,6 +17,7 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using FluentValidation.AspNetCore;
 using Chats.Application.Validators;
+using MessageBus.Messages.Events.IdentityServerService;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -107,7 +108,7 @@ builder.Services
 });
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -116,11 +117,11 @@ builder.Services.AddMassTransit(x =>
             h.Username("guest");
             h.Password("guest");
         });
+        cfg.Publish<IUserCreate_SendEvent_From_ChatWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
-        cfg.Publish<IdentityUserCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
-        cfg.ReceiveEndpoint("chats_UserConsumer_queue", e =>
+        cfg.ReceiveEndpoint("rabbitChatWebApiQueue", e =>
         {
-            e.ConfigureConsumer<UserCreatedConsumer>(context);
+            e.ConfigureConsumer<UserCreation_Consumer>(context);
         });
     });
 });
