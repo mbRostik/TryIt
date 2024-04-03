@@ -1,6 +1,5 @@
 ﻿using MassTransit;
 using MediatR;
-using MessageBus.Messages.IdentityServerService;
 using System;
 using System.Collections.Generic;
 using System.Linq;

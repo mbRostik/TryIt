@@ -8,7 +8,6 @@ using Duende.IdentityServer.Services;
 using IdentityModel;
 using MassTransit;
 using MessageBus.Messages.Events.IdentityServerService;
-using MessageBus.Messages.IdentityServerService;
 using MessageBus.Models.DTOs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

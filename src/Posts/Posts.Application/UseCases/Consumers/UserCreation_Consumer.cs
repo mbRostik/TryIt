@@ -2,7 +2,6 @@
 using MediatR;
 using MessageBus.Messages.Commands.IdentityServerService;
 using MessageBus.Messages.Events.IdentityServerService;
-using MessageBus.Messages.IdentityServerService;
 using MessageBus.Models.DTOs;
 using MessageBus.Models.Statuses;
 using Posts.Application.UseCases.Commands;

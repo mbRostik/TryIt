@@ -6,7 +6,6 @@ using Chats.Infrastructure.Services;
 using Chats.Infrastructure.Services.grpcServices;
 using Chats.WebApi.ChatHubSpace;
 using MassTransit;
-using MessageBus.Messages.IdentityServerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;

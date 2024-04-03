@@ -1,5 +1,5 @@
 ﻿using MassTransit;
-using MessageBus.Messages.IdentityServerService;
+using MessageBus.Messages.Commands.IdentityServerService;
 using MessageBus.Messages.PostService;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
@@ -29,7 +29,7 @@ builder.Services.AddMediatR(options =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PostCreatedConsumer>();
-    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -41,16 +41,16 @@ builder.Services.AddMassTransit(x =>
 
         cfg.Publish<PostCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
 
-        cfg.Publish<IdentityUserCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.Publish<IUserCreate_Send_To_ReportWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
         cfg.ReceiveEndpoint("reports_PostConsumer_queue", e =>
         {
             e.ConfigureConsumer<PostCreatedConsumer>(context);
         });
 
-        cfg.ReceiveEndpoint("reports_UserConsumer_queue", e =>
+        cfg.ReceiveEndpoint("rabbitReportWebApiQueue", e =>
         {
-            e.ConfigureConsumer<UserCreatedConsumer>(context);
+            e.ConfigureConsumer<UserCreation_Consumer>(context);
         });
     });
 });

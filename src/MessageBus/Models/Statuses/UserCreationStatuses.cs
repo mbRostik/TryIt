@@ -12,6 +12,9 @@ namespace MessageBus.Models.Statuses
         IdentityServer_Created,
         UserWebApi_Created,
         ChatWebApi_Created,
-        PostWebApi_Created
+        PostWebApi_Created,
+        ReportWebApi_Created,
+        NotificationWebApi_Created,
+        SubscriptionWebApi_Created
     }
 }

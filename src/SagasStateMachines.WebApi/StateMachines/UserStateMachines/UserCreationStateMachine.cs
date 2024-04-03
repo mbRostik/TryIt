@@ -19,7 +19,10 @@ namespace SagasStateMachines.WebApi.StateMachines.UserStateMachines
             this.Initially(this.SetUserSubmitted_FromIdentityServer_Handler());
             this.During((MassTransit.State)Processing, this.SetUserSubmitted_FromUserService_Handler(), 
                 this.SetUserSubmitted_FromChatService_Handler(), 
-                this.SetUserSubmitted_FromPostService_Handler());
+                this.SetUserSubmitted_FromPostService_Handler(),
+                this.SetUserSubmitted_FromNotificationService_Handler(),
+                this.SetUserSubmitted_FromReportService_Handler(),
+                this.SetUserSubmitted_FromSubscriptionService_Handler());
             SetCompletedWhenFinalized();
         }
 
@@ -30,6 +33,9 @@ namespace SagasStateMachines.WebApi.StateMachines.UserStateMachines
             this.Event(() => this.UserCreate_SendEvent_From_UserWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
             this.Event(() => this.UserCreate_SendEvent_From_ChatWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
             this.Event(() => this.UserCreate_SendEvent_From_PostWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
+            this.Event(() => this.UserCreate_SendEvent_From_NotificationWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
+            this.Event(() => this.UserCreate_SendEvent_From_ReportWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
+            this.Event(() => this.UserCreate_SendEvent_From_SubscriptionWebApi, x => x.CorrelateById(c => c.Message.CorrelationId));
         }
 
 
@@ -50,10 +56,24 @@ namespace SagasStateMachines.WebApi.StateMachines.UserStateMachines
                               .ThenAsync(c => this.SendCommand<IUserCreate_Send_To_PostWebApi>("rabbitmq://localhost/rabbitPostWebApiQueue", c));
 
         private EventActivityBinder<ProcessingUserCreationState, IUserCreate_SendEvent_From_PostWebApi> SetUserSubmitted_FromPostService_Handler() =>
-           When(UserCreate_SendEvent_From_PostWebApi).Then(c =>
+          When(UserCreate_SendEvent_From_PostWebApi).Then(c => this.UpdateSagaState(c.Instance, c.Data.Data))
+                              .Then(c => Console.WriteLine($"UserCreation submitted to {c.Data.CorrelationId} NotificationWebApi"))
+                              .ThenAsync(c => this.SendCommand<IUserCreate_Send_To_NotificationWebApi>("rabbitmq://localhost/rabbitNotificationWebApiQueue", c));
+
+        private EventActivityBinder<ProcessingUserCreationState, IUserCreate_SendEvent_From_NotificationWebApi> SetUserSubmitted_FromNotificationService_Handler() =>
+          When(UserCreate_SendEvent_From_NotificationWebApi).Then(c => this.UpdateSagaState(c.Instance, c.Data.Data))
+                              .Then(c => Console.WriteLine($"UserCreation submitted to {c.Data.CorrelationId} Report"))
+                              .ThenAsync(c => this.SendCommand<IUserCreate_Send_To_ReportWebApi>("rabbitmq://localhost/rabbitReportWebApiQueue", c));
+
+        private EventActivityBinder<ProcessingUserCreationState, IUserCreate_SendEvent_From_ReportWebApi> SetUserSubmitted_FromReportService_Handler() =>
+          When(UserCreate_SendEvent_From_ReportWebApi).Then(c => this.UpdateSagaState(c.Instance, c.Data.Data))
+                              .Then(c => Console.WriteLine($"UserCreation submitted to {c.Data.CorrelationId} Subscription"))
+                              .ThenAsync(c => this.SendCommand<IUserCreate_Send_To_SubscriptionWebApi>("rabbitmq://localhost/rabbitSubscriptionWebApiQueue", c));
+        private EventActivityBinder<ProcessingUserCreationState, IUserCreate_SendEvent_From_SubscriptionWebApi> SetUserSubmitted_FromSubscriptionService_Handler() =>
+           When(UserCreate_SendEvent_From_SubscriptionWebApi).Then(c =>
            {
                this.UpdateSagaState(c.Instance, c.Data.Data);
-               c.Instance.Data.Status = UserCreationStatuses.PostWebApi_Created;
+               c.Instance.Data.Status = UserCreationStatuses.SubscriptionWebApi_Created;
            })
                              .Publish(c => new UserCreatedProcessed(c.Data.CorrelationId, c.Data.Data))
                              .Then(c => Console.WriteLine($"UserCreation finalization {c.Data.Data.UserName}"))
@@ -85,6 +105,9 @@ namespace SagasStateMachines.WebApi.StateMachines.UserStateMachines
         public Event<IUserCreate_SendEvent_From_UserWebApi> UserCreate_SendEvent_From_UserWebApi { get; private set; }
         public Event<IUserCreate_SendEvent_From_ChatWebApi> UserCreate_SendEvent_From_ChatWebApi { get; private set; }
         public Event<IUserCreate_SendEvent_From_PostWebApi> UserCreate_SendEvent_From_PostWebApi { get; private set; }
+        public Event<IUserCreate_SendEvent_From_ReportWebApi> UserCreate_SendEvent_From_ReportWebApi { get; private set; }
+        public Event<IUserCreate_SendEvent_From_SubscriptionWebApi> UserCreate_SendEvent_From_SubscriptionWebApi { get; private set; }
+        public Event<IUserCreate_SendEvent_From_NotificationWebApi> UserCreate_SendEvent_From_NotificationWebApi { get; private set; }
 
     }
 }

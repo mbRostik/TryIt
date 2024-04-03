@@ -1,6 +1,5 @@
 using MassTransit;
 using MessageBus.Messages.Events.IdentityServerService;
-using MessageBus.Messages.IdentityServerService;
 using MessageBus.Messages.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

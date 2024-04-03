@@ -1,5 +1,5 @@
 using MassTransit;
-using MessageBus.Messages.IdentityServerService;
+using MessageBus.Messages.Events.IdentityServerService;
 using Microsoft.EntityFrameworkCore;
 using Notifications.Application.UseCases.Consumers;
 using Notifications.Application.UseCases.Queries;
@@ -26,7 +26,7 @@ builder.Services.AddMediatR(options =>
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -36,10 +36,10 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.Publish<IdentityUserCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
-        cfg.ReceiveEndpoint("notifications_UserConsumer_queue", e =>
+        cfg.Publish<IUserCreate_SendEvent_From_NotificationWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.ReceiveEndpoint("rabbitNotificationWebApiQueue", e =>
         {
-            e.ConfigureConsumer<UserCreatedConsumer>(context);
+            e.ConfigureConsumer<UserCreation_Consumer>(context);
         });
     });
 });
