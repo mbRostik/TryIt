@@ -39,8 +39,8 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
 
                 var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == request.ProfileId);
 
-                int FollowerCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.UserId == request.ProfileId);
-                int FollowsCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.FollowerId == request.ProfileId);
+                int followerCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.UserId == request.ProfileId);
+                int followsCount = await dbContext.Follows.AsNoTracking().CountAsync(u => u.FollowerId == request.ProfileId);
 
                 GiveSmbProfileDTO userInfo = new GiveSmbProfileDTO
                 {
@@ -54,11 +54,9 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
                     IsPrivate = user.IsPrivate
                 };
 
-                if (FollowerCount != null && FollowsCount != null)
-                {
-                    userInfo.FollowersCount = FollowerCount;
-                    userInfo.FollowsCount = FollowsCount;
-                }
+                userInfo.FollowersCount = followerCount;
+                userInfo.FollowsCount = followsCount;
+
 
                 var entityToRemove = await dbContext.Follows
                   .FirstOrDefaultAsync(x => x.FollowerId == request.UserId && x.UserId == request.ProfileId);

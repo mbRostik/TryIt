@@ -16,12 +16,12 @@ namespace Aggregator.WebApi.Controllers
         private IPostService PostService { get; set; }
 
 
-        private readonly Serilog.ILogger logger;
-        public AggregatorController(IChatService ChatService, Serilog.ILogger logger, IPostService PostService)
+        private readonly Serilog.ILogger _logger;
+        public AggregatorController(IChatService chatService, Serilog.ILogger logger, IPostService postService)
         {
-            this.ChatService = ChatService;
-            this.logger = logger;
-            this.PostService = PostService;
+            this.ChatService = chatService;
+            this._logger = logger;
+            this.PostService = postService;
         }
 
         [HttpGet("GetUserChats")]
@@ -30,7 +30,7 @@ namespace Aggregator.WebApi.Controllers
             try
             {
                 var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                logger.Information("Attempting to get user chats for UserId: {UserId}", userId);
+                _logger.Information("Attempting to get user chats for UserId: {UserId}", userId);
 
                 string accessToken = null;
                 if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
@@ -39,24 +39,24 @@ namespace Aggregator.WebApi.Controllers
                     if (headerValue?.StartsWith("Bearer ") == true)
                     {
                         accessToken = headerValue.Substring("Bearer ".Length).Trim();
-                        logger.Information("Extracted access token for UserId: {UserId}", userId);
+                        _logger.Information("Extracted access token for UserId: {UserId}", userId);
                     }
                 }
 
                 if (userId == null || accessToken == null)
                 {
-                    logger.Warning("Failed to retrieve user chats for UserId: {UserId} due to missing userId or accessToken", userId);
+                    _logger.Warning("Failed to retrieve user chats for UserId: {UserId} due to missing userId or accessToken", userId);
                     return BadRequest("Missing user identity or access token");
                 }
 
                 var result = await ChatService.GetUserChats(userId, accessToken);
-                logger.Information("Successfully retrieved user chats for UserId: {UserId}", userId);
+                _logger.Information("Successfully retrieved user chats for UserId: {UserId}", userId);
 
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error retrieving user chats for UserId: {UserId}", HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                _logger.Error(ex, "Error retrieving user chats for UserId: {UserId}", HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -67,7 +67,7 @@ namespace Aggregator.WebApi.Controllers
             try
             {
                 var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                logger.Information("Attempting to GetFollowedPosts for UserId: {UserId}", userId);
+                _logger.Information("Attempting to GetFollowedPosts for UserId: {UserId}", userId);
 
                 string accessToken = null;
                 if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
@@ -76,25 +76,25 @@ namespace Aggregator.WebApi.Controllers
                     if (headerValue?.StartsWith("Bearer ") == true)
                     {
                         accessToken = headerValue.Substring("Bearer ".Length).Trim();
-                        logger.Information("Extracted access token for UserId: {UserId}", userId);
+                        _logger.Information("Extracted access token for UserId: {UserId}", userId);
                     }
                 }
 
                 if (userId == null || accessToken == null)
                 {
-                    logger.Warning("Failed to retrieve GetFollowedPosts for UserId: {UserId} due to missing userId or accessToken", userId);
+                    _logger.Warning("Failed to retrieve GetFollowedPosts for UserId: {UserId} due to missing userId or accessToken", userId);
                     return BadRequest("Missing user identity or access token");
                 }
 
                 var result = await PostService.GetFollowedPosts(userId, accessToken);
-                logger.Information("Successfully retrieved GetFollowedPosts for UserId: {UserId}", userId);
+                _logger.Information("Successfully retrieved GetFollowedPosts for UserId: {UserId}", userId);
 
                 return result;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                logger.Error(ex, "Error retrieving GetFollowedPosts for UserId: {UserId}", HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
+                _logger.Error(ex, "Error retrieving GetFollowedPosts for UserId: {UserId}", HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
                 return StatusCode(500, "Internal server error");
             }
         }

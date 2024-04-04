@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MessageBus.Messages.Commands.IdentityServerService;
-using MessageBus.Messages.PostService;
+using MessageBus.Messages.Events.IdentityServerService;
+using MessageBus.Messages.Events.PostService;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using Reports.Application.UseCases.Consumers;
@@ -28,7 +29,7 @@ builder.Services.AddMediatR(options =>
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<PostCreatedConsumer>();
+    x.AddConsumer<PostCreation_Consumer>();
     x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
@@ -39,18 +40,15 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.Publish<PostCreatedEvent>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.Publish<IPostCreate_SendEvent_From_ReportWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
-        cfg.Publish<IUserCreate_Send_To_ReportWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
-
-        cfg.ReceiveEndpoint("reports_PostConsumer_queue", e =>
-        {
-            e.ConfigureConsumer<PostCreatedConsumer>(context);
-        });
+        cfg.Publish<IUserCreate_SendEvent_From_ReportWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
         cfg.ReceiveEndpoint("rabbitReportWebApiQueue", e =>
         {
             e.ConfigureConsumer<UserCreation_Consumer>(context);
+            e.ConfigureConsumer<PostCreation_Consumer>(context);
+
         });
     });
 });

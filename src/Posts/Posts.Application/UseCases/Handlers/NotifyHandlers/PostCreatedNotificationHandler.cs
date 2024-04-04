@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using MediatR;
-using MessageBus.Messages.PostService;
+using MessageBus.Messages.Events.PostService;
+using MessageBus.Models.DTOs;
 using Posts.Application.UseCases.Notifications;
 using System;
 using System.Collections.Generic;
@@ -28,17 +29,19 @@ namespace Posts.Application.UseCases.Handlers.NotifyHandlers
 
             try
             {
-                PostCreatedEvent postCreatedEvent = new PostCreatedEvent
+                PostCreationDTO creationEvent = new PostCreationDTO
                 {
                     PostId = notification.item.Id,
-                    CreatorId = notification.item.UserId
-
+                    CreatorId = notification.item.UserId,
+                    Status = MessageBus.Models.Statuses.PostCreationStatuses.PostWebApi_Created
                 };
 
-                logger.Information("Publishing PostCreatedEvent PostId: {PostId}", postCreatedEvent.PostId);
-                await _publisher.Publish(postCreatedEvent);
+                await _publisher.Publish<IPostCreate_SendEvent_From_PostWebApi>(new { CorrelationId = Guid.NewGuid(), Data = creationEvent });
 
-                logger.Information("PostCreatedEvent for PostId: {PostId} published successfully", postCreatedEvent.PostId);
+
+                logger.Information("Publishing PostCreatedEvent PostId: {PostId}", creationEvent.PostId);
+
+                logger.Information("PostCreatedEvent for PostId: {PostId} published successfully", creationEvent.PostId);
             }
             catch (Exception ex)
             {

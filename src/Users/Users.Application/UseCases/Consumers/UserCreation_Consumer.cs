@@ -42,7 +42,7 @@ namespace Users.Application.UseCases.Consumers
                 IsPrivate=false
             };
             await mediator.Send(new CreateUserCommand(temp));
-            this.UpdateOrderState(context.Message.Data);
+            this.UpdateUserState(context.Message.Data);
 
             await context.Publish<IUserCreate_SendEvent_From_UserWebApi>(new
             {
@@ -51,7 +51,7 @@ namespace Users.Application.UseCases.Consumers
             });
             await Task.CompletedTask;
         }
-        private void UpdateOrderState(UserCreationDTO user) =>
+        private void UpdateUserState(UserCreationDTO user) =>
            user.Status = UserCreationStatuses.UserWebApi_Created;
     }
 }
