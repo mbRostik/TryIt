@@ -17,7 +17,7 @@ namespace Users.Application.Validators
                 .Must(email => email.EndsWith("@gmail.com")).WithMessage("Email must be a Gmail account.");
 
             RuleFor(message => message.Bio)
-                .MaximumLength(5).WithMessage("Bio size - 500");
+                .MaximumLength(500).WithMessage("Bio size - 500");
         }
     }
 }

@@ -8,34 +8,44 @@
         name = Context.User?.GetDisplayName();
     }
 }
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/NavBar.css" asp-append-version="true" />
+</head>
 
-<div class="nav-page">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body>
+    <div class="nav-page">
+        <nav class="navbar navbar-expand-lg navbar-light">
 
-        <a href="~/" class="navbar-brand">
-            <img src="~/duende-logo.svg" class="icon-banner">
-            TryIt
-        </a>
-        <div class="ml-auto">
+            <a href="~/" class="navbar-brand">
+                <img src="~/duende-logo.svg" class="icon-banner">
+                TryIt
+            </a>
             <div class="ml-auto">
-                <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="uk-UA" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">Українська</a>
-                <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="en-US" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">English</a>
+                <div class="ml-auto">
+                    <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="uk-UA" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">Українська</a>
+                    <a class="btn btn-link" asp-page="/SetLanguage/Index" asp-route-culture="en-US" asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString">English</a>
+                </div>
+
             </div>
+            @if (!string.IsNullOrWhiteSpace(name))
+            {
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
 
-        </div>
-        @if (!string.IsNullOrWhiteSpace(name))
-        {
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-page="/Account/Logout/Index">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            }
 
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" asp-page="/Account/Logout/Index">Logout</a>
-                    </div>
-                </li>
-            </ul>
-        }
 
-        
-    </nav>
-</div>
+        </nav>
+    </div>
+</body>
+</html>
+

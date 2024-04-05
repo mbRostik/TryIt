@@ -129,16 +129,28 @@
   <data name="External Account" xml:space="preserve">
     <value>Вхід за допомогою</value>
   </data>
+  <data name="Forgot password?" xml:space="preserve">
+    <value>Забули пароль?</value>
+  </data>
   <data name="Local Account" xml:space="preserve">
     <value>Вхід</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Ввійти</value>
   </data>
+  <data name="Login via" xml:space="preserve">
+    <value>Ввійти за допомогою </value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>Чи</value>
+  </data>
   <data name="Register here" xml:space="preserve">
     <value>Зареєструватись</value>
   </data>
-  <data name="Remember" xml:space="preserve">
+  <data name="Remember me" xml:space="preserve">
     <value>Запам'ятати мене</value>
+  </data>
+  <data name="Welcome to Trylt" xml:space="preserve">
+    <value>Ласкаво просимо до TryIt</value>
   </data>
 </root>

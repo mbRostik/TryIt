@@ -25,14 +25,18 @@ function App() {
                     'Content-Type': 'application/json'
                 }
             });
-            let response = await response_posts.json();
-            console.log(response);
             if (response_posts.ok) {
-                setPosts(response);
-                console.log("Fetching posts");
+                let response = await response_posts.json();
+
+                if (response && Array.isArray(response)) {
+                    setPosts(response);
+                    console.log("Fetching posts");
+                } else {
+                    console.log("Response is not an array or is null");
+                }
             }
         } catch (error) {
-            console.log('There is no posts', error);
+            console.log('There is no posts');
         }
     }
     function formatDate(isoString) {

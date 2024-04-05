@@ -1,0 +1,92 @@
+﻿.containerRegistrationPage {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top:10px;
+}
+.RegistrationHeader {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+.external-login {
+    text-align: center;
+}
+
+    .external-login .btn-google {
+        display: inline-block;
+        padding: 8px 6px;
+        background-color: lightgrey;
+        color: black;
+        text-decoration: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+        .external-login .btn-google:hover {
+            background-color: white;
+            color: black;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+    .external-login p,
+
+.register{
+        text-align:center;
+        align-items:center;
+        align-content:center;
+    margin-top:15px;
+}
+.forgot-password-link {
+    display: block;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.RegistrationForm {
+    padding: 10px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.RegistrationButton {
+    width: 100%;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 4px 02px;
+    background-color: orange;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align:center;
+    align-content:center;
+    align-items:center;
+}
+
+
+    .RegistrationButton:hover {
+        background-color: white;
+        color: black;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+.LogIn{
+    margin-top:10px;
+    width:100%;
+    text-align:center;
+}

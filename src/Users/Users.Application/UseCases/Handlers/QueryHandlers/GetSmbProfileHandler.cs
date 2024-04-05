@@ -51,17 +51,16 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
                     Bio = user.Bio,
                     Photo = user.Photo,
                     DateOfBirth = user.DateOfBirth,
-                    IsPrivate = user.IsPrivate
+                    IsPrivate = user.IsPrivate,
+                    FollowersCount = followerCount,
+                    FollowsCount = followsCount
                 };
 
-                userInfo.FollowersCount = followerCount;
-                userInfo.FollowsCount = followsCount;
 
-
-                var entityToRemove = await dbContext.Follows
+                var isFollowed = await dbContext.Follows
                   .FirstOrDefaultAsync(x => x.FollowerId == request.UserId && x.UserId == request.ProfileId);
 
-                if (entityToRemove != null)
+                if (isFollowed != null)
                 {
                     userInfo.isFollowedByUser = true;
                     return userInfo;

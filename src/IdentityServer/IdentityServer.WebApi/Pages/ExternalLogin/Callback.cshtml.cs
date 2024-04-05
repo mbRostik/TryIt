@@ -28,6 +28,7 @@ public class Callback : PageModel
     private readonly ILogger<Callback> _logger;
     private readonly IEventService _events;
     private readonly IPublishEndpoint _publisher;
+    private readonly IConfiguration _configuration;
 
 
     public Callback(
@@ -36,7 +37,8 @@ public class Callback : PageModel
         ILogger<Callback> logger,
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        IPublishEndpoint publisher)
+        IPublishEndpoint publisher,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -44,6 +46,7 @@ public class Callback : PageModel
         _logger = logger;
         _publisher = publisher;
         _events = events;
+        _configuration= configuration;
     }
         
     public async Task<IActionResult> OnGet()
@@ -79,19 +82,33 @@ public class Callback : PageModel
         var user = await _userManager.FindByLoginAsync(provider, providerUserId);
         if (user == null)
         {
+            var email = externalUser.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
+                    externalUser.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+
+            var userFindEmail = await _userManager.FindByEmailAsync(email);
+            if (userFindEmail != null)
+            {
+                var userFindEmail_identityResult = await _userManager.AddLoginAsync(userFindEmail, new UserLoginInfo(provider, providerUserId, provider));
+                if (!userFindEmail_identityResult.Succeeded) throw new InvalidOperationException(userFindEmail_identityResult.Errors.First().Description);
+            }
+            else
+            {
+                user = await AutoProvisionUserAsync(provider, providerUserId, externalUser.Claims);
+                UserCreationDTO creationEvent = new UserCreationDTO
+                {
+                    UserId = user.Id,
+                    UserEmail = user.Email,
+                    UserName = user.UserName,
+                    Status = MessageBus.Models.Statuses.UserCreationStatuses.IdentityServer_Created
+                };
+                await _publisher.Publish<IUserCreate_SendEvent_From_IdentityServer>(new { CorrelationId = Guid.NewGuid(), Data = creationEvent });
+            }
             // this might be where you might initiate a custom workflow for user registration
             // in this sample we don't show how that would be done, as our sample implementation
             // simply auto-provisions new external user
-            user = await AutoProvisionUserAsync(provider, providerUserId, externalUser.Claims);
-            UserCreationDTO creationEvent = new UserCreationDTO
-            {
-                UserId = user.Id,
-                UserEmail = user.Email,
-                UserName = user.UserName,
-                Status = MessageBus.Models.Statuses.UserCreationStatuses.IdentityServer_Created
-            };
-            await _publisher.Publish<IUserCreate_SendEvent_From_IdentityServer>(new { CorrelationId = Guid.NewGuid(), Data = creationEvent });
+           
         }
+        user = await _userManager.FindByLoginAsync(provider, providerUserId);
 
         // this allows us to collect any additional claims or properties
         // for the specific protocols used and store them in the local auth cookie.
@@ -122,7 +139,10 @@ public class Callback : PageModel
                 return this.LoadingPage(returnUrl);
             }
         }
-
+        if (string.IsNullOrEmpty(returnUrl) || returnUrl== "~/")
+        {
+            return Redirect(_configuration.GetValue<string>("Links:ReactLink"));
+        }
         return Redirect(returnUrl);
     }
 

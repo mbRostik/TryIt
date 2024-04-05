@@ -129,16 +129,28 @@
   <data name="External Account" xml:space="preserve">
     <value>External Account</value>
   </data>
+  <data name="Forgot password?" xml:space="preserve">
+    <value>Forgot password?</value>
+  </data>
   <data name="Local Account" xml:space="preserve">
     <value>Local Account</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Login via" xml:space="preserve">
+    <value>Login via</value>
+  </data>
+  <data name="or" xml:space="preserve">
+    <value>Or</value>
+  </data>
   <data name="Register here" xml:space="preserve">
     <value>Register here</value>
   </data>
-  <data name="Remember" xml:space="preserve">
-    <value>Remember My Login</value>
+  <data name="Remember me" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
+  <data name="Welcome to Trylt" xml:space="preserve">
+    <value>Welcome to Trylt</value>
   </data>
 </root>

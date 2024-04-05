@@ -3,44 +3,60 @@
 
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-<div class="register-page">
-    <div class="lead">
-        <h1>@Localizer["Register"]</h1>
-        <p>@Localizer["Create your account"]</p>
-    </div>
 
-    <partial name="_ValidationSummary" />
-
-    <div class="card">
-        <div class="card-header">
-            <h2>@Localizer["Create Account"]</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/RegistrationPage.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="containerRegistrationPage">
+        <div class="RegistrationHeader">
+            <h1>@Localizer["Register"]</h1>
+            <p>@Localizer["Create your account"]</p>
         </div>
-        <div class="card-body">
-            <form asp-page="/Register/Index">
-                <input type="hidden" asp-for="ReturnUrl" />
 
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input class="form-control" placeholder="Email" asp-for="Input.Email" autofocus>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Username"></label>
-                    <input class="form-control" placeholder="Username" asp-for="Input.Username">
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input type="password" class="form-control" placeholder="Password" asp-for="Input.Password" autocomplete="new-password">
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.ConfirmPassword"></label>
-                    <input type="password" class="form-control" placeholder="Confirm Password" asp-for="Input.ConfirmPassword" autocomplete="new-password">
-                </div>
-                <button type="submit" class="btn btn-secondary">@Localizer["Registration"] </button>
+        <partial name="_ValidationSummary" />
 
-                <a href="/" class="btn btn-secondary">@Localizer["Cancel"]</a>
-            </form>
-            
+        <div class="card">
+            <div class="card-header">
+                <h2>@Localizer["Create Account"]</h2>
+            </div>
+            <div class="RegistrationForm">
+                <form asp-page="/Register/Index">
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email">@Localizer["Email"]</label>
+                        <input class="form-control" placeholder="Email" asp-for="Input.Email" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Username">@Localizer["UserName"]</label>
+                        <input class="form-control" placeholder="Username" asp-for="Input.Username">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password">@Localizer["Password"]</label>
+                        <input type="password" class="form-control" placeholder="Password" asp-for="Input.Password" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword">@Localizer["Password"]</label>
+                        <input type="password" class="form-control" placeholder="Confirm Password" asp-for="Input.ConfirmPassword" autocomplete="new-password">
+                    </div>
+                    <div>
+                        <button type="submit" class="RegistrationButton">@Localizer["Registration"] </button>
+                    </div>
+                    <div><a href="/" class="RegistrationButton">@Localizer["Cancel"]</a></div>
+                    
+                </form>
+
+            </div>
+            <div class="LogIn">
+                <a asp-page="/Account/Login/Index">@Localizer["LogIn"]</a>
+
+            </div>
         </div>
-        <a class="btn btn-primary" asp-page="/Account/Login/Index">@Localizer["LogIn"]</a>
     </div>
-</div>
+</body>
+</html>

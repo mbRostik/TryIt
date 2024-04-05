@@ -100,7 +100,6 @@ export const AuthProvider = ({ children }) => {
                 .withUrl(`https://localhost:7234/SendMessage`, {
                     accessTokenFactory: () => user.access_token
                 })
-                .withAutomaticReconnect()
                 .configureLogging(signalR.LogLevel.None)
                 .build();
 
@@ -165,23 +164,12 @@ export const AuthProvider = ({ children }) => {
             startConnection(connection);
 
             connection.onclose(async () => {
+                await fetchChatData(user.access_token);
+                setHubConnection(null);
                 console.log('Connection closed');
 
             });
-          
-            connection.onreconnecting(error => {
-                setHubConnection(null);
-                console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
-                console.log(`Connection lost due to error "${error}". Reconnecting.`);
-            });
 
-            connection.onreconnected(connectionId => {
-                console.assert(connection.state === signalR.HubConnectionState.Connected);
-                console.log(`Connection reestablished. Connected with connectionId "${connectionId}".`);
-                console.log(`Connection state: ${connection.state === signalR.HubConnectionState.Connected ? 'Connected' : connection.state}`);
-               /* connectSubscriptions(connection);*/
-                setHubConnection(connection);
-            });
         }
     }, [user, hubConnection, setHubConnection, setChatsState, chats, chatReady]);
 

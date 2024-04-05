@@ -94,9 +94,7 @@ function OpenedChat({ chatId }) {
     };
     const messagesEndRef = useRef(null);
 
-    useEffect(() => {
-        console.log("Active-  " + chatId);
-        
+    useEffect(() => {        
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         async function checkAuth() {
             if (!loading && foundChat) {
@@ -115,9 +113,6 @@ function OpenedChat({ chatId }) {
         if (hubConnection) {
 
             const receiveMessage = (message) => {
-                console.log("Received");
-
-                console.log(message.chatId + " Current: " + chatId);
                 if (message.chatId == chatId) { setMessages(prevMessages => [...prevMessages, message]); }
                 
             };
@@ -132,7 +127,6 @@ function OpenedChat({ chatId }) {
     const sendMessage = async () => {
         if (hubConnection && messageContent.trim()) { 
             try {
-                console.log("Sending to the " + activeChatId);
                 await hubConnection.invoke("SendMessage", { MessageContent: messageContent, ChatId: activeChatId });
                 setMessageContent(""); 
             } catch (error) {

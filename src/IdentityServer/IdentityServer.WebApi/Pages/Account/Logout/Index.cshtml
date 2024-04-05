@@ -1,16 +1,27 @@
 @page
 @model IdentityServerHost.Pages.Logout.Index
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/LogOut.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="containerRegistrationPage">
+        <div class="lead">
+            <h1>Would you like to logout?</h1>
+        </div>
 
-<div class="logout-page">
-    <div class="lead">
-        <h1>Would you like to logout?</h1>
+        <form asp-page="/Account/Logout/Index">
+            <input type="hidden" name="logoutId" value="@Model.LogoutId" />
+
+            <div class="form-group">
+                <button class="Button">Yes</button>
+            </div>
+        </form>
     </div>
 
-    <form asp-page="/Account/Logout/Index">
-        <input type="hidden" name="logoutId" value="@Model.LogoutId"  />
-        
-        <div class="form-group">
-            <button class="btn btn-primary">Yes</button>
-        </div>
-    </form>
-</div>
+    </div>
+</body>
+</html>

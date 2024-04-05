@@ -94,7 +94,7 @@ namespace Posts.WebApi.Controllers
                 else
                 {
                     logger.Warning("No posts found for ProfileId {ProfileId}", model.ProfileId);
-                    return NotFound("No posts found");
+                    return Ok(null);
                 }
             }
             catch (Exception ex)

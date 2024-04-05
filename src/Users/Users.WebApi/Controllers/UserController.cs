@@ -93,14 +93,7 @@ namespace Users.WebApi.Controllers
         [HttpPost("UploadProfilePhoto")]
         public async Task<ActionResult<UserProfileDTO>> UploadProfilePhoto([FromBody] ProfilePhotoDTO model)
         {
-            var validator = new ProfilePhotoDTOValidator();
-            var validationResult = validator.Validate(model);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors.Select(e => new { error = e.ErrorMessage }));
-            }
-
+          
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
@@ -200,7 +193,7 @@ namespace Users.WebApi.Controllers
 
                 if (string.IsNullOrEmpty(userId))
                 {
-                    logger.Information("UploadProfilePhoto called but user ID is missing.");
+                    logger.Information("Follow called but user ID is missing.");
                     return Unauthorized("User ID is required.");
                 }
 
@@ -218,6 +211,37 @@ namespace Users.WebApi.Controllers
             catch (Exception ex)
             {
                 logger.Error(ex, "An error occurred while trying to follow {ProfileId}.", request.ProfileId);
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("GetSearchedUsers")]
+        public async Task<ActionResult<UserProfileDTO>> GetSearchedUsers([FromBody] GetUsersByLettersDTO request)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    logger.Information("UploadProfilePhoto called but user ID is missing.");
+                    return Unauthorized("User ID is required.");
+                }
+
+                var result = await mediator.Send(new GetUsersByLettersQuery(request.SearchingField, userId));
+
+                if (result == null)
+                {
+                    logger.Warning("Nothing found while GetSearchedUsers.");
+                    return Ok(null);
+                }
+
+                logger.Information("Successfully returned GetSearchedUsers.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while trying to GetSearchedUsers.");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }

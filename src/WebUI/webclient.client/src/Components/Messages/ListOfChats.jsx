@@ -26,7 +26,6 @@ const ListOfChats = () => {
         navigate(`/Someones_Profile/${contactId}`);
     };
     const handleInfoClick = (chatId) => {
-        console.log("Activating " + chatId);
         setActiveChatId(chatId);
         setunknownsmbDataState(null);
     };

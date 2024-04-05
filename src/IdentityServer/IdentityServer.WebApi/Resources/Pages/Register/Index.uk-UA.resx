@@ -120,19 +120,31 @@
   <data name="Cancel" xml:space="preserve">
     <value>Скасувати</value>
   </data>
+  <data name="Confirm Password" xml:space="preserve">
+    <value>Підтвердіть Пароль</value>
+  </data>
   <data name="Create Account" xml:space="preserve">
     <value>Створення аккаунту</value>
   </data>
   <data name="Create your account" xml:space="preserve">
     <value>Створіть свій аккаунт</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Електронна Пошта</value>
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value>Ввійти в існуючий аккаунт</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Реєстрація</value>
   </data>
   <data name="Registration" xml:space="preserve">
     <value>Зареєструватись</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Нікнейм</value>
   </data>
 </root>

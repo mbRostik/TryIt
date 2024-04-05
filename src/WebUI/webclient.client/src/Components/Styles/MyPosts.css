@@ -2,6 +2,7 @@
 
 .modal {
     position: fixed;
+    margin: 0 auto;
     top: 0;
     left: 0;
     width: 100%;
@@ -10,7 +11,10 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000; 
+    z-index: 1000;
+}
+.remove-file-button{
+    margin-left:10px;
 }
 .display-block {
     opacity: 1;
@@ -105,9 +109,16 @@ input[type="file"] {
     }
 
 .selected-files {
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
+    max-height: 150px; 
+    overflow-y: auto; 
+    border: 1px solid #ccc; 
+    margin-top: 10px; 
+    padding: 5px; 
+    width: auto; 
+    box-sizing: border-box;
 }
 .upload-button {
     display: inline-block;

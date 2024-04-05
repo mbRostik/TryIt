@@ -8,6 +8,7 @@ namespace Users.Application.Contracts.DTOs
 {
     public class GiveSmbProfileDTO
     {
+        public string Id { get; set; } = "";
         public string Name { get; set; } = "";
 
         public string NickName { get; set; } = "";

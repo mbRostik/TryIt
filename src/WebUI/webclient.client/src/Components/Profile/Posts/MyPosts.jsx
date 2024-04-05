@@ -32,13 +32,25 @@ const MyPosts = () => {
         setUserDataState } = useAuth();
 
     const handleFileChange = (event) => {
-        const newFiles = Array.from(event.target.files);
-        const newFileNames = newFiles.map(file => file.name);
-
-        setFiles(prevFiles => [...prevFiles, ...newFiles]);
+        const selectedFiles = Array.from(event.target.files); 
+        if (files.length + selectedFiles.length > 8) { 
+            
+            toast.error("You can only upload up to 8 files.", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return; 
+        }
+        
+        setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
+        const newFileNames = selectedFiles.map(file => file.name);
         setFileNames(prevNames => [...prevNames, ...newFileNames]);
     };
-
     async function fetchPostsData(accessToken) {
         try {
             const response_posts = await fetch(`${config.apiBaseUrl}/GetUserPosts`, {
@@ -115,25 +127,18 @@ const MyPosts = () => {
 
                 if (response.status === 400) {
                     const errorData = await response.json();
-                    const errors = errorData.errors;
 
-                    for (const key in errors) {
-
-                        if (errors.hasOwnProperty(key)) {
-                            const errorMessages = errors[key];
-                            errorMessages.forEach(message => {
-                                toast.error(`${key}: ${message}`, {
-                                    position: "top-right",
-                                    autoClose: 5000,
-                                    hideProgressBar: false,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                });
-                            });
-                        }
-                    }
+                    errorData.forEach(errorItem => {
+                        toast.error(errorItem.error, {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    });
                 } else {
 
                     toast.error(`HTTP error! Status: ${response.status}`, {
@@ -146,7 +151,6 @@ const MyPosts = () => {
                         progress: undefined,
                     });
                 }
-                throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
             else {
@@ -230,6 +234,11 @@ const MyPosts = () => {
         }
     }
 
+    const handleRemoveFile = (indexToRemove) => {
+        setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
+    };
+
+
     return (
         <div>
             {loading ? (
@@ -293,10 +302,12 @@ const MyPosts = () => {
                                                 <div className="selected-files">
                                                     {files.map((file, index) => (
                                                         <div key={index} className="file-preview">
-                                                            {file.name}
+                                                            {file.name.length > 10 ? `${file.name.slice(0, 10)}...` : file.name}
+                                                            <button onClick={() => handleRemoveFile(index)} className="remove-file-button">✖</button>
                                                         </div>
                                                     ))}
                                                 </div>
+
                                             </div>
                                             <button type="submit">Publish</button>
                                         </form>

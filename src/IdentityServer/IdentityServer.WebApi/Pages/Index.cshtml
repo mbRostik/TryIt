@@ -1,16 +1,26 @@
 @page
 @model IdentityServerHost.Pages.Home.Index
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
+</head>
 
-<div class="welcome-page">
-    <ul>
+<body>
+    <div class="containerRegistrationPage">
+        <h1>Welcome to TryIt</h1>
         @if (User.Identity.IsAuthenticated)
         {
-            <li><a class="btn btn-primary" asp-page="/Account/LogOut/Index">LogOut</a></li>
+            <a class="Button" asp-page="/Account/LogOut/Index">LogOut</a>
         }
         else
         {
-            <li><a class="btn btn-primary" asp-page="/Register/Index">Register</a></li>
-            <li><a class="btn btn-primary" asp-page="/Account/Login/Index">Login</a></li>
+            <a class="Button" asp-page="/Register/Index">Register</a>
+            <a class="Button" asp-page="/Account/Login/Index">Login</a>
         }
-    </ul>
-</div>
+    </div>
+        
+</body>
+</html>
+
