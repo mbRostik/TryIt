@@ -197,7 +197,11 @@ const Someones_Profile = () => {
                                             <div className="profile-info">
                                                         <h2>Name: {smbData.name}</h2>
                                                         <h3>NickName: {smbData.nickName}</h3>
-                                                        <p>Bio: {smbData.bio}</p>
+
+                                                        <div className="ProfileBio">
+                                                            Bio:{smbData.bio}
+                                                        </div>
+
                                                         <p>Date of Birth: {new Date(smbData.dateOfBirth).toLocaleDateString()}</p>
                                             </div>
                                         </div>

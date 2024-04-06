@@ -1,5 +1,6 @@
 ﻿.profile {
     display: flex;
+    width:100%;
     flex-direction: column;
 }
 .UpProfile {
@@ -8,16 +9,24 @@
     width: 100%;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     border-radius: 15px;
-    padding:5px;
-    padding:10px 16px;
+    padding: 5px;
+    width: 100%;
+    padding: 10px 16px;
+}
+.ProfileBio {
+    max-width: 400px;   
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
+}
+.Profile_Information {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
 }
 
-.Profile_Information{
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    align-content:space-between;
-}
 .RightSideProfile{
     width:100%;
     padding-right:10px;
@@ -36,6 +45,7 @@
 }
 .First_UpProfile {
     width: 100%;
+    max-width:100%;
     display: flex;
 }
 .avatar {

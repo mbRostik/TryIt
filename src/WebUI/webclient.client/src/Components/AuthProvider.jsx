@@ -87,11 +87,11 @@ export const AuthProvider = ({ children }) => {
             } else {
                 setIsAuthorized(false);
             }
-
-            setLoading(false);
         };
 
         checkAuth();
+        setLoading(false);
+
     }, []);
 
     useEffect(() => {

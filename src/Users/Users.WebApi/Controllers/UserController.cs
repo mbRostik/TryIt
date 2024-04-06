@@ -245,5 +245,36 @@ namespace Users.WebApi.Controllers
                 return StatusCode(500, "An error occurred while processing your request.");
             }
         }
+
+        [HttpGet("GetUserFriends")]
+        public async Task<ActionResult<UserProfileDTO>> GetUserFriends()
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    logger.Information("GetUserFriends called but user ID is missing.");
+                    return Unauthorized("User ID is required.");
+                }
+
+                var result = await mediator.Send(new GetUserFriendsQuery(userId));
+
+                if (result == null)
+                {
+                    logger.Warning("Nothing found while GetUserFriends.");
+                    return Ok(null);
+                }
+
+                logger.Information("Successfully returned GetUserFriends.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occurred while trying to GetUserFriends.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
     }
 }

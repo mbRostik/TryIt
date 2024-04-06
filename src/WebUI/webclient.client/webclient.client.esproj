@@ -10,8 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\Components\Styles\" />
-    <Folder Include="src\Components\Login\" />
-    <Folder Include="src\Components\Posts\" />
     <Folder Include="src\Components\NavBar\" />
     <Folder Include="src\Components\Registration\" />
     <Folder Include="src\Functions\" />

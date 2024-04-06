@@ -11,9 +11,12 @@ import { useAuth } from './Components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
 import Profile from './Components/Profile/Profile';
+import Friends from './Components/Friends/Friends';
+
 import Profile_Settings from './Components/Profile/Profile_Settings';
 import Someones_Profile from './Components/Profile/Someones_Profile';
 import ListOfChats from './Components/Messages/ListOfChats';
+
 import './index.css';
 import { useState, useEffect } from 'react';
 
@@ -64,6 +67,8 @@ function AppContainer() {
                         <Route path="/signout-callback-oidc" element={<SignOut_CallBackPage />} />
                         <Route path="/Someones_Profile/:ProfileId" element={<Someones_Profile />} />
                         <Route path="/Chats" element={<ListOfChats />} />
+                        <Route path="/Friends" element={<Friends />} />
+
                     </Routes>
                 </div>
                 {!isChatPage && isAuthorized && (

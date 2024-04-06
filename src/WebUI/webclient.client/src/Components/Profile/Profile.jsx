@@ -289,7 +289,9 @@ const Profile = () => {
                                                                 <h2>{userData.nickName}</h2>
 
                                                                 <h3>{userData.name}</h3>
-                                                                <p>{userData.bio}</p>
+                                                                <div className="ProfileBio">
+                                                                    {userData.bio}
+                                                                </div>
                                                                 <p>Birth: {new Date(userData.dateOfBirth).toLocaleDateString()}</p>
                                                             </div>
                                                         </div>

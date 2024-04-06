@@ -100,7 +100,6 @@ const Profile_Settings = () => {
                 }
                 throw new Error(`HTTP error! Status: ${response.status}`);
             } else {
-                console.log("Data saved successfully!");
                 navigate('/profile');
             }
 
