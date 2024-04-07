@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Posts.Application.Contracts.DTOs;
 using Posts.Application.Contracts.Validators;
 using Posts.Application.UseCases.Commands;
+using Posts.Application.UseCases.Handlers.OperationHandlers;
 using Posts.Application.UseCases.Queries;
 using Posts.Domain.Entities;
 using System.Security.Claims;
@@ -100,6 +101,31 @@ namespace Posts.WebApi.Controllers
             catch (Exception ex)
             {
                 logger.Error(ex, "Error fetching smbPosts for ProfileId {ProfileId}", model.ProfileId);
+                return StatusCode(500, "Internal server error");
+            }
+        } 
+        [HttpPost("DeleteUserPost")]
+        public async Task<ActionResult> DeleteUserPost([FromBody] DeletePostDTO model)
+        {
+            logger.Information("Starting DeleteUserPost for Post {ProfileId}", model.PostId);
+
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+                var result = await mediator.Send(new DeletePostCommand(model.PostId, userId));
+                if (!result)
+                {
+                    logger.Warning("Smth went wrong for the Post {ProfileId}", model.PostId);
+                    return BadRequest();
+                }
+                logger.Information("Post was deleted");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error DeleteUserPost for Post {ProfileId}", model.PostId);
                 return StatusCode(500, "Internal server error");
             }
         }

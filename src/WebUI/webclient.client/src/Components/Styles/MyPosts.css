@@ -13,8 +13,27 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
+.delete-post-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000; 
+}
+
+    .delete-post-button:hover {
+        color: orange; 
+    }
+
+
 .remove-file-button{
     margin-left:10px;
+}
+.DeleteWithDate{
+    display:flex;
+    align-items:center;
+}
+.Post_Title_Date{
+    margin-right:10px;
 }
 .display-block {
     opacity: 1;

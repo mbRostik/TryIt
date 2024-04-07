@@ -87,6 +87,11 @@ namespace Aggregator.WebApi.Controllers
                 }
 
                 var result = await PostService.GetFollowedPosts(userId, accessToken);
+
+                if (result.Any())
+                {
+                    Console.WriteLine("\n\n\n\\n\n" + ",jdsehgwrkgwrghkjhwkghkwhkghwrhgvkhjwsgfkwkrgkwgbhkwkjgkwgkhwgkjgjwrb");
+                }
                 _logger.Information("Successfully retrieved GetFollowedPosts for UserId: {UserId}", userId);
 
                 return result;

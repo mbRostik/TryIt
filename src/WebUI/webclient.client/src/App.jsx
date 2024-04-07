@@ -103,7 +103,8 @@ function App() {
                     </div>
                     <div className="Followed_Posts">
                         {posts && posts.length > 0 ? (
-                            posts.map((post, index) => (
+                                    posts.map((post, index) => (
+                                console.log(posts),
                                 <div key={index} className="Followed_Post_Container">
                                     <div className="Followed_PostUserInformation">
                                         <img className="Followed_User_Photo"

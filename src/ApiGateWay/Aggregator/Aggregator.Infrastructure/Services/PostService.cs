@@ -63,8 +63,10 @@ namespace Aggregator.Infrastructure.Services
                 });
 
                 var postsLists = await Task.WhenAll(tasks);
-                var result = postsLists.SelectMany(posts => posts).ToList();
-
+                var result = postsLists
+                    .Where(posts => posts != null)
+                    .SelectMany(posts => posts)
+                    .ToList();
                 return result;
             }
             catch (Exception ex)

@@ -12,8 +12,10 @@ import config from '../../../config.json';
 import { useAuth } from './../../AuthProvider';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 const MyPosts = () => {
+
     const navigate = useNavigate();
     const [posts, setPosts] = useState(null);
 
@@ -238,7 +240,53 @@ const MyPosts = () => {
         setFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
     };
 
+    const deletePost = async (postId) => {
+        setLoadingState(true);
 
+        try {
+            const accessToken = await userManager.getUser().then(user => user.access_token);
+            const response = await fetch(`${config.apiBaseUrl}/DeleteUserPost`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ PostId: postId }) 
+            });
+
+            if (response.ok) {
+                console.log('Post successfully deleted');
+                const updatedPosts = posts.filter(post => post.id !== postId);
+                setPosts(updatedPosts);
+
+                toast.success('Post deleted.', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+
+            } else {
+                toast.error('Smth went wrong', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                console.log('Failed to delete the post');
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        } finally {
+            setLoadingState(false);
+        }
+    };
     return (
         <div>
             {loading ? (
@@ -321,7 +369,12 @@ const MyPosts = () => {
                                         <div key={index} className="post">
                                             <div className="Post_Title_Info">
                                                 <div className="Post_Title">{post.title}</div>
-                                                <div className="Post_Title_Date">{formatDate(post.date)}</div>
+                                                <div className="DeleteWithDate">
+                                                    <div className="Post_Title_Date">{formatDate(post.date)}</div>
+                                                    <button onClick={() => deletePost(post.id)} className="delete-post-button">
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </button>
+                                                </div>
                                             </div>
                                             <div className="Post_Description">{post.content}</div>
                                             {post.files && post.files.map((file, fileIndex) => (
