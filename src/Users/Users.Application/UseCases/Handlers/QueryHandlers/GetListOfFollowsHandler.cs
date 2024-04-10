@@ -13,7 +13,7 @@ using Users.Infrastructure.Data;
 
 namespace Users.Application.UseCases.Handlers.QueryHandlers
 {
-    internal class GetListOfFollowsHandler : IRequestHandler<GetListOfFollowsQuery, List<Follow>>
+    public class GetListOfFollowsHandler : IRequestHandler<GetListOfFollowsQuery, List<Follow>>
     {
         public readonly Serilog.ILogger logger;
 
