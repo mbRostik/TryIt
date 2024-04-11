@@ -31,26 +31,32 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
             _mapper = mapperService;
             _logger = logger;
         }
-
         public async Task Handle(ChangeUserInformationCommand request, CancellationToken cancellationToken)
         {
-
             _logger.Information("Attempting to change user information for UserId: {UserId}", request.model.Id);
 
             try
             {
-                var mapper = _mapper.Mapper_ChangeUserProfileToUserDTO();
-                User userInfo = mapper.Map<User>(request.model);
+                var userInDb = await dbContext.Users.FindAsync(new object[] { request.model.Id }, cancellationToken);
 
-                dbContext.Users.Update(userInfo);
+                if (userInDb == null)
+                {
+                    _logger.Warning("User with UserId: {UserId} not found", request.model.Id);
+                    return;
+                }
+
+                // Обновляем поля пользователя
+                var mapper = _mapper.Mapper_ChangeUserProfileToUserDTO();
+
+                mapper.Map(request.model, userInDb);
+
                 await dbContext.SaveChangesAsync(cancellationToken);
 
-                _logger.Information("User information successfully changed for UserId: {UserId}", userInfo.Id);
+                _logger.Information("User information successfully changed for UserId: {UserId}", userInDb.Id);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error occurred while changing user information for UserId: {UserId}", request.model.Id);
-
                 throw;
             }
         }
