@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Posts.Application.UseCases.Handlers.QueryHandlers
 {
-    internal class GetsmbPostsHandler : IRequestHandler<GetsmbPostsQuery, List<GiveProfilePostsDTO>>
+    public class GetsmbPostsHandler : IRequestHandler<GetsmbPostsQuery, List<GiveProfilePostsDTO>>
     {
 
         private readonly PostDbContext _dbContext;

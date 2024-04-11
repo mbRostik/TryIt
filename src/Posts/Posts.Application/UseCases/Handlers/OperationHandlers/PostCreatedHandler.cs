@@ -31,16 +31,17 @@ namespace Posts.Application.UseCases.Handlers.Creation
 
         public async Task<bool> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-            using var transaction = await dbContext.Database.BeginTransactionAsync();
             var mapper = _mapper.InitializeAutomapper_CreatePostDTO_To_Post();
 
             try
             {
+                if (request.model.UserId == null || (request.model.Content == null && request.model.Title == null))
+                {
+                    return false;
+                }
                 Post temp = mapper.Map<Post>(request.model);
                 var model = await dbContext.Posts.AddAsync(temp);
                 await dbContext.SaveChangesAsync();
-
-                await transaction.CommitAsync();
 
                 logger.Information("Post with ID {PostId} created successfully", model.Entity.Id);
                 await mediator.Publish(new PostCreatedNotification(model.Entity), cancellationToken);
@@ -49,7 +50,6 @@ namespace Posts.Application.UseCases.Handlers.Creation
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
                 logger.Error(ex, "Error creating post. {ErrorMessage}", ex.Message);
                 return false;
             }
