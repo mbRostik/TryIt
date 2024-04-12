@@ -5,5 +5,6 @@
         public string Id { get; set; }
 
         public virtual ICollection<Notification> Notifications { get; set; }
+
     }
 }

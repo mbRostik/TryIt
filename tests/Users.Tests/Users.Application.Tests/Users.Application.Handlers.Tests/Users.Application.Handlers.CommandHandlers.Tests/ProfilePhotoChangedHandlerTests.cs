@@ -48,7 +48,7 @@ public class ProfilePhotoChangedHandlerTests
             Phone = "1234567890",
         };
         _dbContext.Users.Add(existingUser);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         var newAvatarBase64 = Convert.ToBase64String(new byte[] { 4, 5, 6 });
         var command = new ChangeUserAvatarCommand(new ProfilePhotoDTO { Id = userId, Avatar = newAvatarBase64 });

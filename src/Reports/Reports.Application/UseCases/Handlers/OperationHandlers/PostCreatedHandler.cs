@@ -24,34 +24,6 @@ namespace Reports.Application.UseCases.Handlers.Creation
 
         public async Task<Post> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-            //try
-            //{
-            //    using (var transaction = dbContext.Database.BeginTransaction())
-            //    {
-            //        try
-            //        {
-            //            var model = await dbContext.Posts.AddAsync(request.model);
-
-            //            await dbContext.SaveChangesAsync();
-
-            //            transaction.Commit();
-            //            return model.Entity;
-            //        }
-            //        catch (Exception)
-            //        {
-            //            transaction.Rollback();
-            //            return null;
-            //        }
-            //    }
-
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.ToString());
-            //    return null;
-            //}
-
 
             try
             {
@@ -61,10 +33,6 @@ namespace Reports.Application.UseCases.Handlers.Creation
 
                 return model.Entity;
             }
-
-
-
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
