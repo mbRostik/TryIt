@@ -60,7 +60,6 @@ namespace Posts.Application.UseCases.Tests.Posts.Application.Handlers.CommandHan
             var user = new User { Id = Guid.NewGuid().ToString()};
             var command = new CreateUserCommand(user);
 
-            // Simulate an exception during database operation
             _dbContext.Users = null;
 
             // Act

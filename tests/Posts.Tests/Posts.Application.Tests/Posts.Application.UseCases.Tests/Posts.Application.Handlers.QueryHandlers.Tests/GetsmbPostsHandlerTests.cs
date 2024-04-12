@@ -67,8 +67,6 @@ namespace Posts.Application.UseCases.Tests.Posts.Application.Handlers.QueryHandl
                 expectedPost.Title.Should().Be(actualPost.Title);
                 expectedPost.Content.Should().Be(actualPost.Content);
                 expectedPost.Date.Should().Be(actualPost.Date);
-
-                // Add assertions for other properties if needed
             }
 
             _loggerMock.Verify(log => log.Information(It.IsAny<string>(), userId, It.IsAny<int>()), Times.AtLeastOnce);
