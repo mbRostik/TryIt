@@ -108,7 +108,7 @@ function App() {
                                 <div key={index} className="Followed_Post_Container">
                                     <div className="Followed_PostUserInformation">
                                         <img className="Followed_User_Photo"
-                                            src={post.photo ? `data:image/jpeg;base64,${post.photo}` : "./../public/NoPhoto.jpg"}
+                                            src={post.photo ? `data:image/jpeg;base64,${post.photo}` : "NoPhoto.jpg"}
                                             alt="Contact"
                                             onClick={(e) => { e.stopPropagation(); handleImageClick(post.userId); }}
                                         />

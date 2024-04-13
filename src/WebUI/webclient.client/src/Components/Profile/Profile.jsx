@@ -266,48 +266,48 @@ const Profile = () => {
                     {userData && (
                         <>
                         <div className="UpProfile">
-                                            <div className="First_UpProfile">
+                                    <div className="First_UpProfile">
 
-                                                <div className="avatar-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                                                    <img src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"} alt="Avatar" className="avatar" />
-                                                    <div className="buttons-container">
-                                                        <label className="edit-button">
-                                                            New
-                                                            <input type="file" name="clientAvatar" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} capture="false" />
-                                                        </label>
-                                                        <button className="delete-button" onClick={handleImageDelete}>Delete</button>
+                                        <div className="avatar-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                                            <img src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "NoPhoto.jpg"} alt="Avatar" className="avatar" />
+                                            <div className="buttons-container">
+                                                <label className="edit-button">
+                                                    New
+                                                    <input type="file" name="clientAvatar" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} capture="false" />
+                                                </label>
+                                                <button className="delete-button" onClick={handleImageDelete}>Delete</button>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div className="RightSideProfile">
+
+                                            <div className="RightSideFromAvatar">
+                                                <div className="Profile_Information">
+                                                    <div className="profile-info">
+                                                        <h2>{userData.nickName}</h2>
+
+                                                        <h3>{userData.name}</h3>
+                                                        <div className="ProfileBio">
+                                                            {userData.bio}
+                                                        </div>
+                                                        <p>Birth: {new Date(userData.dateOfBirth).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
 
+                                            </div>
 
-
-                                                <div className="RightSideProfile">
-
-                                                    <div className="RightSideFromAvatar">
-                                                        <div className="Profile_Information">
-                                                            <div className="profile-info">
-                                                                <h2>{userData.nickName}</h2>
-
-                                                                <h3>{userData.name}</h3>
-                                                                <div className="ProfileBio">
-                                                                    {userData.bio}
-                                                                </div>
-                                                                <p>Birth: {new Date(userData.dateOfBirth).toLocaleDateString()}</p>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                    </div>
+                                            </div>
                                               
-                                            </div>
+                                    </div>
 
-                                            <div className="FF_Count">
-                                                <h2>Followers: {userData.followersCount}</h2>
-                                                <h2>Following: {userData.followsCount}</h2>
-                                            </div>
+                                    <div className="FF_Count">
+                                        <h2>Followers: {userData.followersCount}</h2>
+                                        <h2>Following: {userData.followsCount}</h2>
+                                    </div>
                              </div>
-                                        <MyPosts />
+                                <MyPosts />
                         </>
                     )}
                 </div>

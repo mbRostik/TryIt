@@ -19,7 +19,7 @@ const NavBar = () => {
         <div className="LeftSide">
 
             <div className="LeftBar_Up">
-                <img className="Left_SideLogo" src="../../public/homePage.png" alt="" />
+                <img className="Left_SideLogo" src="homePage.png" alt="" />
                 <h2 className="inter-font">TryIt</h2>
             </div>
 
@@ -29,7 +29,7 @@ const NavBar = () => {
                     to="/"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/home.png" alt="Home" />
+                    <img className="Left_SideIcon" src="home.png" alt="Home" />
                     <div className="inter-font">HOME</div>
                 </NavLink>
 
@@ -37,7 +37,7 @@ const NavBar = () => {
                     to="/Profile"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/profile.png" alt="Home" />
+                    <img className="Left_SideIcon" src="profile.png" alt="Home" />
                     <div className="inter-font">PROFILE</div>
                 </NavLink>
 
@@ -45,7 +45,7 @@ const NavBar = () => {
                     to="/Friends"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/people.png" alt="Home" />
+                    <img className="Left_SideIcon" src="people.png" alt="Home" />
                     <div className="inter-font">FRIENDS</div>
                 </NavLink>
 
@@ -53,7 +53,7 @@ const NavBar = () => {
                     to="/Chats"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/chat.png" alt="Home" />
+                    <img className="Left_SideIcon" src="chat.png" alt="Home" />
                     <div className="inter-font">CHATS</div>
                 </NavLink>
 
@@ -62,7 +62,7 @@ const NavBar = () => {
                     to="/Notifications"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/bell.png" alt="Home" />
+                    <img className="Left_SideIcon" src="bell.png" alt="Home" />
                     <div className="inter-font">NOTIFICATIONS</div>
                 </NavLink>
 
@@ -74,7 +74,7 @@ const NavBar = () => {
                     to="/Help"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
-                    <img className="Left_SideIcon" src="../../public/help.png" alt="Home" />
+                    <img className="Left_SideIcon" src="help.png" alt="Home" />
                     <div className="inter-font">HELP</div>
                 </NavLink>
                 <button className="signout-button" onClick={onLogout}>

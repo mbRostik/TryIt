@@ -97,7 +97,7 @@ const NavBar = () => {
                                                         <div key={user.id} className="user-item" onClick={(e) => { handleUserClick(user.id); }}>
                                                             <div>
                                                                 <img
-                                                                    src={user.photo ? `data:image/jpeg;base64,${user.photo}` : "../../public/NoPhoto.jpg"}
+                                                                    src={user.photo ? `data:image/jpeg;base64,${user.photo}` : "NoPhoto.jpg"}
                                                                     alt={user.username}
                                                                     className="user-avatar"
                                                                 />
@@ -113,7 +113,7 @@ const NavBar = () => {
                                                 {userData.nickName}
                                                 <img
                                                     className="NavBarAvatar"
-                                                    src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"}
+                                                    src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "NoPhoto.jpg"}
                                                     alt=""
                                                 />
                                                 </NavLink>

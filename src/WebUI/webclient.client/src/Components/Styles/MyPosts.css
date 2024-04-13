@@ -272,7 +272,7 @@ button[type="submit"] {
     text-decoration: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Плавный переход для фона, цвета текста и тени */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
