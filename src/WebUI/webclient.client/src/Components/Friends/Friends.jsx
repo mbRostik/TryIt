@@ -189,7 +189,7 @@ const Friends = () => {
                                             <div className="LeftAndCentreFriend">
                                                 <div className="LeftFriendSide">
                                                     <img className="Friend_Image"
-                                                        src={friend.photo ? `data:image/jpeg;base64,${friend.photo}` : "NoPhoto.jpg"}
+                                                        src={friend.photo ? `data:image/jpeg;base64,${friend.photo}` : "../../public/NoPhoto.jpg"}
                                                         alt="Friend"
                                                         onClick={() => handleImageClick(friend.id)}
                                                     />

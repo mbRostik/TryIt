@@ -6,6 +6,11 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using Aggregator.Application.Contracts.Interfaces;
 using Aggregator.Infrastructure.Services.ProtoServices;
+using System.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +25,17 @@ builder.Services.AddScoped<GrpcGetUserForPostsService>();
 builder.Services.AddScoped<GrpcGetUserPostsService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPostService, PostService>();
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1;
+    });
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 builder.Services.AddSingleton<GrpcPolly>();
 
 builder.Host.UseSerilog((context, configuration) =>
@@ -42,6 +57,23 @@ builder.Host.UseSerilog((context, configuration) =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateLifetime = false;
+        options.TokenValidationParameters.RequireExpirationTime = false;
+        options.TokenValidationParameters.RequireSignedTokens = false;
+        options.TokenValidationParameters.RequireAudience = false;
+        options.TokenValidationParameters.ValidateActor = false;
+        options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+
+        options.TokenValidationParameters.SignatureValidator = delegate (string token, TokenValidationParameters parameters)
+        {
+            var jwtHandler = new JsonWebTokenHandler();
+            var jsonToken = jwtHandler.ReadJsonWebToken(token);
+            return jsonToken;
+        };
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TempData"));
+
         var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
 
         options.Authority = jwtBearerSettings["Authority"];
@@ -58,7 +90,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

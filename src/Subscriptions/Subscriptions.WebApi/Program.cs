@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using Subscriptions.Application.UseCases.Consumers;
 using Subscriptions.Application.UseCases.Queries;
 using Subscriptions.Infrastructure.Data;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ string? connectionString = builder.Configuration.GetConnectionString("MSSQLConne
 builder.Services.AddDbContext<SubscriptionDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-}); 
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(options =>
@@ -24,14 +25,21 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssemblies(typeof(GetAllSubscriptionsQuery).Assembly);
 
 });
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080);
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.UseHttps("https/subscriptionwebapi-api.pfx", "pa55w0rd!");
+    });
+});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -52,8 +60,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<SubscriptionDbContext>();
+    context.Database.Migrate();
+}
 
 app.UseAuthorization();
 

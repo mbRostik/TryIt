@@ -1,30 +1,125 @@
 version: '3.6'
 
 services:
-  elasticsearch:
-    container_name: els
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
-    ports:
-      - 9200:9200
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+  mongo:
+    image: mongo
+    restart: always
     environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    networks:
-      - elastic
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 
-  kibana:
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.7.1
+  mongo-express:
+    image: mongo-express
+    restart: always
     ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
+      - 8081:8081
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    networks:
-      - elastic
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "PrudymaiyPotimVidRostik123456!@"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+  chatwebapi-api:
+    container_name: chatwebapi-api
+    image: chatwebapi-api
+    build:
+      context: .
+      dockerfile: Chats/Chats.WebApi/Dockerfile
+    ports:
+      - "7134:8080"
+      - "7234:8082"
+      - "7334:8081"
+    environment:
+      - "ConnectionStrings__MSSQLConnection=Server=mssql;Database=ChatDB;User Id=sa;Password=PrudymaiyPotimVidRostik123456!@;Encrypt=False;"
+      
+  postwebapi-api:
+    container_name: postwebapi-api
+    image: postwebapi-api
+    build:
+      context: .
+      dockerfile: Posts/Posts.WebApi/Dockerfile
+    ports:
+      - "7128:8080"
+      - "7028:8081"
+    environment:
+      - "ConnectionStrings__MSSQLConnection=Server=mssql;Database=PostDB;User Id=sa;Password=PrudymaiyPotimVidRostik123456!@;Encrypt=False;"
+
+  aggregatorwebapi-api:
+    container_name: aggregatorwebapi-api
+    image: aggregatorwebapi-api
+    build:
+      context: .
+      dockerfile: ApiGateWay/Aggregator/Aggregator.WebApi/Dockerfile
+    ports:
+      - "7092:8080"
+      - "7192:8081"
+
+  ocelotgateway-api:
+    container_name: ocelotgateway-api
+    image: ocelotgateway-api
+    build:
+      context: .
+      dockerfile: ApiGateWay/OcelotGateWay/Dockerfile
+    ports:
+      - "7662:8080"
+      - "7062:8081"
+
+  userwebapi-api:
+    container_name: userwebapi-api
+    image: userwebapi-api
+    build:
+      context: .
+      dockerfile: Users/Users.WebApi/Dockerfile
+    ports:
+      - "7787:8080"
+      - "7075:8081"
+    environment:
+      - "ConnectionStrings__MSSQLConnection=Server=mssql;Database=UserDB;User Id=sa;Password=PrudymaiyPotimVidRostik123456!@;Encrypt=False;"
+
+  sagawebapi-api:
+    container_name: sagawebapi-api
+    image: sagawebapi-api
+    build:
+      context: .
+      dockerfile: SagasStateMachines.WebApi/Dockerfile
+    ports:
+      - "7727:8080"
+      - "7219:8081"
+
+  identityserverapi-api:
+    container_name: identityserverapi-api
+    image: identityserverapi-api
+    build:
+      context: .
+      dockerfile: IdentityServer/IdentityServer.WebApi/Dockerfile
+    ports:
+      - "7199:8080"
+      - "7174:8081"
+    environment:
+      - "ConnectionStrings__MSSQLConnection=Server=mssql;Database=IdentityServer;User Id=sa;Password=PrudymaiyPotimVidRostik123456!@;Encrypt=False;"
+      - "EmailSettings__Email=rost.daskalyuk@gmail.com"
+      - "EmailSettings__Host=smtp.gmail.com"
+      - "EmailSettings__Password=ueexgknctftcjnpo"
+      - "Links__ReactLink=https://localhost:5173/"
+      - "Links__BaseUrl=https://localhost:7174/"
+      - "Authentication__Google__ClientId=1064660972104-obge6n4doce8e37e9edrcu7tk4dvktb5.apps.googleusercontent.com"
+      - "Authentication__Google__ClientSecret=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"
 
 networks:
   elastic:

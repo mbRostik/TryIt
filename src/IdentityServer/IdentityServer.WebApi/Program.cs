@@ -16,11 +16,21 @@ using Microsoft.AspNetCore.Localization;
 using MessageBus.Messages.Events.IdentityServerService;
 using RabbitMQ.Client;
 using IdentityServer.Application.UseCases.Consumers;
+using System.Net;
 var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly.GetName().Name;
-var defaultConnString = builder.Configuration.GetConnectionString("MSSQLConnection");
+var assembly2 = typeof(IdentityServerDbContext).Assembly.GetName().Name;
 
+var defaultConnString = builder.Configuration.GetConnectionString("MSSQLConnection");
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080);
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.UseHttps("https/identityserverapi-api.pfx", "pa55w0rd!");
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -66,6 +76,7 @@ builder.Host.UseSerilog((context, configuration) =>
         .ReadFrom.Configuration(context.Configuration);
 });
 
+
 builder.Services.AddDbContext<IdentityServerDbContext>(options =>
 {
     options.UseSqlServer(defaultConnString);
@@ -92,12 +103,12 @@ builder.Services.AddIdentityServer(options =>
     .AddConfigurationStore<ConfigurationDbContext>(options =>
     {
         options.ConfigureDbContext = b => b.UseSqlServer(defaultConnString,
-            sql => sql.MigrationsAssembly(assembly));
+            sql => sql.MigrationsAssembly(assembly2));
     })
     .AddOperationalStore<PersistedGrantDbContext>(options =>
     {
         options.ConfigureDbContext = b => b.UseSqlServer(defaultConnString,
-            sql => sql.MigrationsAssembly(assembly));
+            sql => sql.MigrationsAssembly(assembly2));
     })
     .AddAspNetIdentity<IdentityUser>()
     .AddDeveloperSigningCredential();
@@ -107,7 +118,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((cxt, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -116,7 +127,7 @@ builder.Services.AddMassTransit(x =>
         cfg.Publish<IUserCreate_SendEvent_From_IdentityServer>(p => p.ExchangeType = ExchangeType.Fanout);
         cfg.ReceiveEndpoint("users_UserProcessedConsumer_queue", e =>
         {
-            e.ConfigureConsumer<UserCreation_Consumer> (cxt);
+            e.ConfigureConsumer<UserCreation_Consumer>(cxt);
         });
     });
 
@@ -142,6 +153,27 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
 }
+
+
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var identityServerDb = scope.ServiceProvider.GetRequiredService<IdentityServerDbContext>();
+        var configDb = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+        var persistedGrantDb = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+        configDb.Database.Migrate();
+        persistedGrantDb.Database.Migrate();
+        identityServerDb.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Smth went wrong");
+        throw;
+    }
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -156,7 +188,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapDefaultControllerRoute();
 });
 
-//SeedData.EnsureSeedData(app);
+SeedData.EnsureSeedData(app);
 
 app.Run();
 

@@ -191,7 +191,7 @@ const Someones_Profile = () => {
                                 <div className="UpProfile">
                                     <div className="First_UpProfile">
                                         <div className="avatar-container">
-                                                    <img src={smbData.photo ? `data:image/jpeg;base64,${smbData.photo}` : "NoPhoto.jpg"} alt="Avatar" className="avatar" />
+                                                    <img src={smbData.photo ? `data:image/jpeg;base64,${smbData.photo}` : "../../public/NoPhoto.jpg"} alt="Avatar" className="avatar" />
                                         </div>
                                         <div className="Profile_Information">
                                             <div className="profile-info">

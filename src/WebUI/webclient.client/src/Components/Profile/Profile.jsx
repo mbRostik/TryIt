@@ -269,7 +269,7 @@ const Profile = () => {
                                     <div className="First_UpProfile">
 
                                         <div className="avatar-container" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                                            <img src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "NoPhoto.jpg"} alt="Avatar" className="avatar" />
+                                                    <img src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"} alt="Avatar" className="avatar" />
                                             <div className="buttons-container">
                                                 <label className="edit-button">
                                                     New

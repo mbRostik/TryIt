@@ -40,10 +40,9 @@
         display: none; 
     }
 
-.search-results{
-    display:flex;
+.search-results {
+    display: flex;
     flex-direction: column;
-
 }
 .SearchContainer {
     margin-right: 50px;
@@ -61,6 +60,7 @@
     z-index: 999;
 }
 
+
     .user-item:hover {
         cursor: pointer;
         transform: translateY(-2px);
@@ -72,11 +72,13 @@
     margin-bottom: 5px;
 }
 .user-avatar {
-    max-width: 40px;
-    max-height: 40px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    object-fit: cover;
     border-radius: 50%;
     margin-right: 10px;
-    object-fit: cover;
 }
 .NavBarMenuUnAuth {
     display: flex;

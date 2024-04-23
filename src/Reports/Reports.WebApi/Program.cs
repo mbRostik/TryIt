@@ -7,6 +7,7 @@ using RabbitMQ.Client;
 using Reports.Application.UseCases.Consumers;
 using Reports.Application.UseCases.Queries;
 using Reports.Infrastructure.Data;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,7 @@ string? connectionString = builder.Configuration.GetConnectionString("MSSQLConne
 builder.Services.AddDbContext<ReportDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-}); 
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(options =>
@@ -26,7 +27,14 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
 
 });
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080);
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.UseHttps("https/reportwebapi-api.pfx", "pa55w0rd!");
+    });
+});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PostCreation_Consumer>();
@@ -34,7 +42,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -61,8 +69,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ReportDbContext>();
+    context.Database.Migrate();
+}
 
 app.UseAuthorization();
 

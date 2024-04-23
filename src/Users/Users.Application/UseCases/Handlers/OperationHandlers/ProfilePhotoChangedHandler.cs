@@ -39,7 +39,7 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
                 if (user != null)
                 {
                     user.Photo = Convert.FromBase64String(request.model.Avatar);
-                    await dbContext.SaveChangesAsync(cancellationToken);
+                    await dbContext.SaveChangesAsync();
 
                     logger.Information("Avatar changed successfully for user ID {UserId}. Fetching updated user profile.", request.model.Id);
 

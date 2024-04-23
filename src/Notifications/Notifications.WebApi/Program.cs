@@ -5,6 +5,7 @@ using Notifications.Application.UseCases.Consumers;
 using Notifications.Application.UseCases.Queries;
 using Notifications.Infrastructure.Data;
 using RabbitMQ.Client;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +24,21 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssemblies(typeof(GetAllNotificationsQuery).Assembly);
 
 });
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080);
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.UseHttps("https/notificationwebapi-api.pfx", "pa55w0rd!");
+    });
+});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreation_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -50,8 +58,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<NotificationDbContext>();
+    context.Database.Migrate();
+}
 
 app.UseAuthorization();
 

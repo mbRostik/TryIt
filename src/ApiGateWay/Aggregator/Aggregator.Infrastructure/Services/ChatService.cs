@@ -57,8 +57,6 @@ namespace Aggregator.Infrastructure.Services
 
                 for (int i = 0; i != chats.Chats.Count(); i++)
                 {
-                    //Чи потрібно тут написати подвійний мапер?
-
                     GiveUserChatsDTO temp = new GiveUserChatsDTO();
                     temp.ChatId = chats.Chats[i].ChatId;
                     temp.LastActivity = null;

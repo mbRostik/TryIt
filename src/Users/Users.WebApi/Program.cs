@@ -3,10 +3,16 @@ using MassTransit;
 using MessageBus.Messages.Events.IdentityServerService;
 using MessageBus.Messages.Events.PostService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Text;
 using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Consumers;
 using Users.Application.UseCases.Queries;
@@ -27,7 +33,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IMapperService, MapperService>();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChangeProfileInformationDTOValidator>());
 
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1;
+    });
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.Enrich.FromLogContext()
@@ -62,7 +78,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -82,12 +98,29 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateLifetime = false;
+        options.TokenValidationParameters.RequireExpirationTime = false;
+        options.TokenValidationParameters.RequireSignedTokens = false;
+        options.TokenValidationParameters.RequireAudience = false;
+        options.TokenValidationParameters.ValidateActor = false;
+        options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+
+        options.TokenValidationParameters.SignatureValidator = delegate (string token, TokenValidationParameters parameters)
+        {
+            var jwtHandler = new JsonWebTokenHandler();
+            var jsonToken = jwtHandler.ReadJsonWebToken(token);
+            return jsonToken;
+        };
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TempData"));
+
         var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
 
         options.Authority = jwtBearerSettings["Authority"];
 
+        options.RequireHttpsMetadata = false;
         options.Audience = "Users.WebApi";
-
     });
 
 var app = builder.Build();
@@ -97,8 +130,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<UserDbContext>();
+    context.Database.Migrate();
+}
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

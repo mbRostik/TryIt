@@ -7,6 +7,7 @@ using Chats.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Chats.WebApi.ChatHubSpace
 {
@@ -25,6 +26,7 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task JoinChat(int chatId)
         {
+            Console.WriteLine("\n\n\n\n\nJoining CHAT");
             try
             {
                 logger.Information("Attempting to join chat {ChatId} with connection {ConnectionId}", chatId, Context.ConnectionId);
@@ -42,6 +44,7 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task SendMessage(SendMessageDTO message)
         {
+            Console.WriteLine("\n\n\n\n\nSENDING MESSAGE");
 
             try
             {
@@ -106,9 +109,12 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task CreateChat(SendMessageDTO message)
         {
+            Console.WriteLine("\n\n\n\n\nCreateChat");
+
             try
             {
-                logger.Information("Attempting to create a chat for senderId: {SenderId} with message content: '{MessageContent}'", Context.UserIdentifier, message.MessageContent);
+                logger.Information("Attempting to create a chat for senderId: {SenderId} with message content: '{MessageContent}'", Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value, message.MessageContent);
+                logger.Information("CreateChat called with null MessageContent by user {SenderId}", Context.UserIdentifier);
 
                 if (message.MessageContent == null)
                 {

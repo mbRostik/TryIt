@@ -53,7 +53,7 @@ const ListOfChats = () => {
 
                                                 <div >
                                                 <img className="Chat_contactimage"
-                                                        src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "NoPhoto.jpg"}
+                                                    src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "../../public/NoPhoto.jpg"}
                                                         alt="Contact"
                                                         onClick={(e) => { e.stopPropagation(); handleImageClick(chat.contactId); }} 
                                                     />

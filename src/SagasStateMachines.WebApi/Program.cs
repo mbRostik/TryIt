@@ -5,12 +5,23 @@ using SagasStateMachines.WebApi.States.PostStates;
 using SagasStateMachines.WebApi.States.UserStates;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080);
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.UseHttps("https/sagawebapi-api.pfx", "pa55w0rd!");
+    });
+});
+
 
 builder.Host.UseSerilog((context, configuration) =>
 {
@@ -36,20 +47,20 @@ builder.Services.AddMassTransit(x =>
     x.AddSagaStateMachine<UserCreationStateMachine, ProcessingUserCreationState>()
         .MongoDbRepository(r =>
         {
-            r.Connection = "mongodb://localhost:27017";
+            r.Connection = "mongodb://root:example@mongo:27017";
             r.DatabaseName = "UserCreation_Saga";
-        }); 
+        });
 
     x.AddSagaStateMachine<PostCreationStateMachine, ProcessingPostCreationState>()
         .MongoDbRepository(r =>
         {
-            r.Connection = "mongodb://localhost:27017";
+            r.Connection = "mongodb://root:example@mongo:27017";
             r.DatabaseName = "PostCreation_Saga";
         });
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -75,8 +86,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

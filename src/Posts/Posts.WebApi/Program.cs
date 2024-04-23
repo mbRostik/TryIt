@@ -1,7 +1,10 @@
 using MassTransit;
 using MessageBus.Messages.Events.IdentityServerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Posts.Application.Contracts.Interfaces;
 using Posts.Application.UseCases.Consumers;
 using Posts.Application.UseCases.Queries;
@@ -11,6 +14,8 @@ using Posts.Infrastructure.Services.grpcServices;
 using RabbitMQ.Client;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using System.Net;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +27,17 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddGrpc();
 
 builder.Services.AddScoped<IMapperService, MapperService>();
-
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Listen(IPAddress.Any, 8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1;
+    });
+    options.Listen(IPAddress.Any, 8081, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+});
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.Enrich.FromLogContext()
@@ -51,7 +66,7 @@ builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
 
-}); 
+});
 
 builder.Services.AddMassTransit(x =>
 {
@@ -59,7 +74,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        cfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -76,6 +91,22 @@ builder.Services.AddMassTransit(x =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateLifetime = false;
+        options.TokenValidationParameters.RequireExpirationTime = false;
+        options.TokenValidationParameters.RequireSignedTokens = false;
+        options.TokenValidationParameters.RequireAudience = false;
+        options.TokenValidationParameters.ValidateActor = false;
+        options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+
+        options.TokenValidationParameters.SignatureValidator = delegate (string token, TokenValidationParameters parameters)
+        {
+            var jwtHandler = new JsonWebTokenHandler();
+            var jsonToken = jwtHandler.ReadJsonWebToken(token);
+            return jsonToken;
+        };
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TempData"));
         var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
 
         options.Authority = jwtBearerSettings["Authority"];
@@ -90,8 +121,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<PostDbContext>();
+    context.Database.Migrate();
+}
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -105,6 +140,6 @@ app.UseEndpoints(endpoints =>
         var protoPath = Path.Combine(app.Environment.ContentRootPath, "../Posts.Application/Contracts/protos/userposts.proto");
         await context.Response.WriteAsync(await File.ReadAllTextAsync(protoPath));
     });
-   
+
 });
 app.Run();

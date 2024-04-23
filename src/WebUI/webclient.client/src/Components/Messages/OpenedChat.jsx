@@ -171,12 +171,12 @@ function OpenedChat({ chatId }) {
                                         <div className="Messagecontactimage">
                                             {message.senderId === foundChat.contactId ? (
                                                 <img
-                                                    src={foundChat.contactPhoto ? `data:image/jpeg;base64,${foundChat.contactPhoto}` : "NoPhoto.jpg"}
+                                                    src={foundChat.contactPhoto ? `data:image/jpeg;base64,${foundChat.contactPhoto}` : "../../public/NoPhoto.jpg"}
                                                     alt="Contact"
                                                     onClick={(e) => { e.stopPropagation(); handleImageClick(foundChat.contactId); }}/>
                                             ) : (
                                                 <img
-                                                    src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "NoPhoto.jpg"}
+                                                        src={userData.photo ? `data:image/jpeg;base64,${userData.photo}` : "../../public/NoPhoto.jpg"}
                                                     alt="User"
                                                 />
                                             )}
