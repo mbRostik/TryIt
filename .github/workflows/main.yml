@@ -1,0 +1,36 @@
+name: Publish 🚀
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - develop
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Restore
+        run: dotnet restore ./TryIt.sln
+        
+      - name: Build
+        run: dotnet build ./TryIt.sln --configuration Release --no-restore
+        
+      - name: Test
+        run: dotnet test ./TryIt.sln --configuration Release --no-restore --verbosity normal
+        
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: tryitapp
+          tags: latest, ${{ github.run_number }}
