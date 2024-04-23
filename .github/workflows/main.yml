@@ -30,8 +30,8 @@ jobs:
       - name: Build and Push DockerIdentityServerImage
         uses: docker/build-push-action@v3
         with:
-          context: ./src/IdentityServer/IdentityServer.WebApi
-          file: ./src/IdentityServer/IdentityServer.WebApi/Dockerfile
+          context: ./src
+          file: ./src/IdentityServer.Dockerfile
           push: true
           tags: mbrostik/tryitapp:latest
         env:
