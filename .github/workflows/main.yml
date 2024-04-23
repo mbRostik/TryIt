@@ -31,10 +31,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./src/IdentityServer/IdentityServer.WebApi
-          file: Dockerfile
+          file: ./src/IdentityServer/IdentityServer.WebApi/Dockerfile
           push: true
           tags: mbrostik/tryitapp:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKERHUB_LOGIN }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
 
