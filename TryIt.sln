@@ -136,6 +136,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notification.Tests", "Notif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notifications.Application.UseCases.Tests", "tests\Notifications.Tests\Notifications.Application.Tests\Notifications.Application.UseCases.Tests\Notifications.Application.UseCases.Tests.csproj", "{9870CEFB-7B2D-4FE3-B6F5-43BFF66BE4BA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "certs", "certs", "{D33D9E1E-86D8-4A85-86AA-38495AB2BEC8}"
+	ProjectSection(SolutionItems) = preProject
+		src\certs\chatwebapi-api.pfx = src\certs\chatwebapi-api.pfx
+		src\certs\identityserverapi-api.pfx = src\certs\identityserverapi-api.pfx
+		src\certs\notificationwebapi-api.pfx = src\certs\notificationwebapi-api.pfx
+		src\certs\ocelotgateway-api.pfx = src\certs\ocelotgateway-api.pfx
+		src\certs\postwebapi-api.pfx = src\certs\postwebapi-api.pfx
+		src\certs\reportwebapi-api.pfx = src\certs\reportwebapi-api.pfx
+		src\certs\sagawebapi-api.pfx = src\certs\sagawebapi-api.pfx
+		src\certs\subscriptionwebapi-api.pfx = src\certs\subscriptionwebapi-api.pfx
+		src\certs\userwebapi-api.pfx = src\certs\userwebapi-api.pfx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

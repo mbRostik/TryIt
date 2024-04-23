@@ -9,13 +9,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["IdentityServer/IdentityServer.WebApi/IdentityServer.WebApi.csproj", "IdentityServer/IdentityServer.WebApi/"]
-COPY ["MessageBus/MessageBus.csproj", "MessageBus/"]
-COPY ["IdentityServer/IdentityServer.Application/IdentityServer.Application.csproj", "IdentityServer/IdentityServer.Application/"]
-COPY ["IdentityServer/IdentityServer.Infrastructure.Data/IdentityServer.Infrastructure.Data.csproj", "IdentityServer/IdentityServer.Infrastructure.Data/"]
-RUN dotnet restore "./IdentityServer/IdentityServer.WebApi/IdentityServer.WebApi.csproj"
+COPY ["src/IdentityServer/IdentityServer.WebApi/IdentityServer.WebApi.csproj", "src/IdentityServer/IdentityServer.WebApi/"]
+COPY ["src/MessageBus/MessageBus.csproj", "src/MessageBus/"]
+COPY ["src/IdentityServer/IdentityServer.Application/IdentityServer.Application.csproj", "src/IdentityServer/IdentityServer.Application/"]
+COPY ["src/IdentityServer/IdentityServer.Infrastructure.Data/IdentityServer.Infrastructure.Data.csproj", "src/IdentityServer/IdentityServer.Infrastructure.Data/"]
+RUN dotnet restore "./src/IdentityServer/IdentityServer.WebApi/IdentityServer.WebApi.csproj"
 COPY . .
-WORKDIR "/src/IdentityServer/IdentityServer.WebApi"
+WORKDIR "/src/src/IdentityServer/IdentityServer.WebApi"
 RUN dotnet build "./IdentityServer.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
@@ -24,6 +24,6 @@ RUN dotnet publish "./IdentityServer.WebApi.csproj" -c $BUILD_CONFIGURATION -o /
 
 FROM base AS final
 WORKDIR /app
-COPY ["certs/identityserverapi-api.pfx", "https/"]
+COPY ["src/certs/identityserverapi-api.pfx", "https/"]
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "IdentityServer.WebApi.dll"]
