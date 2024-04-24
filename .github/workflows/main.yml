@@ -27,27 +27,18 @@ jobs:
       - name: Test
         run: dotnet test ./TryIt.sln --configuration Release --no-restore --verbosity normal
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 977bc403578ec75215198997f755db4ec6f0f02e
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> 977bc403578ec75215198997f755db4ec6f0f02e
       - name: Build and Push DockerIdentityServerImage
         uses: docker/build-push-action@v4
         with:
           context: ./src
           file: ./src/IdentityServer.Dockerfile
           push: true
-<<<<<<< HEAD
           tags: mbrostik/tryitapp:identityserver
 
       - name: Build and Push DockerAggregatorImage
@@ -121,7 +112,3 @@ jobs:
           file: ./src/User.Dockerfile
           push: true
           tags: mbrostik/tryitapp:user
-
-=======
-          tags: mbrostik/tryitapp:latest
->>>>>>> 977bc403578ec75215198997f755db4ec6f0f02e
