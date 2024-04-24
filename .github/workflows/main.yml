@@ -26,16 +26,90 @@ jobs:
         
       - name: Test
         run: dotnet test ./TryIt.sln --configuration Release --no-restore --verbosity normal
-        
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_LOGIN }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
       - name: Build and Push DockerIdentityServerImage
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./src
           file: ./src/IdentityServer.Dockerfile
           push: true
-          tags: mbrostik/tryitapp:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_LOGIN }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          tags: mbrostik/tryitapp:identityserver
 
+      - name: Build and Push DockerAggregatorImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Aggregator.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:aggregator
+
+      - name: Build and Push DockerChatImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Chat.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:chat
+
+      - name: Build and Push DockerNotificationImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Notification.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:notification
+
+      - name: Build and Push DockerOcelotImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Ocelot.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:ocelot
+
+      - name: Build and Push DockerPostImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Post.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:post
+
+      - name: Build and Push DockerReportImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Report.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:report
+
+      - name: Build and Push DockerSagaStateMachinesImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/SagaStateMachines.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:sagastatemachines
+
+      - name: Build and Push DockerSubscriptionImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/Subscription.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:subscription
+
+      - name: Build and Push DockerUserImage
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          file: ./src/User.Dockerfile
+          push: true
+          tags: mbrostik/tryitapp:user
 
