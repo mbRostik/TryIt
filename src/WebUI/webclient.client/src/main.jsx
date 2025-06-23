@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Profile from './Components/Profile/Profile';
 import Friends from './Components/Friends/Friends';
-
+import Recomendations from './Components/Recomendations/Recomendations';
 import Profile_Settings from './Components/Profile/Profile_Settings';
 import Someones_Profile from './Components/Profile/Someones_Profile';
 import ListOfChats from './Components/Messages/ListOfChats';
@@ -62,6 +62,7 @@ function AppContainer() {
                     <Routes>
                         <Route path="/" element={<App />} />
                         <Route path="/Profile" element={<Profile />} />
+                            <Route path="/Recomendations" element={<Recomendations />} />
                         <Route path="/signin-oidc" element={<SignIn_CallbackPage />} />
                         <Route path="/Profile_Settings" element={<Profile_Settings />} />
                         <Route path="/signout-callback-oidc" element={<SignOut_CallBackPage />} />

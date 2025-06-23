@@ -16,16 +16,19 @@
 
         public byte[] Photo { get; set; }
 
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } = DateTime.MinValue;
 
         public int SexId { get; set; }
 
         public bool IsBanned { get; set; } = false;
 
         public bool IsPrivate { get; set; } = false;
+
+        public bool IsCheckingMessages { get; set; } = false;
+
         public virtual ICollection<Post> Posts { get; set; }
 
-        public virtual ICollection<SavedPost> SavedPosts { get; set;}
+        public virtual ICollection<SavedPost> SavedPosts { get; set; }
 
         public virtual ICollection<Follow> Follows { get; set; }
 

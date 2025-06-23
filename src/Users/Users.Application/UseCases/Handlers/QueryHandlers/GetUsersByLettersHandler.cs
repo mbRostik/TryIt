@@ -30,7 +30,9 @@ namespace Users.Application.UseCases.Handlers.QueryHandlers
                 var usersQuery = await dbContext.Users
                              .Where(u => u.NickName.Contains(request.SearchingField))
                              .OrderBy(u => u.NickName.StartsWith(request.SearchingField) ? 0 : 1)
-                             .ThenBy(u => u.NickName).ToListAsync();
+                             .ThenBy(u => u.NickName)
+                             .Take(5)
+                             .ToListAsync();
                 if (!usersQuery.Any())
                 {
                     return null;

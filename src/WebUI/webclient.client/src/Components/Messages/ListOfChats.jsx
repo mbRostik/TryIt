@@ -39,7 +39,7 @@ const ListOfChats = () => {
                     <div>UnAuthorized</div>
                 ) : userData === null || chats === null && activeChatId==null ? (
                     <div>
-                        <div>There is nothing(</div>
+                            <div>There is nothing( {console.log(userData + " " + activeChatId)} </div>
                     </div>
 
                     ) : (
@@ -50,7 +50,6 @@ const ListOfChats = () => {
                                             <div key={index}
                                             className={`Chat_contact ${chat.chatId === activeChatId ? "active" : ""}`} 
                                                 onClick={() => handleInfoClick(chat.chatId)}>
-
                                                 <div >
                                                 <img className="Chat_contactimage"
                                                     src={chat.contactPhoto ? `data:image/jpeg;base64,${chat.contactPhoto}` : "../../public/NoPhoto.jpg"}
@@ -77,7 +76,7 @@ const ListOfChats = () => {
 
                                     </div>
 
-                                    <div className="Chat_RightSide">
+                                <div className="Chat_RightSide">
                                         {activeChatId && <OpenedChat chatId={activeChatId} />}
                                     </div>
                                 </div>

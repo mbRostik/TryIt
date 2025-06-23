@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Contracts\Interfaces\ProtoInterfaces\" />
-    <Folder Include="UseCases\Handlers\NotifyHandlers\" />
-    <Folder Include="UseCases\Notifications\" />
   </ItemGroup>
 
   <ItemGroup>

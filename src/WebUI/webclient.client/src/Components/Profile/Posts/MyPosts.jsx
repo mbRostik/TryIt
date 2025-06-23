@@ -8,7 +8,7 @@ import '../../Styles/MyPosts.css'
 import axios from '../../../../node_modules/axios/index';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import config from '../../../config.json'; 
+import config from '../../../config.json';
 import { useAuth } from './../../AuthProvider';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -34,9 +34,9 @@ const MyPosts = () => {
         setUserDataState } = useAuth();
 
     const handleFileChange = (event) => {
-        const selectedFiles = Array.from(event.target.files); 
-        if (files.length + selectedFiles.length > 8) { 
-            
+        const selectedFiles = Array.from(event.target.files);
+        if (files.length + selectedFiles.length > 8) {
+
             toast.error("You can only upload up to 8 files.", {
                 position: "top-right",
                 autoClose: 5000,
@@ -46,9 +46,9 @@ const MyPosts = () => {
                 draggable: true,
                 progress: undefined,
             });
-            return; 
+            return;
         }
-        
+
         setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
         const newFileNames = selectedFiles.map(file => file.name);
         setFileNames(prevNames => [...prevNames, ...newFileNames]);
@@ -193,7 +193,7 @@ const MyPosts = () => {
         }
 
 
-    }; 
+    };
 
     const onLogout = async () => {
         await userManager.signoutRedirect();
@@ -251,7 +251,7 @@ const MyPosts = () => {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ PostId: postId }) 
+                body: JSON.stringify({ PostId: postId })
             });
 
             if (response.ok) {
@@ -298,94 +298,103 @@ const MyPosts = () => {
             ) : isAuthorized === false ? (
                 <div>UnAuthorized</div>
             ) : (
-                        <div>
-                            <div className="Buttons">
-                                <NavLink to="/Profile_Settings" className="button outline" >Settings</NavLink>
-                                <button className="button solid" onClick={toggleModal}>Create Post</button>
-                                <button onClick={onLogout} className="button outline">LogOut</button>
-                            </div>
-                           
+                <div>
+                    <div className="Buttons">
+                        <NavLink to="/Profile_Settings" className="button outline" >Settings</NavLink>
+                        <button className="button solid" onClick={toggleModal}>Create Post</button>
+                        <button onClick={onLogout} className="button outline">LogOut</button>
+                    </div>
 
-                            <div className={isModalOpen ? "modal display-block" : "modal display-none"}>
-                                <div className="modal-main">
-                                    <div className="form-container">
-                                        <form onSubmit={handleSubmit}>
-                                            <button onClick={toggleModal} className="close-modal-button">✖</button>
 
-                                            <h2>Post Creation</h2>
+                    <div className={isModalOpen ? "modal display-block" : "modal display-none"}>
+                        <div className="modal-main">
+                            <div className="form-container">
+                                <form onSubmit={handleSubmit}>
+                                    <button onClick={toggleModal} className="close-modal-button">✖</button>
 
-                                            <div>
-                                                <label htmlFor="title">Title</label>
-                                                <input
-                                                    id="title"
-                                                    type="text"
-                                                    value={title}
-                                                    onChange={e => setTitle(e.target.value)}
-                                                    required
-                                                />
-                                            </div>
-                                            <div>
-                                                <label htmlFor="content">Description</label>
-                                                <textarea
-                                                    id="content"
-                                                    value={content}
-                                                    onChange={e => setContent(e.target.value)}
-                                                    required
-                                                    rows="10"  
-                                                    cols="50"
-                                                />
-                                            </div>
-                                            <div>
-                                                <input
-                                                    id="files"
-                                                    type="file"
-                                                    onChange={handleFileChange}
-                                                    className="custom-file-input"
-                                                    multiple
-                                                    style={{ display: 'none' }}
-                                                />
-                                                <label htmlFor="files" className="upload-button">
-                                                    Upload Files
-                                                </label>
-                                                <div className="selected-files">
-                                                    {files.map((file, index) => (
-                                                        <div key={index} className="file-preview">
-                                                            {file.name.length > 10 ? `${file.name.slice(0, 10)}...` : file.name}
-                                                            <button onClick={() => handleRemoveFile(index)} className="remove-file-button">✖</button>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                    <h2>Post Creation</h2>
 
-                                            </div>
-                                            <button type="submit">Publish</button>
-                                        </form>
+                                    <div>
+                                        <label htmlFor="title">Title</label>
+                                        <input
+                                            id="title"
+                                            type="text"
+                                            value={title}
+                                            onChange={e => setTitle(e.target.value)}
+                                            required
+                                        />
                                     </div>
-
-                                </div>
-                            </div>
-                            <div className="posts">
-                                {posts && posts.length > 0 ? (
-                                    posts.map((post, index) => (
-                                        <div key={index} className="post">
-                                            <div className="Post_Title_Info">
-                                                <div className="Post_Title">{post.title}</div>
-                                                <div className="DeleteWithDate">
-                                                    <div className="Post_Title_Date">{formatDate(post.date)}</div>
-                                                    <button onClick={() => deletePost(post.id)} className="delete-post-button">
-                                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                                    </button>
+                                    <div>
+                                        <label htmlFor="content">Description</label>
+                                        <textarea
+                                            id="content"
+                                            value={content}
+                                            onChange={e => setContent(e.target.value)}
+                                            required
+                                            rows="10"
+                                            cols="50"
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            id="files"
+                                            type="file"
+                                            onChange={handleFileChange}
+                                            className="custom-file-input"
+                                            multiple
+                                            style={{ display: 'none' }}
+                                        />
+                                        <label htmlFor="files" className="upload-button">
+                                            Upload Files
+                                        </label>
+                                        <div className="selected-files">
+                                            {files.map((file, index) => (
+                                                <div key={index} className="file-preview">
+                                                    {file.name.length > 10 ? `${file.name.slice(0, 10)}...` : file.name}
+                                                    <button onClick={() => handleRemoveFile(index)} className="remove-file-button">✖</button>
                                                 </div>
-                                            </div>
-                                            <div className="Post_Description">{post.content}</div>
-                                            {post.files && post.files.map((file, fileIndex) => (
-                                                <FilePreview key={fileIndex} file={file} />
                                             ))}
                                         </div>
-                                    ))
-                                ) : (
-                                    <div>No posts to display.</div>
-                                )}
+
+                                    </div>
+                                    <button type="submit">Publish</button>
+                                </form>
                             </div>
+
+                        </div>
+                    </div>
+                    <div className="posts">
+                        {posts && posts.length > 0 ? (
+                            [...posts]
+                                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                                .map((post, index) => (
+                                    <div key={index} className="post">
+                                        <div className="Post_Title_Info">
+                                            <div className="Post_Title">{post.title}</div>
+                                            <div className="DeleteWithDate">
+                                                <div className="Post_Title_Date">{formatDate(post.date)}</div>
+                                                <button onClick={() => deletePost(post.id)} className="delete-post-button">
+                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="Post_Description">{post.content}</div>
+                                        <div className="Post_Description">
+                                            {post.tags && post.tags.map((tag, index) => (
+                                                <span key={index} style={{ fontSize: '0.8em', marginRight: '5px' }}>
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        {post.files && post.files.map((file, fileIndex) => (
+                                            <FilePreview key={fileIndex} file={file} />
+                                        ))}
+                                    </div>
+                                ))
+                        ) : (
+                            <div>No posts to display.</div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

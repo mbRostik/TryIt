@@ -185,6 +185,23 @@ namespace Posts.Infrastructure.Data.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("Posts.Domain.Entities.PostPhotoCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PostPhotoCategories");
+                });
+
             modelBuilder.Entity("Posts.Domain.Entities.PostReaction", b =>
                 {
                     b.Property<int>("Id")
@@ -214,6 +231,53 @@ namespace Posts.Infrastructure.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PostReactionts");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostTextCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PostTextCategories");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostWithPhotoCategories", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostPhotoCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "PostPhotoCategoryId");
+
+                    b.HasIndex("PostPhotoCategoryId");
+
+                    b.ToTable("PostsWithPhotoCategories");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostWithTextCategories", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostTextCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "PostTextCategoryId");
+
+                    b.HasIndex("PostTextCategoryId");
+
+                    b.ToTable("PostsWithTextCategories");
                 });
 
             modelBuilder.Entity("Posts.Domain.Entities.User", b =>
@@ -331,6 +395,44 @@ namespace Posts.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Posts.Domain.Entities.PostWithPhotoCategories", b =>
+                {
+                    b.HasOne("Posts.Domain.Entities.Post", "Post")
+                        .WithMany("PostWithPhotoCategories")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Posts.Domain.Entities.PostPhotoCategory", "PostPhotoCategory")
+                        .WithMany("PostWithPhotoCategories")
+                        .HasForeignKey("PostPhotoCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("PostPhotoCategory");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostWithTextCategories", b =>
+                {
+                    b.HasOne("Posts.Domain.Entities.Post", "Post")
+                        .WithMany("PostWithTextCategories")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Posts.Domain.Entities.PostTextCategory", "PostTextCategory")
+                        .WithMany("PostWithTextCategories")
+                        .HasForeignKey("PostTextCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("PostTextCategory");
+                });
+
             modelBuilder.Entity("Posts.Domain.Entities.Comment", b =>
                 {
                     b.Navigation("CommentReactions");
@@ -348,6 +450,20 @@ namespace Posts.Infrastructure.Data.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("PostReactions");
+
+                    b.Navigation("PostWithPhotoCategories");
+
+                    b.Navigation("PostWithTextCategories");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostPhotoCategory", b =>
+                {
+                    b.Navigation("PostWithPhotoCategories");
+                });
+
+            modelBuilder.Entity("Posts.Domain.Entities.PostTextCategory", b =>
+                {
+                    b.Navigation("PostWithTextCategories");
                 });
 
             modelBuilder.Entity("Posts.Domain.Entities.User", b =>

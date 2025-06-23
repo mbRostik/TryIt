@@ -6,6 +6,7 @@ using Chats.Domain.Entities;
 using Chats.Infrastructure.Data;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -16,17 +17,18 @@ namespace Chats.WebApi.ChatHubSpace
         private readonly ChatDbContext _context;
         private readonly IMediator mediator;
         private readonly Serilog.ILogger logger;
+        private readonly ChatDbContext dbContext;
 
-        public ChatHub(ChatDbContext context, IMediator mediator, Serilog.ILogger logger)
+        public ChatHub(ChatDbContext context, IMediator mediator, Serilog.ILogger logger, ChatDbContext dbContext)
         {
             _context = context;
             this.mediator = mediator;
             this.logger = logger;
+            this.dbContext = dbContext;
         }
 
         public async Task JoinChat(int chatId)
         {
-            Console.WriteLine("\n\n\n\n\nJoining CHAT");
             try
             {
                 logger.Information("Attempting to join chat {ChatId} with connection {ConnectionId}", chatId, Context.ConnectionId);
@@ -50,7 +52,8 @@ namespace Chats.WebApi.ChatHubSpace
             {
                 logger.Information("Sending message from user {SenderId} to chat {ChatId}", Context.UserIdentifier, message.ChatId);
                 var senderId = Context.UserIdentifier;
-                await mediator.Send(new CreateMessageCommand(message, senderId));
+
+                    await mediator.Send(new CreateMessageCommand(message, senderId));
                 GiveUserChatMessagesDTO mess = new GiveUserChatMessagesDTO
                 {
                     Content = message.MessageContent,
@@ -109,8 +112,6 @@ namespace Chats.WebApi.ChatHubSpace
 
         public async Task CreateChat(SendMessageDTO message)
         {
-            Console.WriteLine("\n\n\n\n\nCreateChat");
-
             try
             {
                 logger.Information("Attempting to create a chat for senderId: {SenderId} with message content: '{MessageContent}'", Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value, message.MessageContent);

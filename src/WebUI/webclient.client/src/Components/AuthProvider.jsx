@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     const [chats, setChats] = useState(null);
     const [activeChatId, setActiveChatId] = useState(null);
     const [chatReady, setChatReady] = useState(false);
-
+    const [firsttime, SetFirsttime] = useState(true);
 
     const setLoadingState = (isLoading) => setLoading(isLoading);
     const setIsAuthorizedState = (isAuth) => setIsAuthorized(isAuth);
@@ -62,14 +62,14 @@ export const AuthProvider = ({ children }) => {
             console.log('There is no chats');
         }
     }
-
     useEffect(() => {
          userManager.events.addAccessTokenExpired(() => {
             console.log('Token expired');
             userManager.signinSilent().catch(error => {
                 console.log('Silent sign-in after token expiration failed', error);
             });
-        });
+         });
+
         const checkAuth = async () => {
             setLoading(true);
             const user = await userManager.getUser();

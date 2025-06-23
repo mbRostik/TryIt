@@ -142,6 +142,9 @@ namespace Chats.Infrastructure.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsCheckingMessages")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");

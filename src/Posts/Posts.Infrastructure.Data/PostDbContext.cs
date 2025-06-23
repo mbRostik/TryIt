@@ -18,6 +18,14 @@ namespace Posts.Infrastructure.Data
         public DbSet<CommentReaction> CommentReactions { get; set; }
         public DbSet<PFile> PFiles { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<PostTextCategory> PostTextCategories { get; set; }
+
+        public DbSet<PostWithTextCategories> PostsWithTextCategories { get; set; }
+
+        public DbSet<PostPhotoCategory> PostPhotoCategories { get; set; }
+
+        public DbSet<PostWithPhotoCategories> PostsWithPhotoCategories { get; set; }
+
         public DbSet<PostReaction> PostReactionts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

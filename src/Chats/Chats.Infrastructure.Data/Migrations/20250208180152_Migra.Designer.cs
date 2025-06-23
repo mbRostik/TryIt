@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chats.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    [Migration("20240320015856_Migra")]
+    [Migration("20250208180152_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -144,6 +144,9 @@ namespace Chats.Infrastructure.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsCheckingMessages")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

@@ -8,6 +8,5 @@ using System.Threading.Tasks;
 
 namespace Chats.Application.UseCases.Commands
 {
-    public record CreateUserCommand(User model) : IRequest<User>;
-
+    public record CreateUserCommand(User model) : IRequest<User>;    
 }

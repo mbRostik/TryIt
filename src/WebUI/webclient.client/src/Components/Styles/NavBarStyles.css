@@ -48,6 +48,9 @@
     margin-right: 50px;
     max-width: 660px;
 }
+.LeftBar_Up{
+    justify-content:center;
+}
 .user-item {
     display: flex;
     align-items: center;

@@ -25,6 +25,8 @@ namespace Users.Application.Contracts.DTOs
         public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public bool IsPrivate { get; set; } = false;
 
+        public bool IsCheckingMessages { get; set; } = false;
+
         public int FollowersCount { get; set; } = 0;
 
         public int FollowsCount { get; set; } = 0;

@@ -158,6 +158,9 @@ namespace Users.Infrastructure.Data.Migrations
                     b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsCheckingMessages")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
 

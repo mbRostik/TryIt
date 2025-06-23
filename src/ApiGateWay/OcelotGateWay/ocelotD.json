@@ -1,0 +1,228 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/check/polly",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "postwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/GetAllPosts",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 5,
+        "DurationOfBreak": 10000,
+        "TimeoutValue": 2000
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/user",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/GetUsersProfile"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetUserFriends",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/GetUserFriends"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/userUpdate",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/ChangeUserSettings"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/userProfilePhotoUpload",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/UploadProfilePhoto"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/SomeonesProfile",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/GetSomeonesProfile"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/Follow",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/Follow"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetSearchedUsers",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/User/GetSearchedUsers"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetChatByUserId",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chatwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Chat/GetChatId"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetUserChats",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "aggregatorwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Aggregator/GetUserChats"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetFollowedPosts",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "aggregatorwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Aggregator/GetFollowedPosts"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetChatMessages",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chatwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Chat/GetChatMessages"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/chatHub",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chatwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/ChatHub"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/CreatePost",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "postwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/CreatePost"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/DeleteUserPost",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "postwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/DeleteUserPost"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetUserPosts",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "postwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/GetUserPosts"
+    },
+    {
+      "UpstreamPathTemplate": "/ocelot/GetsmbPosts",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "postwebapi-api",
+          "Port": 8080
+        }
+      ],
+      "DownstreamPathTemplate": "/Post/GetsmbPosts"
+    }
+  ],
+
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5000",
+    "QoSOptions": {
+      "ExceptionsAllowedBeforeBreaking": 5,
+      "DurationOfBreak": 10000,
+      "TimeoutValue": 2000
+    },
+    "CorsOptions": {
+      "policyName": "CorsPolicy",
+      "allowedOrigins": [ "*" ],
+      "allowedMethods": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+      "allowedHeaders": [ "*" ]
+    }
+  }
+}

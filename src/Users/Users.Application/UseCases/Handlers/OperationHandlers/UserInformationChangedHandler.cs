@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Users.Application.Contracts.DTOs;
 using Users.Application.Contracts.Interfaces;
 using Users.Application.UseCases.Commands;
+using Users.Application.UseCases.Notifications;
 using Users.Domain.Entities;
 using Users.Domain.Enums;
 using Users.Infrastructure.Data;
@@ -48,9 +49,11 @@ namespace Users.Application.UseCases.Handlers.OperationHandlers
                 // Обновляем поля пользователя
                 var mapper = _mapper.Mapper_ChangeUserProfileToUserDTO();
 
-                mapper.Map(request.model, userInDb);
+                var user = mapper.Map(request.model, userInDb);
 
                 await dbContext.SaveChangesAsync(cancellationToken);
+
+                await mediator.Publish(new UserChangedNotification(user), cancellationToken);
 
                 _logger.Information("User information successfully changed for UserId: {UserId}", userInDb.Id);
             }

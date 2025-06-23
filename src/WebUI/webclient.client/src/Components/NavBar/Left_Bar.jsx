@@ -19,8 +19,7 @@ const NavBar = () => {
         <div className="LeftSide">
 
             <div className="LeftBar_Up">
-                <img className="Left_SideLogo" src="../../public/homePage.png" alt="" />
-                <h2 className="inter-font">TryIt</h2>
+                <img className="Left_SideLogo" src="../../public/Logo.png" alt="" />
             </div>
 
             <div className="LeftBar_Centre">
@@ -59,11 +58,11 @@ const NavBar = () => {
 
 
                 <NavLink
-                    to="/Notifications"
+                    to="/Recomendations"
                     className={({ isActive }) => isActive ? "LeftBar_Centre_Component active" : "LeftBar_Centre_Component"}
                 >
                     <img className="Left_SideIcon" src="../../public/bell.png" alt="Home" />
-                    <div className="inter-font">NOTIFICATIONS</div>
+                    <div className="inter-font">RECOMENDATIONS</div>
                 </NavLink>
 
             </div>

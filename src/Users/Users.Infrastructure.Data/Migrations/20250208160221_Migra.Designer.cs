@@ -13,7 +13,7 @@ using Users.Infrastructure.Data;
 namespace Users.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20240330231434_Migra")]
+    [Migration("20250208160221_Migra")]
     partial class Migra
     {
         /// <inheritdoc />
@@ -159,6 +159,9 @@ namespace Users.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCheckingMessages")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsPrivate")

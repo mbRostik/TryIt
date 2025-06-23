@@ -192,3 +192,37 @@ body {
     flex-direction: row;
     justify-content: space-between;
 }
+
+.like-button, .dislike-button {
+    margin-right: 10px;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.like-button {
+    background-color: #e0ffe0;
+}
+
+.dislike-button {
+    background-color: #ffe0e0;
+}
+
+.like-button.active {
+    background-color: #aaffaa;
+}
+
+.dislike-button.active {
+    background-color: #ffaaaa;
+}
+
+.like-button:hover {
+    background-color: #caffca;
+}
+
+.dislike-button:hover {
+    background-color: #ffcccc;
+}

@@ -25,17 +25,17 @@ builder.Services.AddScoped<GrpcGetUserForPostsService>();
 builder.Services.AddScoped<GrpcGetUserPostsService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IPostService, PostService>();
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    options.Listen(IPAddress.Any, 8080, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1;
-    });
-    options.Listen(IPAddress.Any, 8081, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http2;
-    });
-});
+//builder.WebHost.ConfigureKestrel((context, options) =>
+//{
+//    options.Listen(IPAddress.Any, 8080, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http1;
+//    });
+//    options.Listen(IPAddress.Any, 8081, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http2;
+//    });
+//});
 builder.Services.AddSingleton<GrpcPolly>();
 
 builder.Host.UseSerilog((context, configuration) =>

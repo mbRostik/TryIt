@@ -21,5 +21,10 @@
         public virtual ICollection<PostReaction> PostReactions { get; set; }
 
         public virtual Ban Ban { get; set; }
+
+        public virtual ICollection<PostWithTextCategories> PostWithTextCategories { get; set; }
+
+        public virtual ICollection<PostWithPhotoCategories> PostWithPhotoCategories { get; set; }
+
     }
 }

@@ -40,7 +40,8 @@ namespace Users.Infrastructure.Data.Migrations
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SexId = table.Column<int>(type: "int", nullable: false),
                     IsBanned = table.Column<bool>(type: "bit", nullable: false),
-                    IsPrivate = table.Column<bool>(type: "bit", nullable: false)
+                    IsPrivate = table.Column<bool>(type: "bit", nullable: false),
+                    IsCheckingMessages = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

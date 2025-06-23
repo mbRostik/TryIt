@@ -1,11 +1,19 @@
 ﻿@using Duende.IdentityServer.Extensions
 @using Microsoft.AspNetCore.Http.Extensions
 @{
-#nullable enable
+    #nullable enable
     string? name = null;
     if (!true.Equals(ViewData["signed-out"]))
     {
         name = Context.User?.GetDisplayName();
+
+        if (name != null)
+        {
+            foreach (var t in Context.User.Claims)
+            {
+                Console.WriteLine(t.Value +" "+t.ValueType);
+            }
+        }
     }
 }
 <html>

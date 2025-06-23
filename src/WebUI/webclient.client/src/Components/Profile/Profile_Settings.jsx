@@ -181,6 +181,13 @@ const Profile_Settings = () => {
                                             </label>
                                         </div>
 
+                                        <div className="PrivateAccount">
+                                            <label>
+                                                Check messages for mature content:
+                                                <input type="checkbox" name="isCheckingMessages" checked={userData.isCheckingMessages || false} onChange={handleChange} />
+                                            </label>
+                                        </div>
+
                                         <div className="DateOfBirth">
                                             <label>
                                                 Date of Birth:

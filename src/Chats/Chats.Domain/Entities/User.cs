@@ -4,6 +4,7 @@
     {
         public string Id { get; set; }
 
+        public bool IsCheckingMessages { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
 
         public virtual ICollection<ChatParticipant> ChatParticipants { get; set; }

@@ -20,6 +20,7 @@
 
 .Friend_Image {
     height: 90px;
+    width:90px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid orange;

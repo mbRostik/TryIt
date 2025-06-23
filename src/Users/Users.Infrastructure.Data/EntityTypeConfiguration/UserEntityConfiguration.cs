@@ -21,6 +21,15 @@ namespace Users.Infrastructure.Data.EntityTypeConfiguration
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Property(x => x.Email).IsRequired(false);
+            builder.Property(x => x.Phone).IsRequired(false);
+            builder.Property(x => x.Bio).IsRequired(false);
+            builder.Property(x => x.Photo).IsRequired(false);
+            builder.Property(x => x.DateOfBirth)
+                    .HasDefaultValue(DateTime.MinValue);
+            builder.Property(x => x.SexId)
+                    .HasDefaultValue(-1);
+
             builder.HasMany(x => x.BannedBy)
                 .WithOne(m => m.BannedByUser)
                 .HasForeignKey(x => x.ModeratorId)

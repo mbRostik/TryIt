@@ -26,6 +26,8 @@ namespace Users.Application.Contracts.DTOs
         public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public bool IsPrivate { get; set; } = false;
 
+        public bool IsCheckingMessages { get; set; } = false;
+
         public string SexId { get; set; } = "UnIdentify"; 
     }
 }

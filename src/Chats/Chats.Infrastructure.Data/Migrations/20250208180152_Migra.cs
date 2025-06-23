@@ -42,7 +42,8 @@ namespace Chats.Infrastructure.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsCheckingMessages = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

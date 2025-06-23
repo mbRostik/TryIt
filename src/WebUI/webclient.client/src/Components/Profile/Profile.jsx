@@ -114,25 +114,17 @@ const Profile = () => {
 
                             if (!response.ok) {
                                 if (response.status === 400) {
-                                    const errorData = await response.json();
-                                    const errors = errorData.errors;
+                                    const errorMessage = await response.text();
 
-                                    for (const key in errors) {
-                                        if (errors.hasOwnProperty(key)) {
-                                            const errorMessages = errors[key];
-                                            errorMessages.forEach(message => {
-                                                toast.error(`${key}: ${message}`, {
-                                                    position: "top-right",
-                                                    autoClose: 5000,
-                                                    hideProgressBar: false,
-                                                    closeOnClick: true,
-                                                    pauseOnHover: true,
-                                                    draggable: true,
-                                                    progress: undefined,
-                                                });
-                                            });
-                                        }
-                                    }
+                                    toast.error(errorMessage, {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                    });
                                 } else {
                                     toast.error(`HTTP error! Status: ${response.status}`, {
                                         position: "top-right",
@@ -144,7 +136,6 @@ const Profile = () => {
                                         progress: undefined,
                                     });
                                 }
-                                throw new Error(`HTTP error! Status: ${response.status}`);
                             }
 
                             else {

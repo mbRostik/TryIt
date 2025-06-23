@@ -3,6 +3,7 @@ using Chats.Application.UseCases.Notifications;
 using Chats.Domain.Entities;
 using Chats.Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Chats.Application.UseCases.Handlers.OperationHandlers
         }
 
         public async Task<int> Handle(CreateChatCommand request, CancellationToken cancellationToken)
-        {
+        {            
             try
             {
                 var result = await dbContext.Chats.AddAsync(new Chat());

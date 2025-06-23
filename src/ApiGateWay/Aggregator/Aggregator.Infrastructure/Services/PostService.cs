@@ -75,6 +75,5 @@ namespace Aggregator.Infrastructure.Services
                 return new List<GiveFollowedPostsDTO>();
             }
         }
-
     }
 }

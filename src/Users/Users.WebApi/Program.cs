@@ -2,6 +2,7 @@
 using MassTransit;
 using MessageBus.Messages.Events.IdentityServerService;
 using MessageBus.Messages.Events.PostService;
+using MessageBus.Messages.Events.UserService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
@@ -33,17 +34,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IMapperService, MapperService>();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChangeProfileInformationDTOValidator>());
 
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    options.Listen(IPAddress.Any, 8080, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1;
-    });
-    options.Listen(IPAddress.Any, 8081, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http2;
-    });
-});
+//builder.WebHost.ConfigureKestrel((context, options) =>
+//{
+//    options.Listen(IPAddress.Any, 8080, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http1;
+//    });
+//    options.Listen(IPAddress.Any, 8081, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http2;
+//    });
+//});
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.Enrich.FromLogContext()
@@ -78,7 +79,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq", "/", h =>
+        cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");

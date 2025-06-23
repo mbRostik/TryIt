@@ -27,14 +27,14 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssemblies(typeof(GetAllPostsQuery).Assembly);
 
 });
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    options.Listen(IPAddress.Any, 8080);
-    options.Listen(IPAddress.Any, 8081, listenOptions =>
-    {
-        listenOptions.UseHttps("https/reportwebapi-api.pfx", "pa55w0rd!");
-    });
-});
+//builder.WebHost.ConfigureKestrel((context, options) =>
+//{
+//    options.Listen(IPAddress.Any, 8080);
+//    options.Listen(IPAddress.Any, 8081, listenOptions =>
+//    {
+//        listenOptions.UseHttps("https/reportwebapi-api.pfx", "pa55w0rd!");
+//    });
+//});
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PostCreation_Consumer>();
@@ -42,7 +42,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq", "/", h =>
+        cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");

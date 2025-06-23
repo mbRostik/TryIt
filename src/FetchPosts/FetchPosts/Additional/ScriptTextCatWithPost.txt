@@ -1,0 +1,50 @@
+﻿DECLARE @CategoryIds TABLE (CategoryId INT);
+INSERT INTO @CategoryIds (CategoryId)
+VALUES (9), (10), (11), (12), (13), (14), (15),
+       (16), (17), (18), (19), (20), (21), (22);
+
+WITH OrderedPosts AS (
+    SELECT 
+        Id AS PostId,
+        ROW_NUMBER() OVER (ORDER BY Id) AS RowNum
+    FROM Posts
+),
+MappedPosts AS (
+    SELECT 
+        PostId,
+        ((RowNum - 1) / 1000) AS GroupIndex
+    FROM OrderedPosts
+),
+FinalMapping AS (
+    SELECT 
+        p.PostId,
+        c.CategoryId AS PostTextCategoryId
+    FROM MappedPosts p
+    JOIN (
+        SELECT 
+            CategoryId,
+            ROW_NUMBER() OVER (ORDER BY CategoryId) - 1 AS GroupIndex
+        FROM @CategoryIds
+    ) c ON p.GroupIndex = c.GroupIndex
+)
+INSERT INTO PostsWithTextCategories (PostId, PostTextCategoryId)
+SELECT PostId, PostTextCategoryId
+FROM FinalMapping;
+
+
+label_map = {
+    0: "Company",
+    1: "EducationalInstitution",
+    2: "Artist",
+    3: "Athlete",
+    4: "OfficeHolder",
+    5: "MeanOfTransportation",
+    6: "Building",
+    7: "NaturalPlace",
+    8: "Village",
+    9: "Animal",
+    10: "Plant",
+    11: "Album",
+    12: "Film",
+    13: "WrittenWork"
+}

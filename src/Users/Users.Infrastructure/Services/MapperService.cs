@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Userforchat;
+using Users.Application.Contracts.DTOs;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +29,7 @@ namespace Users.Infrastructure.Services
                     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
                     .ForMember(dest => dest.Bio, opt => opt.MapFrom(src => src.Bio))
                     .ForMember(dest => dest.IsPrivate, opt => opt.MapFrom(src => src.IsPrivate))
+                    .ForMember(dest => dest.IsCheckingMessages, opt => opt.MapFrom(src => src.IsCheckingMessages))
                     .ForMember(dest => dest.SexId, opt => opt.MapFrom(src =>
                          sexStringToIdMapping.ContainsKey(src.SexId) ? sexStringToIdMapping[src.SexId] : 3))
                     .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
@@ -79,12 +83,11 @@ namespace Users.Infrastructure.Services
             return mapper;
         }
 
-
         Dictionary<string, int> sexStringToIdMapping = new Dictionary<string, int>
-        {
-            {"Man", 1}, 
-            {"Woman", 2}, 
-            {"UnIdentify", 3} 
-        };
+                {
+            {"Man", 1},
+            {"Woman", 2},
+            {"UnIdentify", 3}
+                };
     }
 }

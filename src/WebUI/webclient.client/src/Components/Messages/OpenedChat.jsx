@@ -130,8 +130,15 @@ function OpenedChat({ chatId }) {
                 await hubConnection.invoke("SendMessage", { MessageContent: messageContent, ChatId: activeChatId });
                 setMessageContent(""); 
             } catch (error) {
-
-                console.error('Error while sending a message:', error);
+                toast.error(`This user is not allowed to receive sensetive content` , {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         }
     };
@@ -165,9 +172,8 @@ function OpenedChat({ chatId }) {
                     <div className="Messages">
                         <div className="InsideMessages" >
                             {messages && messages.length > 0 ? (
-                                messages.map((message, index) => (
-
-                                    <div key={index} className="Message">
+                                messages.map((message, index) => (                                    
+                                    <div key={index} className="Message">                                    
                                         <div className="Messagecontactimage">
                                             {message.senderId === foundChat.contactId ? (
                                                 <img

@@ -35,24 +35,41 @@ namespace Posts.Application.UseCases.Handlers.QueryHandlers
                 logger.Information("Handling GetUserPostsQuery for UserId: {UserId}", request.id);
 
                 var result = _dbContext.Posts
-                    .AsNoTracking()
-                    .Where(x => x.UserId == request.id)
-                    .Select(p => new GiveProfilePostsDTO
+                .AsNoTracking()
+                .Where(x => x.UserId == request.id)
+                .Include(p => p.PostWithTextCategories)
+                    .ThenInclude(ptc => ptc.PostTextCategory)
+                .Include(p => p.PostWithPhotoCategories)
+                    .ThenInclude(ppc => ppc.PostPhotoCategory)
+                .Include(p => p.Files)
+                .AsEnumerable()
+                .Select(p => new GiveProfilePostsDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    Date = p.Date,
+                    Files = p.Files.Select(f => new GiveFileDTO
                     {
-                        Id = p.Id,
-                        Title = p.Title,
-                        Content = p.Content,
-                        Date = p.Date,
-                        Files = p.Files.Select(f => new GiveFileDTO
-                        {
-                            Id = f.Id,
-                            Name = f.Name,
-                            file = f.file,
-                            Date = f.Date,
-                            PostId = f.PostId
-                        }).ToList()
-                    })
-                    .ToList();
+                        Id = f.Id,
+                        Name = f.Name,
+                        file = f.file,
+                        Date = f.Date,
+                        PostId = f.PostId
+                    }).ToList(),
+                    Tags = (p.PostWithTextCategories ?? Enumerable.Empty<PostWithTextCategories>())
+                        .Where(ptc => ptc?.PostTextCategory != null)
+                        .Select(ptc => ptc.PostTextCategory.CategoryName)
+                        .Concat(
+                            (p.PostWithPhotoCategories ?? Enumerable.Empty<PostWithPhotoCategories>())
+                            .Where(ppc => ppc?.PostPhotoCategory != null)
+                            .Select(ppc => ppc.PostPhotoCategory.CategoryName)
+                        )
+                        .Where(name => !string.IsNullOrWhiteSpace(name))
+                        .Distinct()
+                        .ToList()
+                })
+                .ToList();
 
                 logger.Information("Successfully handled GetUserPostsQuery for UserId: {UserId}. Found {Count} posts.", request.id, result.Count);
 

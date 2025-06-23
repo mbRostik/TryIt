@@ -22,27 +22,28 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using MessageBus.Messages.Events.UserService;
 
 
 var builder = WebApplication.CreateBuilder(args);
 string? connectionString = builder.Configuration.GetConnectionString("MSSQLConnection");
 
-builder.WebHost.ConfigureKestrel((context, options) =>
-{
-    options.Listen(IPAddress.Any, 8080, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1;
-    });
-    options.Listen(IPAddress.Any, 8081, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http2;
-    });
-    options.Listen(IPAddress.Any, 8082, listenOptions =>
-    {
-        listenOptions.UseHttps("https/chatwebapi-api.pfx", "pa55w0rd!");
-    });
+//builder.WebHost.ConfigureKestrel((context, options) =>
+//{
+//    options.Listen(IPAddress.Any, 8080, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http1;
+//    });
+//    options.Listen(IPAddress.Any, 8081, listenOptions =>
+//    {
+//        listenOptions.Protocols = HttpProtocols.Http2;
+//    });
+//    options.Listen(IPAddress.Any, 8082, listenOptions =>
+//    {
+//        listenOptions.UseHttps("https/chatwebapi-api.pfx", "pa55w0rd!");
+//    });
 
-});
+//});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
@@ -83,46 +84,81 @@ builder.Services.AddMediatR(options =>
 
 });
 
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters.ValidateIssuer = false;
+//        options.TokenValidationParameters.ValidateAudience = false;
+//        options.TokenValidationParameters.ValidateLifetime = false;
+//        options.TokenValidationParameters.RequireExpirationTime = false;
+//        options.TokenValidationParameters.RequireSignedTokens = false;
+//        options.TokenValidationParameters.RequireAudience = false;
+//        options.TokenValidationParameters.ValidateActor = false;
+//        options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+
+//        options.TokenValidationParameters.SignatureValidator = delegate (string token, TokenValidationParameters parameters)
+//        {
+//            var jwtHandler = new JsonWebTokenHandler();
+//            var jsonToken = jwtHandler.ReadJsonWebToken(token);
+//            return jsonToken;
+//        };
+//        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TempData"));
+//        var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
+
+//        options.Authority = jwtBearerSettings["Authority"];
+
+//        options.Audience = "Chats.WebApi";
+//        options.Events = new JwtBearerEvents
+//        {
+//            OnMessageReceived = context =>
+//            {
+//                var accessToken2 = context.Request.Query["access_token"];
+//                Console.WriteLine(accessToken2 + "\n\n\n\n");
+//                var path = context.HttpContext.Request.Path;
+//                if (!string.IsNullOrEmpty(accessToken2) &&
+//                    (path.StartsWithSegments("/SendMessage")))
+//                {
+//                    context.Token = accessToken2;
+//                }
+//                return Task.CompletedTask;
+//            },
+//        };
+//    });
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters.ValidateIssuer = false;
-        options.TokenValidationParameters.ValidateAudience = false;
-        options.TokenValidationParameters.ValidateLifetime = false;
-        options.TokenValidationParameters.RequireExpirationTime = false;
-        options.TokenValidationParameters.RequireSignedTokens = false;
-        options.TokenValidationParameters.RequireAudience = false;
-        options.TokenValidationParameters.ValidateActor = false;
-        options.TokenValidationParameters.ValidateIssuerSigningKey = false;
-
-        options.TokenValidationParameters.SignatureValidator = delegate (string token, TokenValidationParameters parameters)
-        {
-            var jwtHandler = new JsonWebTokenHandler();
-            var jsonToken = jwtHandler.ReadJsonWebToken(token);
-            return jsonToken;
-        };
-        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TempData"));
         var jwtBearerSettings = builder.Configuration.GetSection("JwtBearer");
 
         options.Authority = jwtBearerSettings["Authority"];
 
         options.Audience = "Chats.WebApi";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+        };
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                var accessToken2 = context.Request.Query["access_token"];
-                Console.WriteLine(accessToken2 + "\n\n\n\n");
+                var accessToken = context.Request.Query["access_token"];
+
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken2) &&
+                if (!string.IsNullOrEmpty(accessToken) &&
                     (path.StartsWithSegments("/SendMessage")))
                 {
-                    context.Token = accessToken2;
+                    context.Token = accessToken;
                 }
                 return Task.CompletedTask;
             },
         };
     });
+
+
 builder.Services
     .AddSignalR(options =>
     {
@@ -137,19 +173,22 @@ builder.Services
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreation_Consumer>();
+    x.AddConsumer<UserChange_Consumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("rabbitmq", "/", h =>
+        cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
         });
         cfg.Publish<IUserCreate_SendEvent_From_ChatWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
+        cfg.Publish<IUserChange_SendEvent_From_ChatWebApi>(p => p.ExchangeType = ExchangeType.Fanout);
 
         cfg.ReceiveEndpoint("rabbitChatWebApiQueue", e =>
         {
             e.ConfigureConsumer<UserCreation_Consumer>(context);
+            e.ConfigureConsumer<UserChange_Consumer>(context);
         });
     });
 });
@@ -163,12 +202,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ChatDbContext>();
-    context.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var context = services.GetRequiredService<ChatDbContext>();
+//    context.Database.Migrate();
+//}
 app.UseCors(builder =>
 {
     builder.WithOrigins("https://localhost:5173")
